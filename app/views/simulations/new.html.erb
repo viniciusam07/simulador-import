@@ -1,0 +1,40 @@
+<h1>Nova Simulação</h1>
+
+<%= form_with(model: @simulation, local: true) do |form| %>
+  <% if @simulation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@simulation.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
+      <ul>
+        <% @simulation.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :origin_country, 'País de Origem' %>
+    <%= form.text_field :origin_country, placeholder: 'Digite o país de origem' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :total_value, 'Valor Total da Importação' %>
+    <%= form.number_field :total_value, step: 0.01, placeholder: 'Digite o valor total' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :incoterm, 'Incoterm' %>
+    <%= form.select :incoterm, ['EXW', 'FCA', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP', 'FAS', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :modal, 'Modal' %>
+    <%= form.select :modal, ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal' %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit 'Criar Simulação' %>
+  </div>
+<% end %>
+
+<%= link_to 'Voltar', root_path, class: 'btn btn-secondary' %>

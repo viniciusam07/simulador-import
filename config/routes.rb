@@ -9,4 +9,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  # Define a rota raiz para a página inicial
+
+  resources :simulations, only: [:new, :create]
 end
