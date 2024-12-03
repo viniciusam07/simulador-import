@@ -11,5 +11,5 @@ Rails.application.routes.draw do
   # root "posts#index"
   # Define a rota raiz para a página inicial
 
-  resources :simulations, only: [:new, :create]
+  resources :simulations, only: [:index, :new, :create]
 end

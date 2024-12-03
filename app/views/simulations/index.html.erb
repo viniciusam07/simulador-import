@@ -1,0 +1,33 @@
+<h1>Minhas Simulações</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>País de Origem</th>
+      <th>Valor Total</th>
+      <th>Incoterm</th>
+      <th>Modal</th>
+      <th>Moeda</th>
+      <th>Custo do Frete</th>
+      <th>Custo do Seguro</th>
+      <th>Criada em</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @simulations.each do |simulation| %>
+      <tr>
+        <td><%= simulation.origin_country %></td>
+        <td><%= number_to_currency(simulation.total_value || 0, unit: simulation.currency || '') %></td>
+        <td><%= simulation.incoterm %></td>
+        <td><%= simulation.modal %></td>
+        <td><%= simulation.currency %></td>
+        <td><%= number_to_currency(simulation.freight_cost, unit: simulation.currency) %></td>
+        <td><%= number_to_currency(simulation.insurance_cost, unit: simulation.currency) %></td>
+        <td><%= simulation.created_at.strftime("%d/%m/%Y") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Voltar', root_path, class: 'btn btn-secondary' %>

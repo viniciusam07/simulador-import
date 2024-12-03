@@ -1,6 +1,6 @@
 <h1>Nova Simulação</h1>
 
-<%= form_with(model: @simulation, local: true) do |form| %>
+<%= simple_form_for(@simulation) do |form| %>
   <% if @simulation.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@simulation.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
@@ -13,27 +13,35 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :origin_country, 'País de Origem' %>
-    <%= form.text_field :origin_country, placeholder: 'Digite o país de origem' %>
+    <%= form.input :origin_country, as: :country, label: 'País de Origem', priority_countries: ['BR', 'US', 'GB'], prompt: 'Selecione o país de origem' %>
   </div>
 
   <div class="field">
-    <%= form.label :total_value, 'Valor Total da Importação' %>
-    <%= form.number_field :total_value, step: 0.01, placeholder: 'Digite o valor total' %>
+    <%= form.input :total_value, as: :decimal, label: 'Valor Total da Importação', placeholder: 'Digite o valor total' %>
   </div>
 
   <div class="field">
-    <%= form.label :incoterm, 'Incoterm' %>
-    <%= form.select :incoterm, ['EXW', 'FCA', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP', 'FAS', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
+    <%= form.input :incoterm, collection: ['EXW', 'FCA', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP', 'FAS', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
   </div>
 
   <div class="field">
-    <%= form.label :modal, 'Modal' %>
-    <%= form.select :modal, ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal' %>
+    <%= form.input :modal, collection: ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal' %>
+  </div>
+
+  <div class="field">
+    <%= form.input :currency, collection: ['USD', 'EUR', 'BRL'], prompt: 'Selecione a moeda' %>
+  </div>
+
+  <div class="field">
+    <%= form.input :freight_cost, as: :decimal, label: 'Custo do Frete Internacional', placeholder: 'Digite o custo do frete' %>
+  </div>
+
+  <div class="field">
+    <%= form.input :insurance_cost, as: :decimal, label: 'Custo do Seguro Internacional', placeholder: 'Digite o custo do seguro' %>
   </div>
 
   <div class="actions">
-    <%= form.submit 'Criar Simulação' %>
+    <%= form.button :submit, 'Criar Simulação' %>
   </div>
 <% end %>
 
