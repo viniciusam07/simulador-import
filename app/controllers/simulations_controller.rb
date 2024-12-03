@@ -21,6 +21,14 @@ class SimulationsController < ApplicationController
     @simulation = Simulation.find(params[:id])
   end
 
+  def exchange_rate
+    currency = params[:currency]
+    bank = EuCentralBank.new
+    bank.update_rates
+    rate = bank.exchange(100, currency, 'BRL').to_f / 100
+    render json: { rate: rate }
+  end
+
   private
 
   def simulation_params

@@ -33,6 +33,11 @@
   </div>
 
   <div class="field">
+    <%= form.input :exchange_rate, as: :decimal, label: 'Taxa de Câmbio', placeholder: 'Digite a taxa de câmbio' %>
+    <button type="button" onclick="fetchExchangeRate()">Carregar Cotação</button>
+  </div>
+
+  <div class="field">
     <%= form.input :freight_cost, as: :decimal, label: 'Custo do Frete Internacional', placeholder: 'Digite o custo do frete' %>
   </div>
 
@@ -46,3 +51,20 @@
 <% end %>
 
 <%= link_to 'Voltar', root_path, class: 'btn btn-secondary' %>
+
+<script>
+  async function fetchExchangeRate() {
+    const currency = document.querySelector('#simulation_currency').value;
+    if (currency) {
+      try {
+        const response = await fetch(`/exchange_rate?currency=${currency}`);
+        const data = await response.json();
+        document.querySelector('#simulation_exchange_rate').value = data.rate;
+      } catch (error) {
+        alert('Erro ao carregar a cotação. Por favor, tente novamente.');
+      }
+    } else {
+      alert('Por favor, selecione uma moeda primeiro.');
+    }
+  }
+</script>

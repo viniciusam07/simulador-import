@@ -12,4 +12,5 @@ Rails.application.routes.draw do
   # Define a rota raiz para a página inicial
 
   resources :simulations, only: [:index, :new, :create, :show]
+  get 'exchange_rate', to: 'simulations#exchange_rate'
 end

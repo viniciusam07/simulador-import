@@ -125,6 +125,9 @@ GEM
       railties (>= 6.1)
     drb (2.2.1)
     erubi (1.13.0)
+    eu_central_bank (1.7.0)
+      money (~> 6.13, >= 6.13.6)
+      nokogiri (~> 1.9)
     execjs (2.10.0)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-aarch64-linux-musl)
@@ -166,6 +169,8 @@ GEM
     matrix (0.4.2)
     mini_mime (1.1.5)
     minitest (5.25.3)
+    money (6.19.0)
+      i18n (>= 0.6.4, <= 2)
     msgpack (1.7.5)
     mutex_m (0.3.0)
     net-imap (0.5.1)
@@ -324,9 +329,11 @@ DEPENDENCIES
   debug
   devise
   dotenv-rails
+  eu_central_bank
   font-awesome-sass (~> 6.1)
   importmap-rails
   jbuilder
+  money
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.1.5)
