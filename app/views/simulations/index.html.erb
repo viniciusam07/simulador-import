@@ -8,6 +8,7 @@
       <th>Incoterm</th>
       <th>Modal</th>
       <th>Moeda</th>
+      <th>Valor Aduaneiro</th>
       <th>Custo do Frete</th>
       <th>Custo do Seguro</th>
       <th>Criada em</th>
@@ -22,8 +23,9 @@
         <td><%= simulation.incoterm %></td>
         <td><%= simulation.modal %></td>
         <td><%= simulation.currency %></td>
-        <td><%= number_to_currency(simulation.freight_cost, unit: simulation.currency) %></td>
-        <td><%= number_to_currency(simulation.insurance_cost, unit: simulation.currency) %></td>
+        <td><%= number_to_currency(simulation.customs_value || 0, unit: simulation.currency || '') %></td>
+        <td><%= number_to_currency(simulation.freight_cost || 0, unit: simulation.currency || '') %></td>
+        <td><%= number_to_currency(simulation.insurance_cost || 0, unit: simulation.currency || '') %></td>
         <td><%= simulation.created_at.strftime("%d/%m/%Y") %></td>
       </tr>
     <% end %>
