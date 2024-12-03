@@ -17,6 +17,10 @@ class SimulationsController < ApplicationController
     @simulations = Simulation.where(user_id: current_user.id)
   end
 
+  def show
+    @simulation = Simulation.find(params[:id])
+  end
+
   private
 
   def simulation_params

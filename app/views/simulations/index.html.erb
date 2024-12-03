@@ -12,6 +12,7 @@
       <th>Custo do Frete</th>
       <th>Custo do Seguro</th>
       <th>Criada em</th>
+      <th>Ações</th>
     </tr>
   </thead>
 
@@ -27,6 +28,7 @@
         <td><%= number_to_currency(simulation.freight_cost || 0, unit: simulation.currency || '') %></td>
         <td><%= number_to_currency(simulation.insurance_cost || 0, unit: simulation.currency || '') %></td>
         <td><%= simulation.created_at.strftime("%d/%m/%Y") %></td>
+        <td><%= link_to '🔍', simulation_path(simulation), class: 'btn btn-link', title: 'Ver Detalhes' %></td>
       </tr>
     <% end %>
   </tbody>
