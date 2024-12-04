@@ -1,0 +1,38 @@
+<h1><%= @expense.new_record? ? "Nova Despesa" : "Editar Despesa" %></h1>
+
+<%= simple_form_for @expense do |form| %>
+  <% if @expense.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@expense.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
+      <ul>
+        <% @expense.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.input :expense_name, label: "Nome" %>
+  </div>
+
+  <div>
+    <%= form.input :expense_description, label: "Descrição", as: :text %>
+  </div>
+
+  <div>
+    <%= form.input :expense_default_value, as: :decimal, label: "Valor Padrão", step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.input :expense_currency, collection: ["BRL", "USD", "EUR"], label: "Moeda" %>
+  </div>
+
+  <div>
+    <%= form.input :expense_location, collection: ["Origem", "Destino"], label: "Local de Cobrança" %>
+  </div>
+
+  <%= form.button :submit, @expense.new_record? ? "Criar" : "Atualizar" %>
+<% end %>
+
+<%= link_to 'Voltar', expenses_path, class: 'btn btn-secondary' %>

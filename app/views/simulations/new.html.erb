@@ -45,6 +45,11 @@
     <%= form.input :insurance_cost, as: :decimal, label: 'Custo do Seguro Internacional', placeholder: 'Digite o custo do seguro' %>
   </div>
 
+  <h3>Despesas Operacionais</h3>
+  <div class="field">
+    <%= form.association :expenses, as: :check_boxes, collection: Expense.all, label_method: :expense_name, value_method: :id %>
+  </div>
+
   <h3>Impostos</h3>
   <div class="taxes-section">
     <div class="row">

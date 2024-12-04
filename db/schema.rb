@@ -10,9 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_03_230948) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_05_201000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "expenses", force: :cascade do |t|
+    t.string "expense_name", null: false
+    t.text "expense_description"
+    t.decimal "expense_default_value", precision: 10, scale: 2
+    t.string "expense_currency", null: false
+    t.string "expense_location", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "simulation_expenses", force: :cascade do |t|
+    t.integer "simulation_id", null: false
+    t.integer "expense_id"
+    t.string "expense_custom_name"
+    t.decimal "expense_custom_value", precision: 10, scale: 2
+    t.string "expense_currency", null: false
+    t.string "expense_location", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expense_id"], name: "index_simulation_expenses_on_expense_id"
+    t.index ["simulation_id"], name: "index_simulation_expenses_on_simulation_id"
+  end
 
   create_table "simulation_taxes", force: :cascade do |t|
     t.bigint "simulation_id", null: false
@@ -78,6 +101,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_230948) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "simulation_expenses", "expenses"
+  add_foreign_key "simulation_expenses", "simulations"
   add_foreign_key "simulation_taxes", "simulations"
   add_foreign_key "simulation_taxes", "taxes"
   add_foreign_key "tax_rates", "taxes"
