@@ -45,6 +45,60 @@
     <%= form.input :insurance_cost, as: :decimal, label: 'Custo do Seguro Internacional', placeholder: 'Digite o custo do seguro' %>
   </div>
 
+  <h3>Impostos</h3>
+  <div class="taxes-section">
+    <div class="row">
+      <div class="col">
+        <%= form.label :aliquota_ii, "Alíquota II (%)" %>
+        <%= form.number_field :aliquota_ii, step: 0.01 %>
+      </div>
+      <div class="col">
+        <%= form.label :tributo_ii, "Tributo II (R$)" %>
+        <%= form.number_field :tributo_ii, step: 0.01, readonly: true %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <%= form.label :aliquota_ipi, "Alíquota IPI (%)" %>
+        <%= form.number_field :aliquota_ipi, step: 0.01 %>
+      </div>
+      <div class="col">
+        <%= form.label :tributo_ipi, "Tributo IPI (R$)" %>
+        <%= form.number_field :tributo_ipi, step: 0.01, readonly: true %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <%= form.label :aliquota_pis, "Alíquota PIS (%)" %>
+        <%= form.number_field :aliquota_pis, step: 0.01 %>
+      </div>
+      <div class="col">
+        <%= form.label :tributo_pis, "Tributo PIS (R$)" %>
+        <%= form.number_field :tributo_pis, step: 0.01, readonly: true %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <%= form.label :aliquota_cofins, "Alíquota COFINS (%)" %>
+        <%= form.number_field :aliquota_cofins, step: 0.01 %>
+      </div>
+      <div class="col">
+        <%= form.label :tributo_cofins, "Tributo COFINS (R$)" %>
+        <%= form.number_field :tributo_cofins, step: 0.01, readonly: true %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <%= form.label :aliquota_icms, "Alíquota ICMS (%)" %>
+        <%= form.number_field :aliquota_icms, step: 0.01 %>
+      </div>
+      <div class="col">
+        <%= form.label :tributo_icms, "Tributo ICMS (R$)" %>
+        <%= form.number_field :tributo_icms, step: 0.01, readonly: true %>
+      </div>
+    </div>
+  </div>
+
   <div class="actions">
     <%= form.button :submit, 'Criar Simulação' %>
   </div>

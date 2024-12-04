@@ -32,6 +32,6 @@ class SimulationsController < ApplicationController
   private
 
   def simulation_params
-    params.require(:simulation).permit(:origin_country, :total_value, :incoterm, :modal, :currency, :freight_cost, :insurance_cost)
+    params.require(:simulation).permit(:origin_country, :total_value, :incoterm, :modal, :currency, :freight_cost, :insurance_cost, :exchange_rate)
   end
 end
