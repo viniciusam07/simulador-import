@@ -16,11 +16,11 @@
 
 <h2>Impostos</h2>
 <ul>
-  <li><strong>Imposto de Importação (II):</strong> <%= number_to_percentage(@simulation.aliquota_ii, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ii) %></li>
-  <li><strong>Imposto sobre Produtos Industrializados (IPI):</strong> <%= number_to_percentage(@simulation.aliquota_ipi, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ipi) %></li>
-  <li><strong>PIS-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_pis, precision: 2) %> - <%= number_to_currency(@simulation.tributo_pis) %></li>
-  <li><strong>Cofins-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_cofins, precision: 2) %> - <%= number_to_currency(@simulation.tributo_cofins) %></li>
-  <li><strong>ICMS:</strong> <%= number_to_percentage(@simulation.aliquota_icms, precision: 2) %> - <%= number_to_currency(@simulation.tributo_icms) %></li>
+  <li><strong>Imposto de Importação (II):</strong> <%= number_to_percentage(@simulation.aliquota_ii, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ii, unit: 'BRL') %></li>
+  <li><strong>Imposto sobre Produtos Industrializados (IPI):</strong> <%= number_to_percentage(@simulation.aliquota_ipi, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ipi, unit: 'BRL') %></li>
+  <li><strong>PIS-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_pis, precision: 2) %> - <%= number_to_currency(@simulation.tributo_pis, unit: 'BRL') %></li>
+  <li><strong>Cofins-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_cofins, precision: 2) %> - <%= number_to_currency(@simulation.tributo_cofins, unit: 'BRL') %></li>
+  <li><strong>ICMS:</strong> <%= number_to_percentage(@simulation.aliquota_icms, precision: 2) %> - <%= number_to_currency(@simulation.tributo_icms, unit: 'BRL') %></li>
 </ul>
 
 <%= link_to 'Voltar', simulations_path, class: 'btn btn-secondary' %>
