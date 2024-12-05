@@ -1,0 +1,31 @@
+<%= simple_form_for @product do |form| %>
+  <div class="form-group">
+    <%= form.input :product_name, label: 'Nome do Produto', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :hs_code, label: 'HS Code' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :ncm, label: 'NCM' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :unit_of_measure, label: 'Unidade de Medida', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :quantity_per_box, label: 'Quantidade por Caixa Master' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :unit_net_weight, label: 'Peso Líquido por Unidade', step: 0.01 %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :unit_price, label: 'Preço Unitário', required: true, step: 0.01 %>
+  </div>
+
+  <%= form.button :submit, 'Salvar Produto', class: 'btn btn-primary' %>
+<% end %>

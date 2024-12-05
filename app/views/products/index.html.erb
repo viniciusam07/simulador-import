@@ -1,0 +1,36 @@
+<h1>Produtos</h1>
+<%= link_to 'Novo Produto', new_product_path, class: 'btn btn-primary' %>
+<%= link_to 'Voltar', root_path, class: 'btn btn-secondary' %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nome do Produto</th>
+      <th>HS Code</th>
+      <th>NCM</th>
+      <th>Unidade de Medida</th>
+      <th>Quantidade por Caixa</th>
+      <th>Peso Líquido</th>
+      <th>Preço Unitário</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @products.each do |product| %>
+      <tr>
+        <td><%= product.product_name %></td>
+        <td><%= product.hs_code %></td>
+        <td><%= product.ncm %></td>
+        <td><%= product.unit_of_measure %></td>
+        <td><%= product.quantity_per_box %></td>
+        <td><%= product.unit_net_weight %></td>
+        <td><%= product.unit_price %></td>
+        <td>
+          <%= link_to 'Visualizar', product_path(product) %> |
+          <%= link_to 'Editar', edit_product_path(product) %> |
+          <%= link_to 'Excluir', product_path(product), method: :delete, data: { confirm: 'Tem certeza?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

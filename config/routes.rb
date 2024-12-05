@@ -15,4 +15,7 @@ Rails.application.routes.draw do
   get 'exchange_rate', to: 'simulations#exchange_rate'
   resources :expenses, only: [:index, :new, :create, :edit, :update, :destroy, :show]
   resources :suppliers
+  resources :products
+  resources :products
+
 end
