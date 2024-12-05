@@ -1,0 +1,14 @@
+<h1>Detalhes do Fornecedor</h1>
+<p>
+  <strong>Razão Social:</strong>
+  <%= @supplier.corporate_name %>
+</p>
+<p>
+  <strong>Nome Fantasia:</strong>
+  <%= @supplier.trade_name %>
+</p>
+<p>
+  <strong>País:</strong>
+  <%= @supplier.country %>
+</p>
+<%= link_to 'Voltar', suppliers_path, class: 'btn btn-secondary' %>

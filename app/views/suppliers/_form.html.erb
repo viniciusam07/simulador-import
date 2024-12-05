@@ -1,0 +1,15 @@
+<%= simple_form_for @supplier do |form| %>
+  <div class="form-group">
+    <%= form.input :corporate_name, label: 'Razão Social', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :trade_name, label: 'Nome Fantasia', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :country, label: 'País', required: true %>
+  </div>
+
+  <%= form.button :submit, 'Salvar Fornecedor', class: 'btn btn-primary' %>
+<% end %>
