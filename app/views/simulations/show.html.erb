@@ -34,6 +34,15 @@
   <% end %>
 </ul>
 
+<h2>Resumo da Importação</h2>
+<ul>
+  <li><strong>Valor Total Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.customs_value_brl, unit: 'BRL') %></li>
+  <li><strong>Valor Total Aduaneiro (<%= @simulation.currency %>):</strong> <%= number_to_currency(@simulation.customs_value, unit: @simulation.currency) %></li>
+  <li><strong>Valor Total Impostos:</strong> <%= number_to_currency(@simulation.total_taxes, unit: 'BRL') %></li>
+  <li><strong>Valor Total de Despesas Operacionais:</strong> <%= number_to_currency(@simulation.total_operational_expenses, unit: 'BRL') %></li>
+  <li><strong>Valor Total Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %></li>
+</ul>
+
 <div class="btn-group" role="group" aria-label="Opções">
   <%= link_to 'Despesas Operacionais', expenses_path, class: 'btn btn-secondary' %>
   <%= link_to 'Voltar', simulations_path, class: 'btn btn-secondary' %>

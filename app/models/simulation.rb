@@ -67,6 +67,18 @@ class Simulation < ApplicationRecord
     base_icms * ((icms_rate || 0) / 100.0)
   end
 
+  def total_operational_expenses
+    simulation_expenses.sum(:expense_custom_value)
+  end
+
+  def total_taxes
+    tributo_ii + tributo_ipi + tributo_pis + tributo_cofins + tributo_icms
+  end
+
+  def total_importation_cost
+    customs_value_brl + total_taxes + total_operational_expenses
+  end
+
   private
 
   def set_customs_value
