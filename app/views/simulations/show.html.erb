@@ -23,6 +23,17 @@
   <li><strong>ICMS:</strong> <%= number_to_percentage(@simulation.aliquota_icms, precision: 2) %> - <%= number_to_currency(@simulation.tributo_icms, unit: 'BRL') %></li>
 </ul>
 
+<h2>Despesas Operacionais</h2>
+<ul>
+  <% @simulation.simulation_expenses.each do |expense| %>
+    <li>
+      <strong>Nome:</strong> <%= expense.expense_custom_name %><br>
+      <strong>Valor:</strong> <%= number_to_currency(expense.expense_custom_value, unit: expense.expense_currency) %><br>
+      <strong>Localização:</strong> <%= expense.expense_location %>
+    </li>
+  <% end %>
+</ul>
+
 <div class="btn-group" role="group" aria-label="Opções">
   <%= link_to 'Despesas Operacionais', expenses_path, class: 'btn btn-secondary' %>
   <%= link_to 'Voltar', simulations_path, class: 'btn btn-secondary' %>

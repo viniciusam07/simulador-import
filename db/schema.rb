@@ -54,13 +54,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_201000) do
     t.string "modal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "currency"
-    t.decimal "freight_cost"
-    t.decimal "insurance_cost"
-    t.integer "user_id"
-    t.decimal "customs_value"
-    t.decimal "exchange_rate"
-    t.decimal "total_customs_value_brl"
     t.decimal "aliquota_ii", precision: 5, scale: 2
     t.decimal "tributo_ii", precision: 10, scale: 2
     t.decimal "aliquota_ipi", precision: 5, scale: 2
@@ -71,6 +64,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_201000) do
     t.decimal "tributo_cofins", precision: 10, scale: 2
     t.decimal "aliquota_icms", precision: 5, scale: 2
     t.decimal "tributo_icms", precision: 10, scale: 2
+    t.string "currency"
+    t.decimal "freight_cost"
+    t.decimal "insurance_cost"
+    t.integer "user_id"
+    t.decimal "customs_value"
+    t.decimal "exchange_rate"
+    t.decimal "total_customs_value_brl"
   end
 
   create_table "tax_rates", force: :cascade do |t|

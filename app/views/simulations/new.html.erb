@@ -47,7 +47,9 @@
 
   <h3>Despesas Operacionais</h3>
   <div class="field">
-    <%= form.association :expenses, as: :check_boxes, collection: Expense.all, label_method: :expense_name, value_method: :id %>
+    <%= form.association :expenses, as: :check_boxes, collection: Expense.all, label_method: ->(expense) { "
+      #{expense.expense_name} (#{number_to_currency(expense.expense_default_value, unit: expense.expense_currency)})
+    " }, value_method: :id %>
   </div>
 
   <h3>Impostos</h3>
