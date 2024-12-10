@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_10_163150) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_10_200352) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,6 +20,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_10_163150) do
     t.decimal "expense_default_value", precision: 10, scale: 2
     t.string "expense_currency", null: false
     t.string "expense_location", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ncm_codes", force: :cascade do |t|
+    t.string "code"
+    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

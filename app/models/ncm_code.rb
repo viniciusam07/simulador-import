@@ -1,0 +1,2 @@
+class NcmCode < ApplicationRecord
+end
