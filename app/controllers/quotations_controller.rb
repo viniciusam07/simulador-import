@@ -1,7 +1,9 @@
 class QuotationsController < ApplicationController
-  before_action :set_product
+  before_action :set_product, only: [:index]
   before_action :set_quotation, only: [:edit, :update, :destroy]
-
+  def index
+    @quotations = @product.quotations
+  end
   def new
     @quotation = @product.quotations.build
   end

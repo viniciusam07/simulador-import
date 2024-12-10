@@ -1,0 +1,35 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Fornecedor</th>
+      <th>Preço</th>
+      <th>Moeda</th>
+      <th>Validade</th>
+      <th>MOQ</th>
+      <th>Condições de Pagamento</th>
+      <th>Lead Time</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% quotations.each do |quotation| %>
+      <tr>
+        <td><%= quotation.supplier&.trade_name || "Fornecedor não especificado" %></td>
+        <td><%= number_to_currency(quotation.price, unit: quotation.currency) %></td>
+        <td><%= quotation.currency %></td>
+        <td><%= quotation.validity.present? ? quotation.validity.strftime('%d/%m/%Y') : "Não especificado" %></td>
+        <td><%= quotation.moq || "Não especificado" %></td>
+        <td><%= quotation.payment_terms || "Não especificado" %></td>
+        <td><%= quotation.lead_time.present? ? "#{quotation.lead_time} dias" : "Não especificado" %></td>
+        <td>
+          <% if quotation.id.present? && quotation.product.present? %>
+            <%= link_to 'Editar', edit_product_quotation_path(quotation.product, quotation), class: 'btn btn-sm btn-primary' %>
+            <%= link_to 'Excluir', product_quotation_path(quotation.product, quotation), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-sm btn-danger' %>
+          <% else %>
+            <span class="text-muted">Ação indisponível</span>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -34,48 +34,10 @@
 
 <hr>
 
-<!-- Cotações -->
+<!-- Renderiza o parcial de cotações -->
 <h2>Cotações</h2>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Fornecedor</th>
-      <th>Preço</th>
-      <th>Moeda</th>
-      <th>Validade</th>
-      <th>MOQ</th>
-      <th>Condições de Pagamento</th>
-      <th>Lead Time</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @product.quotations.each do |quotation| %>
-      <% if quotation.persisted? %>
-        <tr>
-          <td><%= quotation.supplier&.trade_name || "Fornecedor não cadastrado" %></td>
-          <td><%= number_to_currency(quotation.price, unit: quotation.currency) %></td>
-          <td><%= quotation.currency %></td>
-          <td><%= quotation.validity %></td>
-          <td><%= quotation.moq %></td>
-          <td><%= quotation.payment_terms %></td>
-          <td><%= quotation.lead_time.present? ? "#{quotation.lead_time} dias" : "Não especificado" %></td>
-          <td>
-            <%= link_to 'Editar', edit_product_quotation_path(@product, quotation), class: 'btn btn-sm btn-primary' %>
-            <%= link_to 'Excluir', product_quotation_path(@product, quotation), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-sm btn-danger' %>
-          </td>
-        </tr>
-      <% else %>
-        <tr>
-          <td colspan="8">Cotação incompleta ou não salva corretamente.</td>
-        </tr>
-      <% end %>
-    <% end %>
-  </tbody>
-</table>
+<%= render partial: "quotations/index", locals: { quotations: @product.quotations } %>
 
 <!-- Formulário para Nova Cotação -->
 <h3>Adicionar Nova Cotação</h3>
-
 <%= render 'quotations/form', product: @product, quotation: @quotation %>
