@@ -23,4 +23,10 @@ Rails.application.routes.draw do
   resources :products do
     resources :quotations, only: [:new, :create, :edit, :update, :destroy]
   end
+  # Rotas para NCMs
+  resources :ncm_codes, only: [] do
+    collection do
+      get :autocomplete, defaults: { format: :json }
+    end
+  end
 end

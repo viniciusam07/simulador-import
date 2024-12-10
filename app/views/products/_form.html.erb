@@ -7,8 +7,18 @@
     <%= form.input :hs_code, label: 'HS Code' %>
   </div>
 
-  <div class="form-group">
-    <%= form.input :ncm, label: 'NCM' %>
+  <div data-controller="ncm-autocomplete">
+    <div class="form-group">
+      <%= form.label :ncm, "NCM" %>
+      <%= form.text_field :ncm, id: "ncm-input", class: "form-control", data: { "ncm-autocomplete-target": "input", action: "input->ncm-autocomplete#search change->ncm-autocomplete#select" }, list: "ncm-suggestions" %>
+    </div>
+
+    <datalist id="ncm-suggestions" data-ncm-autocomplete-target="suggestions"></datalist>
+
+    <div class="form-group">
+      <label for="ncm-description">Descrição</label>
+      <input type="text" id="ncm-description" class="form-control" readonly data-ncm-autocomplete-target="description">
+    </div>
   </div>
 
   <div class="form-group">
