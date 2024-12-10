@@ -1,0 +1,31 @@
+<%= simple_form_for [@product, @quotation] do |form| %>
+  <div class="form-group">
+    <%= form.input :supplier_id, label: 'Fornecedor', collection: Supplier.all.map { |s| [s.trade_name, s.id] }, prompt: 'Selecione um fornecedor', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :price, label: 'Preço', required: true, step: 0.01 %>
+  </div>
+
+  <div class="field">
+    <%= form.input :currency, collection: ['USD', 'EUR', 'BRL'], prompt: 'Selecione a moeda' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :validity, as: :date, label: 'Validade', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :moq, label: 'Pedido Mínimo (MOQ)', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :payment_terms, label: 'Condições de Pagamento', collection: Quotation::PAYMENT_TERMS, prompt: 'Selecione uma condição de pagamento', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :lead_time, label: 'Tempo de Entrega (dias)', step: 1 %>
+  </div>
+
+  <%= form.button :submit, 'Salvar Cotação', class: 'btn btn-primary' %>
+<% end %>

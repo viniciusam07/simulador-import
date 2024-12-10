@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_05_210047) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_10_163150) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -35,6 +35,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_210047) do
     t.decimal "unit_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "quotations", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "supplier_id", null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
+    t.string "currency", null: false
+    t.date "validity", null: false
+    t.integer "moq", null: false
+    t.string "payment_terms", null: false
+    t.integer "lead_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_quotations_on_product_id"
+    t.index ["supplier_id"], name: "index_quotations_on_supplier_id"
   end
 
   create_table "simulation_expenses", force: :cascade do |t|
@@ -144,6 +159,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_210047) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "quotations", "products"
+  add_foreign_key "quotations", "suppliers"
   add_foreign_key "simulation_expenses", "expenses"
   add_foreign_key "simulation_expenses", "simulations"
   add_foreign_key "simulation_products", "products"

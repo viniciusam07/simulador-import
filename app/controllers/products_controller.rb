@@ -32,6 +32,11 @@ class ProductsController < ApplicationController
       render :edit
     end
   end
+  def show
+    @product = Product.find(params[:id])
+    @quotations = @product.quotations
+    @quotation = @product.quotations.build
+  end
 
   # Exclui um produto do banco
   def destroy
