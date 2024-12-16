@@ -28,6 +28,11 @@
     <%= form.input :modal, collection: ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal' %>
   </div>
 
+  <div class="alert alert-info">
+  O AFRMM (8% do frete internacional) será automaticamente adicionado caso o modal selecionado seja "Marítimo".
+  </div>
+
+
   <div class="field">
     <%= form.input :currency, collection: ['USD', 'EUR', 'BRL'], prompt: 'Selecione a moeda' %>
   </div>

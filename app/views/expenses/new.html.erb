@@ -25,6 +25,10 @@
   </div>
 
   <div>
+  <%= form.input :percentage, as: :decimal, label: "Percentual (%)", step: 0.01 %>
+  </div>
+
+  <div>
     <%= form.input :expense_currency, collection: ["BRL", "USD", "EUR"], label: "Moeda" %>
   </div>
 

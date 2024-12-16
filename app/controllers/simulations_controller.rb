@@ -8,28 +8,37 @@ class SimulationsController < ApplicationController
     @simulation.user_id = current_user.id
 
     if @simulation.save
-      # Associa despesas selecionadas
+      # Associa despesas selecionadas, evitando duplicação
       selected_expenses = Expense.where(id: params[:simulation][:expense_ids])
-
-      Rails.logger.debug "Expense IDs: #{params[:simulation][:expense_ids]}"
-
       selected_expenses.each do |expense|
-        unless @simulation.simulation_expenses.exists?(expense_id: expense.id)
-          @simulation.simulation_expenses.create!(
-            expense: expense,
-            expense_custom_name: expense.expense_name,
-            expense_custom_value: expense.expense_default_value,
-            expense_currency: expense.expense_currency,
-            expense_location: expense.expense_location
-          )
+        @simulation.simulation_expenses.find_or_create_by!(expense: expense) do |sim_expense|
+          sim_expense.expense_custom_name = expense.expense_name
+          sim_expense.expense_custom_value = expense.percentage ? (expense.percentage * @simulation.freight_cost / 100.0) : expense.expense_default_value
+          sim_expense.expense_currency = expense.expense_currency
+          sim_expense.expense_location = expense.expense_location
         end
       end
 
-      redirect_to root_path, notice: 'Simulação criada com sucesso.'
+      # Adiciona AFRMM automaticamente apenas se não existir
+      if @simulation.modal == 'Marítimo'
+        afrmm = Expense.find_by(expense_name: 'AFRMM')
+        if afrmm
+          @simulation.simulation_expenses.find_or_create_by!(expense: afrmm) do |sim_expense|
+            sim_expense.expense_custom_name = afrmm.expense_name
+            sim_expense.expense_custom_value = afrmm.percentage ? (afrmm.percentage * @simulation.freight_cost / 100.0) : afrmm.expense_default_value
+            sim_expense.expense_currency = afrmm.expense_currency
+            sim_expense.expense_location = afrmm.expense_location
+          end
+        end
+      end
+
+      redirect_to simulation_path(@simulation), notice: 'Simulação criada com sucesso.'
     else
       render :new, alert: 'Erro ao criar a simulação.'
     end
   end
+
+
 
   def index
     @simulations = Simulation.where(user_id: current_user.id)
