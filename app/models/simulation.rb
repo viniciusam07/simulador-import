@@ -79,6 +79,15 @@ class Simulation < ApplicationRecord
     customs_value_brl + total_taxes + total_operational_expenses
   end
 
+  # Calcula o valor total de impostos
+  def total_taxes
+    (tributo_ii || 0) +
+    (tributo_ipi || 0) +
+    (tributo_pis || 0) +
+    (tributo_cofins || 0) +
+    (tributo_icms || 0)
+  end
+
   private
 
   def set_customs_value
