@@ -196,6 +196,7 @@ GEM
     nokogiri (1.16.8-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
+    ostruct (0.6.1)
     pg (1.5.9)
     popper_js (2.11.8)
     psych (5.2.1)
@@ -334,6 +335,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   money
+  ostruct
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.1.5)

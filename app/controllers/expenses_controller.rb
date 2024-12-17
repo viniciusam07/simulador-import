@@ -17,7 +17,7 @@ class ExpensesController < ApplicationController
     if @expense.save
       redirect_to expenses_path, notice: "Despesa criada com sucesso."
     else
-      render :new
+      render :new, status: :unprocessable_entity, alert: "Erro ao criar uma despesa"
     end
   end
 
@@ -53,6 +53,15 @@ class ExpensesController < ApplicationController
 
   # Define os parâmetros permitidos para a criação ou atualização de uma despesa
   def expense_params
-    params.require(:expense).permit(:expense_name, :expense_description, :expense_default_value, :expense_currency, :expense_location)
+    params.require(:expense).permit(
+      :expense_name,
+      :expense_description,
+      :expense_default_value,
+      :expense_currency,
+      :expense_location,
+      :percentage,
+      :calculation_base,
+      :type_of_expense
+    )
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_16_143133) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_17_140138) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_16_143133) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "percentage"
+    t.string "type_of_expense"
+    t.string "calculation_base"
   end
 
   create_table "ncm_codes", force: :cascade do |t|
@@ -34,7 +36,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_16_143133) do
 
   create_table "products", force: :cascade do |t|
     t.string "product_name"
-    t.string "supplier_code"
     t.string "hs_code"
     t.string "ncm"
     t.string "unit_of_measure"
@@ -73,17 +74,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_16_143133) do
     t.index ["simulation_id"], name: "index_simulation_expenses_on_simulation_id"
   end
 
-  create_table "simulation_products", force: :cascade do |t|
-    t.bigint "simulation_id", null: false
-    t.bigint "product_id", null: false
-    t.integer "product_quantity"
-    t.decimal "custom_unit_price"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_simulation_products_on_product_id"
-    t.index ["simulation_id"], name: "index_simulation_products_on_simulation_id"
-  end
-
   create_table "simulation_taxes", force: :cascade do |t|
     t.bigint "simulation_id", null: false
     t.bigint "tax_id", null: false
@@ -118,17 +108,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_16_143133) do
     t.decimal "customs_value"
     t.decimal "exchange_rate"
     t.decimal "total_customs_value_brl"
-  end
-
-  create_table "supplier_contacts", force: :cascade do |t|
-    t.bigint "supplier_id", null: false
-    t.string "contact_name"
-    t.string "email"
-    t.string "phone"
-    t.string "role"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["supplier_id"], name: "index_supplier_contacts_on_supplier_id"
   end
 
   create_table "suppliers", force: :cascade do |t|
@@ -171,10 +150,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_16_143133) do
   add_foreign_key "quotations", "suppliers"
   add_foreign_key "simulation_expenses", "expenses"
   add_foreign_key "simulation_expenses", "simulations"
-  add_foreign_key "simulation_products", "products"
-  add_foreign_key "simulation_products", "simulations"
   add_foreign_key "simulation_taxes", "simulations"
   add_foreign_key "simulation_taxes", "taxes"
-  add_foreign_key "supplier_contacts", "suppliers"
   add_foreign_key "tax_rates", "taxes"
 end

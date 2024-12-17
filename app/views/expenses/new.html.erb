@@ -1,6 +1,6 @@
 <h1><%= @expense.new_record? ? "Nova Despesa" : "Editar Despesa" %></h1>
 
-<%= simple_form_for @expense do |form| %>
+<%= simple_form_for @expense, html: { data: { controller: "expense-form", action: "change->expense-form#updateFields" } } do |form| %>
   <% if @expense.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@expense.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
@@ -20,23 +20,31 @@
     <%= form.input :expense_description, label: "Descrição", as: :text %>
   </div>
 
+  <h3>Tipo de Despesa</h3>
   <div>
-    <%= form.input :expense_default_value, as: :decimal, label: "Valor Padrão", step: 0.01 %>
+    <label>
+      <%= form.radio_button :type_of_expense, 'fixed', data: { action: "change->expense-form#toggleFields" } %>
+      Valor Fixo
+    </label>
+    <label>
+      <%= form.radio_button :type_of_expense, 'percentage', data: { action: "change->expense-form#toggleFields" } %>
+      Percentual
+    </label>
   </div>
 
-  <div>
-  <%= form.input :percentage, as: :decimal, label: "Percentual (%)", step: 0.01 %>
-  </div>
-
-  <div>
+  <div id="fixed-expense-fields" data-expense-form-target="fixedFields" style="display: none;">
+    <%= form.input :expense_default_value, as: :decimal, label: "Valor Fixo (R$)", step: 0.01 %>
     <%= form.input :expense_currency, collection: ["BRL", "USD", "EUR"], label: "Moeda" %>
   </div>
 
-  <div>
-    <%= form.input :expense_location, collection: ["Origem", "Destino"], label: "Local de Cobrança" %>
+  <div id="percentage-expense-fields" data-expense-form-target="percentageFields" style="display: none;">
+    <%= form.input :percentage, as: :decimal, label: "Percentual (%)", step: 0.01 %>
+    <%= form.input :calculation_base, collection: [['Frete', 'freight_cost'], ['Valor Aduaneiro', 'customs_value'], ['Valor Total', 'total_value']], label: "Base de Cálculo", prompt: 'Selecione a base' %>
   </div>
 
-  <%= form.button :submit, @expense.new_record? ? "Criar" : "Atualizar" %>
+  <%= form.input :expense_location, collection: ["Origem", "Destino"], label: "Local de Cobrança" %>
+
+  <%= form.button :submit, @expense.new_record? ? "Criar" : "Atualizar", class: 'btn btn-primary' %>
 <% end %>
 
 <%= link_to 'Voltar', expenses_path, class: 'btn btn-secondary' %>
