@@ -53,10 +53,10 @@ class SimulationsController < ApplicationController
         sim_expense.expense_custom_value = sim_expense.calculate_custom_value
         sim_expense.expense_currency = expense.expense_currency
         sim_expense.expense_location = expense.expense_location
+        sim_expense.save!
       end
     end
   end
-
 
   def attach_afrmm_if_needed
     return unless @simulation.modal == 'Marítimo'

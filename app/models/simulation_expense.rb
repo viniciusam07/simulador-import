@@ -3,6 +3,11 @@ class SimulationExpense < ApplicationRecord
   belongs_to :expense, optional: true
 
   before_validation :set_defaults_from_expense, if: -> { expense.present? }
+  before_save :recalculate_custom_value, if: -> { expense.present? }
+
+  def recalculate_custom_value
+    self.expense_custom_value = calculate_custom_value
+  end
 
   def calculate_custom_value
     # Para despesas de valor fixo, converte o valor padrão para BRL
@@ -37,10 +42,9 @@ class SimulationExpense < ApplicationRecord
     end
   end
 
-
   def set_defaults_from_expense
     self.expense_custom_name ||= expense.expense_name
-    self.expense_custom_value ||= calculate_custom_value
+    self.expense_custom_value = calculate_custom_value
     self.expense_currency ||= expense.expense_currency
     self.expense_location ||= expense.expense_location
   end

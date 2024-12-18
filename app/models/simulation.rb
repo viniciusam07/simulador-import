@@ -112,5 +112,4 @@ class Simulation < ApplicationRecord
     self.tributo_cofins = aliquotas_cofins(aliquota_cofins)
     self.tributo_icms = aliquotas_icms(tributo_ii, tributo_ipi, tributo_pis, tributo_cofins, 0, 0, aliquota_icms)
   end
-
 end
