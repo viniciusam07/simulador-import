@@ -3,13 +3,16 @@
   <ul>
     <li><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
     <li><strong>Valor Total:</strong> <%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %></li>
+    <li><strong>Valor Total (BRL):</strong> <%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></li>
     <li><strong>Incoterm:</strong> <%= @simulation.incoterm %></li>
     <li><strong>Modal:</strong> <%= @simulation.modal %></li>
     <li><strong>Moeda:</strong> <%= @simulation.currency %></li>
     <li><strong>Valor Aduaneiro:</strong> <%= number_to_currency(@simulation.customs_value || 0, unit: @simulation.currency || '') %></li>
     <li><strong>Valor Aduaneiro (R$):</strong> <%= number_to_currency(@simulation.total_customs_value_brl || 0, unit: 'BRL') %></li>
     <li><strong>Custo do Frete:</strong> <%= number_to_currency(@simulation.freight_cost || 0, unit: @simulation.currency || '') %></li>
+    <li><strong>Custo do Frete (BRL):</strong> <%= number_to_currency(@simulation.freight_cost_brl, unit: 'BRL') %></li>
     <li><strong>Custo do Seguro:</strong> <%= number_to_currency(@simulation.insurance_cost || 0, unit: @simulation.currency || '') %></li>
+    <li><strong>Custo do Seguro (BRL):</strong> <%= number_to_currency(@simulation.insurance_cost_brl, unit: 'BRL') %></li>
     <li><strong>Taxa de Câmbio:</strong> <%= @simulation.exchange_rate %></li>
     <li><strong>Criada em:</strong> <%= @simulation.created_at.strftime("%d/%m/%Y") %></li>
   </ul>

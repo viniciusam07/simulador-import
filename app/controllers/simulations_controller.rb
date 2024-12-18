@@ -46,15 +46,17 @@ class SimulationsController < ApplicationController
 
   def attach_selected_expenses
     selected_expenses = Expense.where(id: params[:simulation][:expense_ids])
+
     selected_expenses.each do |expense|
       @simulation.simulation_expenses.find_or_create_by!(expense: expense) do |sim_expense|
         sim_expense.expense_custom_name = expense.expense_name
-        sim_expense.expense_custom_value = calculate_expense_value(expense)
+        sim_expense.expense_custom_value = sim_expense.calculate_custom_value
         sim_expense.expense_currency = expense.expense_currency
         sim_expense.expense_location = expense.expense_location
       end
     end
   end
+
 
   def attach_afrmm_if_needed
     return unless @simulation.modal == 'Marítimo'

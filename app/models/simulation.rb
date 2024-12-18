@@ -1,5 +1,5 @@
 class Simulation < ApplicationRecord
-  has_many :simulation_expenses
+  has_many :simulation_expenses, dependent: :destroy
   has_many :expenses, through: :simulation_expenses
 
   validates :origin_country, presence: true
@@ -10,7 +10,7 @@ class Simulation < ApplicationRecord
   validates :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms,
             numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
 
-  before_save :set_customs_value, :set_total_customs_value_brl, :calculate_taxes
+  before_save :set_customs_value, :set_total_customs_value_brl, :calculate_taxes, :set_converted_values
 
   def calculate_customs_value
     # Valor Aduaneiro = Produtos + Frete + Seguro em moeda estrangeira
@@ -23,6 +23,9 @@ class Simulation < ApplicationRecord
   end
 
   def convert_to_brl(amount, currency)
+    return 0 if amount.blank? || currency.blank? # Evita erros para valores nulos ou moedas ausentes
+    return amount if currency == 'BRL'
+
     bank = EuCentralBank.new
     bank.update_rates
     Money.default_bank = bank
@@ -89,11 +92,15 @@ class Simulation < ApplicationRecord
   end
 
   private
-
+  # Seta os valores convertidos em BRL antes de salvar
+  def set_converted_values
+    self.freight_cost_brl = convert_to_brl(freight_cost, currency)
+    self.insurance_cost_brl = convert_to_brl(insurance_cost, currency)
+    self.total_value_brl = convert_to_brl(total_value, currency)
+  end
   def set_customs_value
     self.customs_value = calculate_customs_value
   end
-
   def set_total_customs_value_brl
     self.total_customs_value_brl = calculate_customs_value_brl
   end

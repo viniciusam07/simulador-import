@@ -5,22 +5,38 @@ class SimulationExpense < ApplicationRecord
   before_validation :set_defaults_from_expense, if: -> { expense.present? }
 
   def calculate_custom_value
-    return expense.expense_default_value if expense.percentage.blank?
+    # Para despesas de valor fixo, converte o valor padrão para BRL
+    unless expense.percentage.present?
+      return simulation.convert_to_brl(expense.expense_default_value.to_f, expense.expense_currency)
+    end
 
-    base_value = case expense.calculation_base
-                 when 'freight_cost'
-                   simulation&.freight_cost.to_f
-                 when 'customs_value'
-                   simulation&.customs_value.to_f
-                 when 'total_value'
-                   simulation&.total_value.to_f
-                 else
-                   0
-                 end
-    base_value * (expense.percentage / 100.0)
+    # Define a base de cálculo para despesas percentuais
+    base_value = calculate_base_value(expense.calculation_base)
+
+    # Retorna 0 se a base de cálculo for inválida ou não definida
+    return 0 if base_value.nil?
+
+    # Calcula o valor percentual com base na base de cálculo e arredonda
+    (base_value * (expense.percentage / 100.0)).round(2)
   end
 
   private
+
+  def calculate_base_value(calculation_base)
+    case calculation_base
+    when 'freight_cost'
+      simulation.freight_cost_brl || simulation.convert_to_brl(simulation.freight_cost, simulation.currency)
+    when 'insurance_cost'
+      simulation.insurance_cost_brl || simulation.convert_to_brl(simulation.insurance_cost, simulation.currency)
+    when 'total_value'
+      simulation.total_value_brl || simulation.convert_to_brl(simulation.total_value, simulation.currency)
+    when 'customs_value'
+      simulation.total_customs_value_brl || simulation.convert_to_brl(simulation.customs_value, simulation.currency)
+    else
+      nil # Retorna nil se a base de cálculo não for reconhecida
+    end
+  end
+
 
   def set_defaults_from_expense
     self.expense_custom_name ||= expense.expense_name
