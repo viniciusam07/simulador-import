@@ -1,6 +1,10 @@
 class Simulation < ApplicationRecord
   has_many :simulation_expenses, dependent: :destroy
   has_many :expenses, through: :simulation_expenses
+  has_many :simulation_quotations, dependent: :destroy
+  has_many :quotations, through: :simulation_quotations
+
+  accepts_nested_attributes_for :simulation_quotations, allow_destroy: true
 
   validates :origin_country, presence: true
   validates :total_value, presence: true, numericality: { greater_than: 0 }

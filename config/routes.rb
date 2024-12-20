@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Rotas para Simulações
-  resources :simulations, only: [:index, :new, :create, :show]
+  resources :simulations, only: [:index, :new, :create, :show] do
+    resources :simulation_quotations, only: [:create, :destroy], shallow: true
+  end
   get 'exchange_rate', to: 'simulations#exchange_rate'
 
   # Rotas para Despesas
@@ -23,6 +25,7 @@ Rails.application.routes.draw do
   resources :products do
     resources :quotations, only: [:new, :create, :edit, :update, :destroy]
   end
+
   # Rotas para NCMs
   resources :ncm_codes, only: [] do
     collection do

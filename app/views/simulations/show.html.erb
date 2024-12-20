@@ -1,50 +1,74 @@
 <h1>Detalhes da Simulação</h1>
 
-  <ul>
-    <li><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
-    <li><strong>Valor Total:</strong> <%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %></li>
-    <li><strong>Valor Total (BRL):</strong> <%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></li>
-    <li><strong>Incoterm:</strong> <%= @simulation.incoterm %></li>
-    <li><strong>Modal:</strong> <%= @simulation.modal %></li>
-    <li><strong>Moeda:</strong> <%= @simulation.currency %></li>
-    <li><strong>Valor Aduaneiro:</strong> <%= number_to_currency(@simulation.customs_value || 0, unit: @simulation.currency || '') %></li>
-    <li><strong>Valor Aduaneiro (R$):</strong> <%= number_to_currency(@simulation.total_customs_value_brl || 0, unit: 'BRL') %></li>
-    <li><strong>Custo do Frete:</strong> <%= number_to_currency(@simulation.freight_cost || 0, unit: @simulation.currency || '') %></li>
-    <li><strong>Custo do Frete (BRL):</strong> <%= number_to_currency(@simulation.freight_cost_brl, unit: 'BRL') %></li>
-    <li><strong>Custo do Seguro:</strong> <%= number_to_currency(@simulation.insurance_cost || 0, unit: @simulation.currency || '') %></li>
-    <li><strong>Custo do Seguro (BRL):</strong> <%= number_to_currency(@simulation.insurance_cost_brl, unit: 'BRL') %></li>
-    <li><strong>Taxa de Câmbio:</strong> <%= @simulation.exchange_rate %></li>
-    <li><strong>Criada em:</strong> <%= @simulation.created_at.strftime("%d/%m/%Y") %></li>
-  </ul>
+<ul>
+  <li><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
+  <li><strong>Valor Total:</strong> <%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %></li>
+  <li><strong>Valor Total (BRL):</strong> <%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></li>
+  <li><strong>Incoterm:</strong> <%= @simulation.incoterm %></li>
+  <li><strong>Modal:</strong> <%= @simulation.modal %></li>
+  <li><strong>Moeda:</strong> <%= @simulation.currency %></li>
+  <li><strong>Valor Aduaneiro:</strong> <%= number_to_currency(@simulation.customs_value || 0, unit: @simulation.currency || '') %></li>
+  <li><strong>Valor Aduaneiro (R$):</strong> <%= number_to_currency(@simulation.total_customs_value_brl || 0, unit: 'BRL') %></li>
+  <li><strong>Custo do Frete:</strong> <%= number_to_currency(@simulation.freight_cost || 0, unit: @simulation.currency || '') %></li>
+  <li><strong>Custo do Frete (BRL):</strong> <%= number_to_currency(@simulation.freight_cost_brl, unit: 'BRL') %></li>
+  <li><strong>Custo do Seguro:</strong> <%= number_to_currency(@simulation.insurance_cost || 0, unit: @simulation.currency || '') %></li>
+  <li><strong>Custo do Seguro (BRL):</strong> <%= number_to_currency(@simulation.insurance_cost_brl, unit: 'BRL') %></li>
+  <li><strong>Taxa de Câmbio:</strong> <%= @simulation.exchange_rate %></li>
+  <li><strong>Criada em:</strong> <%= @simulation.created_at.strftime("%d/%m/%Y") %></li>
+</ul>
+
+<h2>Cotações</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Produto</th>
+      <th>NCM</th>
+      <th>Preço Unitário</th>
+      <th>Quantidade</th>
+      <th>Fornecedor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @simulation.simulation_quotations.each do |sq| %>
+      <tr>
+        <td><%= sq.quotation.product.product_name %></td>
+        <td><%= sq.quotation.product.ncm %></td>
+        <td><%= number_to_currency(sq.quotation.price, unit: sq.quotation.currency) %></td>
+        <td><%= sq.quantity %></td>
+        <td><%= sq.quotation.supplier.trade_name %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <h2>Impostos</h2>
-  <ul>
-    <li><strong>Imposto de Importação (II):</strong> <%= number_to_percentage(@simulation.aliquota_ii, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ii, unit: 'BRL') %></li>
-    <li><strong>Imposto sobre Produtos Industrializados (IPI):</strong> <%= number_to_percentage(@simulation.aliquota_ipi, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ipi, unit: 'BRL') %></li>
-    <li><strong>PIS-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_pis, precision: 2) %> - <%= number_to_currency(@simulation.tributo_pis, unit: 'BRL') %></li>
-    <li><strong>Cofins-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_cofins, precision: 2) %> - <%= number_to_currency(@simulation.tributo_cofins, unit: 'BRL') %></li>
-    <li><strong>ICMS:</strong> <%= number_to_percentage(@simulation.aliquota_icms, precision: 2) %> - <%= number_to_currency(@simulation.tributo_icms, unit: 'BRL') %></li>
-  </ul>
+<ul>
+  <li><strong>Imposto de Importação (II):</strong> <%= number_to_percentage(@simulation.aliquota_ii, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ii, unit: 'BRL') %></li>
+  <li><strong>Imposto sobre Produtos Industrializados (IPI):</strong> <%= number_to_percentage(@simulation.aliquota_ipi, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ipi, unit: 'BRL') %></li>
+  <li><strong>PIS-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_pis, precision: 2) %> - <%= number_to_currency(@simulation.tributo_pis, unit: 'BRL') %></li>
+  <li><strong>Cofins-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_cofins, precision: 2) %> - <%= number_to_currency(@simulation.tributo_cofins, unit: 'BRL') %></li>
+  <li><strong>ICMS:</strong> <%= number_to_percentage(@simulation.aliquota_icms, precision: 2) %> - <%= number_to_currency(@simulation.tributo_icms, unit: 'BRL') %></li>
+</ul>
 
 <h2>Despesas Operacionais</h2>
-  <ul>
-    <% @simulation.simulation_expenses.includes(:expense).uniq.each do |expense| %>
-      <li>
-        <strong>Nome:</strong> <%= expense.expense_custom_name %><br>
-        <strong>Valor:</strong> <%= number_to_currency(expense.expense_custom_value, unit: expense.expense_currency) %><br>
-        <strong>Localização:</strong> <%= expense.expense_location %>
-      </li>
-    <% end %>
-  </ul>
+<ul>
+  <% @simulation.simulation_expenses.includes(:expense).uniq.each do |expense| %>
+    <li>
+      <strong>Nome:</strong> <%= expense.expense_custom_name %><br>
+      <strong>Valor:</strong> <%= number_to_currency(expense.expense_custom_value, unit: expense.expense_currency) %><br>
+      <strong>Localização:</strong> <%= expense.expense_location %>
+    </li>
+  <% end %>
+</ul>
 
 <h2>Resumo da Importação</h2>
-  <ul>
-    <li><strong>Valor Total Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.customs_value_brl, unit: 'BRL') %></li>
-    <li><strong>Valor Total Aduaneiro (<%= @simulation.currency %>):</strong> <%= number_to_currency(@simulation.customs_value, unit: @simulation.currency) %></li>
-    <li><strong>Valor Total Impostos:</strong> <%= number_to_currency(@simulation.total_taxes, unit: 'BRL') %></li>
-    <li><strong>Valor Total de Despesas Operacionais:</strong> <%= number_to_currency(@simulation.total_operational_expenses, unit: 'BRL') %></li>
-    <li><strong>Valor Total Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %></li>
-  </ul>
+<ul>
+  <li><strong>Valor Total Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.customs_value_brl, unit: 'BRL') %></li>
+  <li><strong>Valor Total Aduaneiro (<%= @simulation.currency %>):</strong> <%= number_to_currency(@simulation.customs_value, unit: @simulation.currency) %></li>
+  <li><strong>Valor Total Impostos:</strong> <%= number_to_currency(@simulation.total_taxes, unit: 'BRL') %></li>
+  <li><strong>Valor Total de Despesas Operacionais:</strong> <%= number_to_currency(@simulation.total_operational_expenses, unit: 'BRL') %></li>
+  <li><strong>Valor Total Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %></li>
+</ul>
 
 <div class="btn-group" role="group" aria-label="Opções">
   <%= link_to 'Despesas Operacionais', expenses_path, class: 'btn btn-secondary' %>

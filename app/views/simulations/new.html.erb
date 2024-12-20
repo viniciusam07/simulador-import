@@ -1,7 +1,6 @@
 <h1>Nova Simulação</h1>
 
-<%= simple_form_for(@simulation) do |form| %>
-  <% if @simulation.errors.any? %>
+<%= simple_form_for(@simulation, remote: true) do |form| %>  <% if @simulation.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@simulation.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
       <ul>
@@ -43,6 +42,25 @@
 
   <div class="field">
     <%= form.input :insurance_cost, as: :decimal, label: 'Custo do Seguro Internacional', placeholder: 'Digite o custo do seguro' %>
+  </div>
+
+  <!-- Campos relacionados à cotação -->
+  <h3>Cotações</h3>
+  <div data-controller="quotations">
+    <div data-quotations-target="list">
+      <% @simulation.simulation_quotations.each do |sq| %>
+        <div data-quotations-target="item">
+          <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
+            <%= sq_form.hidden_field :id %>
+            <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name, prompt: "Selecione uma cotação" %>
+            <%= sq_form.number_field :quantity, placeholder: "Digite a quantidade" %>
+            <%= sq_form.hidden_field :_destroy, value: false %>
+            <%= link_to "Remover", "#", class: "btn btn-danger btn-sm", data: { action: "click->quotations#remove" } %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <button type="button" class="btn btn-primary" data-action="click->quotations#add">Adicionar Cotação</button>
   </div>
 
   <!-- Estrutura User-Friendly para Despesas -->

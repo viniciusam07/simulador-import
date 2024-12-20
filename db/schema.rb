@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_18_145125) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_20_140850) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -84,6 +84,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_18_145125) do
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_simulation_products_on_product_id"
     t.index ["simulation_id"], name: "index_simulation_products_on_simulation_id"
+  end
+
+  create_table "simulation_quotations", force: :cascade do |t|
+    t.bigint "simulation_id", null: false
+    t.bigint "quotation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "quantity"
+    t.index ["quotation_id"], name: "index_simulation_quotations_on_quotation_id"
+    t.index ["simulation_id"], name: "index_simulation_quotations_on_simulation_id"
   end
 
   create_table "simulation_taxes", force: :cascade do |t|
@@ -178,6 +188,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_18_145125) do
   add_foreign_key "simulation_expenses", "simulations"
   add_foreign_key "simulation_products", "products"
   add_foreign_key "simulation_products", "simulations"
+  add_foreign_key "simulation_quotations", "quotations"
+  add_foreign_key "simulation_quotations", "simulations"
   add_foreign_key "simulation_taxes", "simulations"
   add_foreign_key "simulation_taxes", "taxes"
   add_foreign_key "supplier_contacts", "suppliers"

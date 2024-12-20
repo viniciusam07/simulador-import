@@ -1,6 +1,7 @@
 class SimulationsController < ApplicationController
   def new
     @simulation = Simulation.new
+    @simulation.simulation_quotations.build # Permite criar associações diretamente
   end
 
   def create
@@ -9,11 +10,29 @@ class SimulationsController < ApplicationController
 
     if @simulation.save
       attach_selected_expenses
+      attach_selected_quotations
       attach_afrmm_if_needed
 
       redirect_to simulation_path(@simulation), notice: 'Simulação criada com sucesso.'
     else
-      render :new, alert: 'Erro ao criar a simulação.'
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    @simulation = Simulation.find(params[:id])
+    @simulation.simulation_quotations.build if @simulation.simulation_quotations.empty?
+  end
+
+  def update
+    @simulation = Simulation.find(params[:id])
+
+    if @simulation.update(simulation_params)
+      attach_selected_expenses
+      attach_selected_quotations
+      redirect_to simulation_path(@simulation), notice: 'Simulação atualizada com sucesso.'
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -22,7 +41,7 @@ class SimulationsController < ApplicationController
   end
 
   def show
-    @simulation = Simulation.find(params[:id])
+    @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
   end
 
   def exchange_rate
@@ -40,7 +59,8 @@ class SimulationsController < ApplicationController
       :origin_country, :total_value, :incoterm, :modal, :currency, :exchange_rate,
       :freight_cost, :insurance_cost, :aliquota_ii, :tributo_ii, :aliquota_ipi, :tributo_ipi,
       :aliquota_pis, :tributo_pis, :aliquota_cofins, :tributo_cofins, :aliquota_icms, :tributo_icms,
-      expense_ids: []
+      expense_ids: [],
+      simulation_quotations_attributes: [:id, :quotation_id, :quantity, :_destroy]
     )
   end
 
@@ -54,6 +74,25 @@ class SimulationsController < ApplicationController
         sim_expense.expense_currency = expense.expense_currency
         sim_expense.expense_location = expense.expense_location
         sim_expense.save!
+      end
+    end
+  end
+
+  def attach_selected_quotations
+    selected_quotations = params.dig(:simulation, :simulation_quotations_attributes)
+
+    return if selected_quotations.blank? # Retorna se não houver cotações
+
+    selected_quotations.each do |quotation_params|
+      next if quotation_params[:_destroy] == "true"
+
+      begin
+        quotation = Quotation.find(quotation_params[:quotation_id])
+        @simulation.simulation_quotations.find_or_initialize_by(quotation: quotation).update!(
+          quantity: quotation_params[:quantity]
+        )
+      rescue ActiveRecord::RecordNotFound
+        Rails.logger.warn "Quotation não encontrada: #{quotation_params[:quotation_id]}"
       end
     end
   end

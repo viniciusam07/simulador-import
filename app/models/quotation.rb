@@ -12,4 +12,8 @@ class Quotation < ApplicationRecord
     "Carta de crédito (L/C)",
     "Pagamento à vista (T/T)"
   ]
+
+  def display_name
+    "#{product.product_name} - #{supplier.trade_name} - #{price} #{currency}"
+  end
 end
