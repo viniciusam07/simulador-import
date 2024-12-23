@@ -14,15 +14,20 @@ class Simulation < ApplicationRecord
   validates :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms,
             numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
 
-  before_save :set_customs_value, :set_total_customs_value_brl, :calculate_taxes, :set_converted_values
+  before_save :calculate_total_value, :set_customs_value, :set_total_customs_value_brl, :calculate_taxes, :set_converted_values
 
+  # Calcula o total_value baseado nas simulation_quotations
+  def calculate_total_value
+    self.total_value = simulation_quotations.sum(&:total_value)
+  end
+
+  # Valor Aduaneiro = Produtos + Frete + Seguro em moeda estrangeira
   def calculate_customs_value
-    # Valor Aduaneiro = Produtos + Frete + Seguro em moeda estrangeira
     total_value.to_f + freight_cost.to_f + insurance_cost.to_f
   end
 
+  # Valor Aduaneiro em BRL = Produtos + Frete + Seguro convertidos para BRL
   def calculate_customs_value_brl
-    # Valor Aduaneiro em BRL = Produtos + Frete + Seguro convertidos para BRL
     convert_to_brl(total_value, currency) + convert_to_brl(freight_cost, currency) + convert_to_brl(insurance_cost, currency)
   end
 

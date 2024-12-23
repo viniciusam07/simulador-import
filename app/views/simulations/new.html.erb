@@ -1,6 +1,7 @@
 <h1>Nova Simulação</h1>
 
-<%= simple_form_for(@simulation, remote: true) do |form| %>  <% if @simulation.errors.any? %>
+<%= simple_form_for(@simulation, remote: true) do |form| %>
+  <% if @simulation.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@simulation.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
       <ul>
@@ -11,177 +12,197 @@
     </div>
   <% end %>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.input :origin_country, as: :country, label: 'País de Origem', priority_countries: ['BR', 'US', 'GB'], prompt: 'Selecione o país de origem' %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.input :total_value, as: :decimal, label: 'Valor Total da Importação', placeholder: 'Digite o valor total' %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.input :incoterm, collection: ['EXW', 'FCA', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP', 'FAS', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.input :modal, collection: ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal' %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.input :currency, collection: ['USD', 'EUR', 'BRL'], prompt: 'Selecione a moeda' %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.input :exchange_rate, as: :decimal, label: 'Taxa de Câmbio', placeholder: 'Digite a taxa de câmbio' %>
-    <button type="button" onclick="fetchExchangeRate()">Carregar Cotação</button>
+    <button type="button" class="btn btn-secondary mt-2" onclick="fetchExchangeRate()">Carregar Cotação</button>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.input :freight_cost, as: :decimal, label: 'Custo do Frete Internacional', placeholder: 'Digite o custo do frete' %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.input :insurance_cost, as: :decimal, label: 'Custo do Seguro Internacional', placeholder: 'Digite o custo do seguro' %>
   </div>
 
   <!-- Campos relacionados à cotação -->
   <h3>Cotações</h3>
-<div data-controller="quotations">
-  <div data-quotations-target="list">
-    <% @simulation.simulation_quotations.each do |sq| %>
-      <div data-quotations-target="item">
-        <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
-          <div class="row">
-            <div class="col-md-3">
-              <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name, prompt: "Selecione uma cotação", class: "form-control" %>
+  <div data-controller="quotations">
+    <div data-quotations-target="list">
+      <% @simulation.simulation_quotations.each do |sq| %>
+        <div data-quotations-target="item">
+          <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
+            <div class="row">
+              <!-- Campo para selecionar a cotação -->
+              <div class="col-md-4">
+                <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name,
+                      { prompt: "Selecione uma cotação" },
+                      { class: "form-control", data: { action: "change->quotations#loadUnitPrice" } } %>
+              </div>
+
+              <!-- Campo para a quantidade -->
+              <div class="col-md-2">
+                <%= sq_form.number_field :quantity, placeholder: "Quantidade", class: "form-control",
+                      data: { action: "input->quotations#updateTotal" } %>
+              </div>
+
+              <!-- Campo para preço unitário (custom_price) -->
+              <div class="col-md-2">
+                <%= sq_form.number_field :custom_price, placeholder: "Preço Unitário", class: "form-control",
+                      data: { action: "input->quotations#updateTotal" } %>
+              </div>
+
+              <!-- Campo para valor total (calculado automaticamente) -->
+              <div class="col-md-2">
+                <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control", readonly: true %>
+              </div>
+
+              <!-- Botão de remover cotação -->
+              <div class="col-md-2">
+                <%= sq_form.hidden_field :_destroy, value: false %>
+                <button type="button" class="btn btn-danger btn-sm" data-action="click->quotations#remove">Remover</button>
+              </div>
             </div>
-            <div class="col-md-2">
-              <%= sq_form.number_field :quantity, placeholder: "Quantidade", class: "form-control" %>
-            </div>
-            <div class="col-md-2">
-              <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control" %>
-            </div>
-            <div class="col-md-2">
-              <%= sq_form.hidden_field :_destroy, value: false %>
-              <button type="button" class="btn btn-danger btn-sm" data-action="click->quotations#remove">Remover</button>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
+          <% end %>
+        </div>
+      <% end %>
   </div>
+
+  <!-- Botão para adicionar novas cotações -->
   <button type="button" class="btn btn-primary btn-sm" data-action="click->quotations#add">Adicionar Cotação</button>
 </div>
-
   <!-- Estrutura User-Friendly para Despesas -->
-    <h3>Despesas Operacionais</h3>
-      <div class="expenses-table">
-        <table class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th>Selecionar</th>
-              <th>Nome</th>
-              <th>Tipo</th>
-              <th>Valor Padrão</th>
-              <th>Percentual</th>
-              <th>Base de Cálculo</th>
-              <th>Moeda</th>
-              <th>Local</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% Expense.all.each do |expense| %>
-              <tr>
-                <td>
-                  <%= form.check_box :expense_ids, { multiple: true }, expense.id, nil %>
-                </td>
-                <td><%= expense.expense_name %></td>
-                <td><%= expense.percentage.present? ? "Percentual" : "Fixo" %></td>
-                <td>
-                  <% if expense.expense_default_value.present? %>
-                    <%= number_to_currency(expense.expense_default_value, unit: expense.expense_currency) %>
-                  <% else %>
-                    -
-                  <% end %>
-                </td>
-                <td>
-                  <% if expense.percentage.present? %>
-                    <%= number_to_percentage(expense.percentage, precision: 2) %>
-                  <% else %>
-                    -
-                  <% end %>
-                </td>
-                <td>
-                  <%= expense.calculation_base.present? ? expense.calculation_base.humanize : '-' %>
-                </td>
-                <td><%= expense.expense_currency %></td>
-                <td><%= expense.expense_location %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+  <h3>Despesas Operacionais</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Selecionar</th>
+          <th>Nome</th>
+          <th>Tipo</th>
+          <th>Valor Padrão</th>
+          <th>Percentual</th>
+          <th>Base de Cálculo</th>
+          <th>Moeda</th>
+          <th>Local</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% Expense.all.each do |expense| %>
+          <tr>
+            <td>
+              <%= form.check_box :expense_ids, { multiple: true }, expense.id, nil %>
+            </td>
+            <td><%= expense.expense_name %></td>
+            <td><%= expense.percentage.present? ? "Percentual" : "Fixo" %></td>
+            <td>
+              <% if expense.expense_default_value.present? %>
+                <%= number_to_currency(expense.expense_default_value, unit: expense.expense_currency) %>
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td>
+              <% if expense.percentage.present? %>
+                <%= number_to_percentage(expense.percentage, precision: 2) %>
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td>
+              <%= expense.calculation_base.present? ? expense.calculation_base.humanize : '-' %>
+            </td>
+            <td><%= expense.expense_currency %></td>
+            <td><%= expense.expense_location %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
   <h3>Impostos</h3>
-  <div class="taxes-section">
-    <div class="row">
-      <div class="col">
-        <%= form.label :aliquota_ii, "Alíquota II (%)" %>
-        <%= form.number_field :aliquota_ii, step: 0.01 %>
-      </div>
-      <div class="col">
-        <%= form.label :tributo_ii, "Tributo II (R$)" %>
-        <%= form.number_field :tributo_ii, step: 0.01, readonly: true %>
-      </div>
+  <div class="row">
+    <div class="col-md-4">
+      <%= form.label :aliquota_ii, "Alíquota II (%)" %>
+      <%= form.number_field :aliquota_ii, step: 0.01, class: "form-control" %>
     </div>
-    <div class="row">
-      <div class="col">
-        <%= form.label :aliquota_ipi, "Alíquota IPI (%)" %>
-        <%= form.number_field :aliquota_ipi, step: 0.01 %>
-      </div>
-      <div class="col">
-        <%= form.label :tributo_ipi, "Tributo IPI (R$)" %>
-        <%= form.number_field :tributo_ipi, step: 0.01, readonly: true %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <%= form.label :aliquota_pis, "Alíquota PIS (%)" %>
-        <%= form.number_field :aliquota_pis, step: 0.01 %>
-      </div>
-      <div class="col">
-        <%= form.label :tributo_pis, "Tributo PIS (R$)" %>
-        <%= form.number_field :tributo_pis, step: 0.01, readonly: true %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <%= form.label :aliquota_cofins, "Alíquota COFINS (%)" %>
-        <%= form.number_field :aliquota_cofins, step: 0.01 %>
-      </div>
-      <div class="col">
-        <%= form.label :tributo_cofins, "Tributo COFINS (R$)" %>
-        <%= form.number_field :tributo_cofins, step: 0.01, readonly: true %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <%= form.label :aliquota_icms, "Alíquota ICMS (%)" %>
-        <%= form.number_field :aliquota_icms, step: 0.01 %>
-      </div>
-      <div class="col">
-        <%= form.label :tributo_icms, "Tributo ICMS (R$)" %>
-        <%= form.number_field :tributo_icms, step: 0.01, readonly: true %>
-      </div>
+    <div class="col-md-4">
+      <%= form.label :tributo_ii, "Tributo II (R$)" %>
+      <%= form.number_field :tributo_ii, step: 0.01, readonly: true, class: "form-control" %>
     </div>
   </div>
 
-  <div class="actions">
-    <%= form.button :submit, 'Criar Simulação' %>
+  <div class="row mt-3">
+    <div class="col-md-4">
+      <%= form.label :aliquota_ipi, "Alíquota IPI (%)" %>
+      <%= form.number_field :aliquota_ipi, step: 0.01, class: "form-control" %>
+    </div>
+    <div class="col-md-4">
+      <%= form.label :tributo_ipi, "Tributo IPI (R$)" %>
+      <%= form.number_field :tributo_ipi, step: 0.01, readonly: true, class: "form-control" %>
+    </div>
   </div>
-<% end %>
 
-<%= link_to 'Voltar', root_path, class: 'btn btn-secondary' %>
+  <div class="row mt-3">
+    <div class="col-md-4">
+      <%= form.label :aliquota_pis, "Alíquota PIS (%)" %>
+      <%= form.number_field :aliquota_pis, step: 0.01, class: "form-control" %>
+    </div>
+    <div class="col-md-4">
+      <%= form.label :tributo_pis, "Tributo PIS (R$)" %>
+      <%= form.number_field :tributo_pis, step: 0.01, readonly: true, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-4">
+      <%= form.label :aliquota_cofins, "Alíquota COFINS (%)" %>
+      <%= form.number_field :aliquota_cofins, step: 0.01, class: "form-control" %>
+    </div>
+    <div class="col-md-4">
+      <%= form.label :tributo_cofins, "Tributo COFINS (R$)" %>
+      <%= form.number_field :tributo_cofins, step: 0.01, readonly: true, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-4">
+      <%= form.label :aliquota_icms, "Alíquota ICMS (%)" %>
+      <%= form.number_field :aliquota_icms, step: 0.01, class: "form-control" %>
+    </div>
+    <div class="col-md-4">
+      <%= form.label :tributo_icms, "Tributo ICMS (R$)" %>
+      <%= form.number_field :tributo_icms, step: 0.01, readonly: true, class: "form-control" %>
+    </div>
+  </div>
+
+
+  <div class="actions mt-4">
+    <%= form.button :submit, 'Criar Simulação', class: 'btn btn-success' %>
+  </div>
+  <% end %>
+
+<%= link_to 'Voltar', root_path, class: 'btn btn-secondary mt-3' %>
 
 <script>
   async function fetchExchangeRate() {
@@ -190,7 +211,7 @@
       try {
         const response = await fetch(`/exchange_rate?currency=${currency}`);
         const data = await response.json();
-        document.querySelector('#simulation_exchange_rate').value = data.rate;
+        document.querySelector('#simulation_exchange_rate').value = data.rate.toFixed(2);
       } catch (error) {
         alert('Erro ao carregar a cotação. Por favor, tente novamente.');
       }

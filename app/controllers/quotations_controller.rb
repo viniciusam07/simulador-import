@@ -20,6 +20,11 @@ class QuotationsController < ApplicationController
     end
   end
 
+  def show
+    quotation = Quotation.find(params[:id])
+    render json: { id: quotation.id, price: quotation.price, currency: quotation.currency }
+  end
+
   def edit; end
 
   def update
@@ -33,6 +38,16 @@ class QuotationsController < ApplicationController
   def destroy
     @quotation.destroy
     redirect_to @product, notice: "Cotação removida com sucesso."
+  end
+
+  def unit_price
+    quotation = Quotation.find_by(id: params[:id])
+
+    if quotation
+      render json: { unit_price: quotation.price }
+    else
+      render json: { error: "Cotação não encontrada" }, status: :not_found
+    end
   end
 
   private

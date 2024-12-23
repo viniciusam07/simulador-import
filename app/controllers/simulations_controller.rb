@@ -13,6 +13,8 @@ class SimulationsController < ApplicationController
       attach_selected_quotations
       attach_afrmm_if_needed
 
+      @simulation.calculate_total_value # Recalcula o total_value
+      @simulation.save
       redirect_to simulation_path(@simulation), notice: 'Simulação criada com sucesso.'
     else
       render :new, status: :unprocessable_entity
@@ -30,6 +32,9 @@ class SimulationsController < ApplicationController
     if @simulation.update(simulation_params)
       attach_selected_expenses
       attach_selected_quotations
+
+      @simulation.calculate_total_value # Recalcula o total_value
+      @simulation.save
       redirect_to simulation_path(@simulation), notice: 'Simulação atualizada com sucesso.'
     else
       render :edit, status: :unprocessable_entity
@@ -60,7 +65,7 @@ class SimulationsController < ApplicationController
       :freight_cost, :insurance_cost, :aliquota_ii, :tributo_ii, :aliquota_ipi, :tributo_ipi,
       :aliquota_pis, :tributo_pis, :aliquota_cofins, :tributo_cofins, :aliquota_icms, :tributo_icms,
       expense_ids: [],
-      simulation_quotations_attributes: [:id, :quotation_id, :quantity, :total_value, :_destroy]
+      simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :_destroy]
     )
   end
 

@@ -2,8 +2,8 @@
 
 <ul>
   <li><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
-  <li><strong>Valor Total:</strong> <%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %></li>
-  <li><strong>Valor Total (BRL):</strong> <%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></li>
+  <li><strong>Valor Total (Produtos):</strong> <%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %></li>
+  <li><strong>Valor Total Produtos (BRL):</strong> <%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></li>
   <li><strong>Incoterm:</strong> <%= @simulation.incoterm %></li>
   <li><strong>Modal:</strong> <%= @simulation.modal %></li>
   <li><strong>Moeda:</strong> <%= @simulation.currency %></li>

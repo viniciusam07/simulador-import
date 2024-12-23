@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   # Configuração de autenticação
   devise_for :users
 
@@ -23,8 +22,15 @@ Rails.application.routes.draw do
 
   # Rotas para Produtos
   resources :products do
-    resources :quotations, only: [:new, :create, :edit, :update, :destroy]
+    resources :quotations, only: [:new, :create, :edit, :update, :destroy] do
+      member do
+        get :unit_price # Adicionado para carregar preço unitário
+      end
+    end
   end
+
+  # Rotas para Cotações
+  resources :quotations, only: [:show] # Adicionado para carregar cotação via JSON
 
   # Rotas para NCMs
   resources :ncm_codes, only: [] do
