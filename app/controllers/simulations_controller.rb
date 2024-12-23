@@ -48,7 +48,7 @@ class SimulationsController < ApplicationController
     currency = params[:currency]
     bank = EuCentralBank.new
     bank.update_rates
-    rate = bank.exchange(100, currency, 'BRL').to_f / 100
+    rate = bank.exchange(100, currency, 'BRL').to_f
     render json: { rate: rate }
   end
 

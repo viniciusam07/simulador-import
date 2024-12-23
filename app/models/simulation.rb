@@ -26,15 +26,14 @@ class Simulation < ApplicationRecord
     convert_to_brl(total_value, currency) + convert_to_brl(freight_cost, currency) + convert_to_brl(insurance_cost, currency)
   end
 
+  # Atualização do método convert_to_brl
   def convert_to_brl(amount, currency)
-    return 0 if amount.blank? || currency.blank? # Evita erros para valores nulos ou moedas ausentes
+    return 0 if amount.blank? || currency.blank?
     return amount if currency == 'BRL'
 
-    bank = EuCentralBank.new
-    bank.update_rates
-    Money.default_bank = bank
-    money = Money.new(amount * 100, currency) # Money gem works with cents
-    money.exchange_to('BRL').to_f
+    # Utiliza a taxa de câmbio do usuário se disponível
+    exchange_rate_value = exchange_rate.presence || fetch_exchange_rate(currency)
+    amount.to_f * exchange_rate_value.to_f
   end
 
   def customs_value_brl
@@ -115,5 +114,21 @@ class Simulation < ApplicationRecord
     self.tributo_pis = aliquotas_pis(aliquota_pis)
     self.tributo_cofins = aliquotas_cofins(aliquota_cofins)
     self.tributo_icms = aliquotas_icms(tributo_ii, tributo_ipi, tributo_pis, tributo_cofins, 0, 0, aliquota_icms)
+  end
+
+  # Método para buscar a taxa de câmbio do Money Gem, caso necessário
+  def fetch_exchange_rate(currency)
+    bank = EuCentralBank.new
+    bank.update_rates
+    Money.default_bank = bank
+    money = Money.new(amount * 100, currency) # Money gem works com centavos
+    money.exchange_to('BRL').to_f
+  end
+
+  # Atualizar valores convertidos com base na lógica acima
+  def set_converted_values
+    self.freight_cost_brl = convert_to_brl(freight_cost, currency)
+    self.insurance_cost_brl = convert_to_brl(insurance_cost, currency)
+    self.total_value_brl = convert_to_brl(total_value, currency)
   end
 end
