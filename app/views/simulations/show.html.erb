@@ -25,6 +25,7 @@
       <th>NCM</th>
       <th>Preço Unitário</th>
       <th>Quantidade</th>
+      <th>Valor Total</th>
       <th>Fornecedor</th>
     </tr>
   </thead>
@@ -35,6 +36,7 @@
         <td><%= sq.quotation.product.ncm %></td>
         <td><%= number_to_currency(sq.quotation.price, unit: sq.quotation.currency) %></td>
         <td><%= sq.quantity %></td>
+        <td><%= number_to_currency(sq.total_value, unit: sq.quotation.currency) %></td>
         <td><%= sq.quotation.supplier.trade_name %></td>
       </tr>
     <% end %>

@@ -46,22 +46,32 @@
 
   <!-- Campos relacionados à cotação -->
   <h3>Cotações</h3>
-  <div data-controller="quotations">
-    <div data-quotations-target="list">
-      <% @simulation.simulation_quotations.each do |sq| %>
-        <div data-quotations-target="item">
-          <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
-            <%= sq_form.hidden_field :id %>
-            <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name, prompt: "Selecione uma cotação" %>
-            <%= sq_form.number_field :quantity, placeholder: "Digite a quantidade" %>
-            <%= sq_form.hidden_field :_destroy, value: false %>
-            <%= link_to "Remover", "#", class: "btn btn-danger btn-sm", data: { action: "click->quotations#remove" } %>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-    <button type="button" class="btn btn-primary" data-action="click->quotations#add">Adicionar Cotação</button>
+<div data-controller="quotations">
+  <div data-quotations-target="list">
+    <% @simulation.simulation_quotations.each do |sq| %>
+      <div data-quotations-target="item">
+        <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
+          <div class="row">
+            <div class="col-md-3">
+              <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name, prompt: "Selecione uma cotação", class: "form-control" %>
+            </div>
+            <div class="col-md-2">
+              <%= sq_form.number_field :quantity, placeholder: "Quantidade", class: "form-control" %>
+            </div>
+            <div class="col-md-2">
+              <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control" %>
+            </div>
+            <div class="col-md-2">
+              <%= sq_form.hidden_field :_destroy, value: false %>
+              <button type="button" class="btn btn-danger btn-sm" data-action="click->quotations#remove">Remover</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   </div>
+  <button type="button" class="btn btn-primary btn-sm" data-action="click->quotations#add">Adicionar Cotação</button>
+</div>
 
   <!-- Estrutura User-Friendly para Despesas -->
     <h3>Despesas Operacionais</h3>

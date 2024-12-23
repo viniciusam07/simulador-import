@@ -60,7 +60,7 @@ class SimulationsController < ApplicationController
       :freight_cost, :insurance_cost, :aliquota_ii, :tributo_ii, :aliquota_ipi, :tributo_ipi,
       :aliquota_pis, :tributo_pis, :aliquota_cofins, :tributo_cofins, :aliquota_icms, :tributo_icms,
       expense_ids: [],
-      simulation_quotations_attributes: [:id, :quotation_id, :quantity, :_destroy]
+      simulation_quotations_attributes: [:id, :quotation_id, :quantity, :total_value, :_destroy]
     )
   end
 
