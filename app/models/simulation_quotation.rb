@@ -6,6 +6,9 @@ class SimulationQuotation < ApplicationRecord
   validates :quotation_id, uniqueness: { scope: :simulation_id, message: "já está adicionada à simulação" }
   validates :quantity, numericality: { greater_than_or_equal_to: 0 }
   validates :custom_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms,
+            numericality: { greater_than_or_equal_to: 0, allow_nil: true }
+
 
   # Callbacks
   before_save :set_default_custom_price

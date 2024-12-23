@@ -77,6 +77,23 @@
                 <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control", readonly: true %>
               </div>
 
+              <!-- Alíquotas -->
+              <div class="col-md-1">
+                <%= sq_form.number_field :aliquota_ii, step: 0.01, placeholder: "II (%)", class: "form-control" %>
+              </div>
+              <div class="col-md-1">
+                <%= sq_form.number_field :aliquota_ipi, step: 0.01, placeholder: "IPI (%)", class: "form-control" %>
+              </div>
+              <div class="col-md-1">
+                <%= sq_form.number_field :aliquota_pis, step: 0.01, placeholder: "PIS (%)", class: "form-control" %>
+              </div>
+              <div class="col-md-1">
+                <%= sq_form.number_field :aliquota_cofins, step: 0.01, placeholder: "COFINS (%)", class: "form-control" %>
+              </div>
+              <div class="col-md-1">
+                <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
+              </div>
+
               <!-- Botão de remover cotação -->
               <div class="col-md-2">
                 <%= sq_form.hidden_field :_destroy, value: false %>

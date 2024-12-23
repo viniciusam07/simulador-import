@@ -27,6 +27,11 @@
       <th>Quantidade</th>
       <th>Valor Total</th>
       <th>Fornecedor</th>
+      <th>II (%)</th>
+      <th>IPI (%)</th>
+      <th>PIS (%)</th>
+      <th>COFINS (%)</th>
+      <th>ICMS (%)</th>
     </tr>
   </thead>
   <tbody>
@@ -38,6 +43,11 @@
         <td><%= sq.quantity %></td>
         <td><%= number_to_currency(sq.total_value, unit: sq.quotation.currency) %></td>
         <td><%= sq.quotation.supplier.trade_name %></td>
+        <td><%= number_to_percentage(sq.aliquota_ii, precision: 2) %></td>
+        <td><%= number_to_percentage(sq.aliquota_ipi, precision: 2) %></td>
+        <td><%= number_to_percentage(sq.aliquota_pis, precision: 2) %></td>
+        <td><%= number_to_percentage(sq.aliquota_cofins, precision: 2) %></td>
+        <td><%= number_to_percentage(sq.aliquota_icms, precision: 2) %></td>
       </tr>
     <% end %>
   </tbody>
