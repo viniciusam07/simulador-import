@@ -61,9 +61,8 @@ class SimulationsController < ApplicationController
 
   def simulation_params
     params.require(:simulation).permit(
-      :origin_country, :total_value, :incoterm, :modal, :currency, :exchange_rate,
-      :freight_cost, :insurance_cost, :aliquota_ii, :tributo_ii, :aliquota_ipi, :tributo_ipi,
-      :aliquota_pis, :tributo_pis, :aliquota_cofins, :tributo_cofins, :aliquota_icms, :tributo_icms,
+      :origin_country, :incoterm, :modal, :currency, :exchange_rate,
+      :freight_cost, :insurance_cost,
       expense_ids: [],
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
     )

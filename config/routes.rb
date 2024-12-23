@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Rotas para Simulações
-  resources :simulations, only: [:index, :new, :create, :show] do
+  resources :simulations, only: [:index, :new, :create, :show, :edit] do
     resources :simulation_quotations, only: [:create, :destroy], shallow: true
   end
   get 'exchange_rate', to: 'simulations#exchange_rate'

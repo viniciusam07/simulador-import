@@ -17,10 +17,6 @@
   </div>
 
   <div class="form-group">
-    <%= form.input :total_value, as: :decimal, label: 'Valor Total da Importação', placeholder: 'Digite o valor total' %>
-  </div>
-
-  <div class="form-group">
     <%= form.input :incoterm, collection: ['EXW', 'FCA', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP', 'FAS', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
   </div>
 
@@ -156,63 +152,6 @@
       </tbody>
     </table>
   </div>
-
-  <h3>Impostos</h3>
-  <div class="row">
-    <div class="col-md-4">
-      <%= form.label :aliquota_ii, "Alíquota II (%)" %>
-      <%= form.number_field :aliquota_ii, step: 0.01, class: "form-control" %>
-    </div>
-    <div class="col-md-4">
-      <%= form.label :tributo_ii, "Tributo II (R$)" %>
-      <%= form.number_field :tributo_ii, step: 0.01, readonly: true, class: "form-control" %>
-    </div>
-  </div>
-
-  <div class="row mt-3">
-    <div class="col-md-4">
-      <%= form.label :aliquota_ipi, "Alíquota IPI (%)" %>
-      <%= form.number_field :aliquota_ipi, step: 0.01, class: "form-control" %>
-    </div>
-    <div class="col-md-4">
-      <%= form.label :tributo_ipi, "Tributo IPI (R$)" %>
-      <%= form.number_field :tributo_ipi, step: 0.01, readonly: true, class: "form-control" %>
-    </div>
-  </div>
-
-  <div class="row mt-3">
-    <div class="col-md-4">
-      <%= form.label :aliquota_pis, "Alíquota PIS (%)" %>
-      <%= form.number_field :aliquota_pis, step: 0.01, class: "form-control" %>
-    </div>
-    <div class="col-md-4">
-      <%= form.label :tributo_pis, "Tributo PIS (R$)" %>
-      <%= form.number_field :tributo_pis, step: 0.01, readonly: true, class: "form-control" %>
-    </div>
-  </div>
-
-  <div class="row mt-3">
-    <div class="col-md-4">
-      <%= form.label :aliquota_cofins, "Alíquota COFINS (%)" %>
-      <%= form.number_field :aliquota_cofins, step: 0.01, class: "form-control" %>
-    </div>
-    <div class="col-md-4">
-      <%= form.label :tributo_cofins, "Tributo COFINS (R$)" %>
-      <%= form.number_field :tributo_cofins, step: 0.01, readonly: true, class: "form-control" %>
-    </div>
-  </div>
-
-  <div class="row mt-3">
-    <div class="col-md-4">
-      <%= form.label :aliquota_icms, "Alíquota ICMS (%)" %>
-      <%= form.number_field :aliquota_icms, step: 0.01, class: "form-control" %>
-    </div>
-    <div class="col-md-4">
-      <%= form.label :tributo_icms, "Tributo ICMS (R$)" %>
-      <%= form.number_field :tributo_icms, step: 0.01, readonly: true, class: "form-control" %>
-    </div>
-  </div>
-
 
   <div class="actions mt-4">
     <%= form.button :submit, 'Criar Simulação', class: 'btn btn-success' %>

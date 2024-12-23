@@ -28,10 +28,15 @@
       <th>Valor Total</th>
       <th>Fornecedor</th>
       <th>II (%)</th>
+      <th>II (R$)</th>
       <th>IPI (%)</th>
+      <th>IPI (R$)</th>
       <th>PIS (%)</th>
+      <th>PIS (R$)</th>
       <th>COFINS (%)</th>
+      <th>COFINS (R$)</th>
       <th>ICMS (%)</th>
+      <th>ICMS (R$)</th>
     </tr>
   </thead>
   <tbody>
@@ -39,27 +44,32 @@
       <tr>
         <td><%= sq.quotation.product.product_name %></td>
         <td><%= sq.quotation.product.ncm %></td>
-        <td><%= number_to_currency(sq.quotation.price, unit: sq.quotation.currency) %></td>
+        <td><%= number_to_currency(sq.custom_price || sq.quotation.price, unit: sq.quotation.currency) %></td>
         <td><%= sq.quantity %></td>
         <td><%= number_to_currency(sq.total_value, unit: sq.quotation.currency) %></td>
         <td><%= sq.quotation.supplier.trade_name %></td>
-        <td><%= number_to_percentage(sq.aliquota_ii, precision: 2) %></td>
-        <td><%= number_to_percentage(sq.aliquota_ipi, precision: 2) %></td>
-        <td><%= number_to_percentage(sq.aliquota_pis, precision: 2) %></td>
-        <td><%= number_to_percentage(sq.aliquota_cofins, precision: 2) %></td>
-        <td><%= number_to_percentage(sq.aliquota_icms, precision: 2) %></td>
+        <td><%= number_to_percentage(sq.aliquota_ii || 0, precision: 2) %></td>
+        <td><%= number_to_currency(sq.tributo_ii || 0, unit: 'BRL') %></td>
+        <td><%= number_to_percentage(sq.aliquota_ipi || 0, precision: 2) %></td>
+        <td><%= number_to_currency(sq.tributo_ipi || 0, unit: 'BRL') %></td>
+        <td><%= number_to_percentage(sq.aliquota_pis || 0, precision: 2) %></td>
+        <td><%= number_to_currency(sq.tributo_pis || 0, unit: 'BRL') %></td>
+        <td><%= number_to_percentage(sq.aliquota_cofins || 0, precision: 2) %></td>
+        <td><%= number_to_currency(sq.tributo_cofins || 0, unit: 'BRL') %></td>
+        <td><%= number_to_percentage(sq.aliquota_icms || 0, precision: 2) %></td>
+        <td><%= number_to_currency(sq.tributo_icms || 0, unit: 'BRL') %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<h2>Impostos</h2>
+<h2>Resumo de Impostos Totais</h2>
 <ul>
-  <li><strong>Imposto de Importação (II):</strong> <%= number_to_percentage(@simulation.aliquota_ii, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ii, unit: 'BRL') %></li>
-  <li><strong>Imposto sobre Produtos Industrializados (IPI):</strong> <%= number_to_percentage(@simulation.aliquota_ipi, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ipi, unit: 'BRL') %></li>
-  <li><strong>PIS-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_pis, precision: 2) %> - <%= number_to_currency(@simulation.tributo_pis, unit: 'BRL') %></li>
-  <li><strong>Cofins-Importação:</strong> <%= number_to_percentage(@simulation.aliquota_cofins, precision: 2) %> - <%= number_to_currency(@simulation.tributo_cofins, unit: 'BRL') %></li>
-  <li><strong>ICMS:</strong> <%= number_to_percentage(@simulation.aliquota_icms, precision: 2) %> - <%= number_to_currency(@simulation.tributo_icms, unit: 'BRL') %></li>
+  <li><strong>Imposto de Importação (II):</strong> <%= number_to_percentage(@simulation.tributo_ii / @simulation.total_customs_value_brl * 100, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ii, unit: 'BRL') %></li>
+  <li><strong>Imposto sobre Produtos Industrializados (IPI):</strong> <%= number_to_percentage(@simulation.tributo_ipi / @simulation.total_customs_value_brl * 100, precision: 2) %> - <%= number_to_currency(@simulation.tributo_ipi, unit: 'BRL') %></li>
+  <li><strong>PIS-Importação:</strong> <%= number_to_percentage(@simulation.tributo_pis / @simulation.total_customs_value_brl * 100, precision: 2) %> - <%= number_to_currency(@simulation.tributo_pis, unit: 'BRL') %></li>
+  <li><strong>Cofins-Importação:</strong> <%= number_to_percentage(@simulation.tributo_cofins / @simulation.total_customs_value_brl * 100, precision: 2) %> - <%= number_to_currency(@simulation.tributo_cofins, unit: 'BRL') %></li>
+  <li><strong>ICMS:</strong> <%= number_to_percentage(@simulation.tributo_icms / @simulation.total_customs_value_brl * 100, precision: 2) %> - <%= number_to_currency(@simulation.tributo_icms, unit: 'BRL') %></li>
 </ul>
 
 <h2>Despesas Operacionais</h2>
@@ -75,14 +85,13 @@
 
 <h2>Resumo da Importação</h2>
 <ul>
-  <li><strong>Valor Total Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.customs_value_brl, unit: 'BRL') %></li>
-  <li><strong>Valor Total Aduaneiro (<%= @simulation.currency %>):</strong> <%= number_to_currency(@simulation.customs_value, unit: @simulation.currency) %></li>
-  <li><strong>Valor Total Impostos:</strong> <%= number_to_currency(@simulation.total_taxes, unit: 'BRL') %></li>
+  <li><strong>Valor Total Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.total_customs_value_brl, unit: 'BRL') %></li>  <li><strong>Valor Total Aduaneiro (<%= @simulation.currency %>):</strong> <%= number_to_currency(@simulation.customs_value, unit: @simulation.currency) %></li>
+  <li><strong>Valor Total de Impostos:</strong> <%= number_to_currency(@simulation.total_taxes, unit: 'BRL') %></li>
   <li><strong>Valor Total de Despesas Operacionais:</strong> <%= number_to_currency(@simulation.total_operational_expenses, unit: 'BRL') %></li>
-  <li><strong>Valor Total Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %></li>
+  <li><strong>Valor Total da Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %></li>
 </ul>
 
 <div class="btn-group" role="group" aria-label="Opções">
-  <%= link_to 'Despesas Operacionais', expenses_path, class: 'btn btn-secondary' %>
+  <%= link_to 'Editar Simulação', edit_simulation_path(@simulation), class: 'btn btn-primary' %>
   <%= link_to 'Voltar', simulations_path, class: 'btn btn-secondary' %>
 </div>
