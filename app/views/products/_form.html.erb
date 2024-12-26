@@ -1,41 +1,75 @@
 <%= simple_form_for @product do |form| %>
-  <div class="form-group">
-    <%= form.input :product_name, label: 'Nome do Produto', required: true %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :hs_code, label: 'HS Code' %>
-  </div>
-
-  <div data-controller="ncm-autocomplete">
-    <div class="form-group">
-      <%= form.label :ncm, "NCM" %>
-      <%= form.text_field :ncm, id: "ncm-input", class: "form-control", data: { "ncm-autocomplete-target": "input", action: "input->ncm-autocomplete#search change->ncm-autocomplete#select" }, list: "ncm-suggestions" %>
+  <div class="container">
+    <!-- Informações Gerais -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-info-circle"></i> Informações Gerais
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :product_name, label: 'Nome do Produto', required: true, input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :hs_code, label: 'HS Code', input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <datalist id="ncm-suggestions" data-ncm-autocomplete-target="suggestions"></datalist>
+    <!-- Informações de NCM -->
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">
+        <i class="fas fa-barcode"></i> Informações de NCM
+      </div>
+      <div class="card-body">
+        <div data-controller="ncm-autocomplete">
+          <div class="form-group mb-3">
+            <%= form.label :ncm, "NCM" %>
+            <%= form.text_field :ncm, id: "ncm-input", class: "form-control",
+              data: { "ncm-autocomplete-target": "input",
+                      action: "input->ncm-autocomplete#search change->ncm-autocomplete#select" },
+              list: "ncm-suggestions" %>
+          </div>
+          <datalist id="ncm-suggestions" data-ncm-autocomplete-target="suggestions"></datalist>
 
-    <div class="form-group">
-      <label for="ncm-description">Descrição</label>
-      <input type="text" id="ncm-description" class="form-control" readonly data-ncm-autocomplete-target="description">
+          <div class="form-group">
+            <label for="ncm-description">Descrição</label>
+            <input type="text" id="ncm-description" class="form-control" readonly
+              data-ncm-autocomplete-target="description">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalhes de Medida e Preço -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-weight"></i> Detalhes de Medida e Preço
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :unit_of_measure, label: 'Unidade de Medida', required: true, input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :quantity_per_box, label: 'Quantidade por Caixa Master', input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <%= form.input :unit_net_weight, label: 'Peso Líquido por Unidade (kg)', required: true, step: 0.001, input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :unit_price, label: 'Preço Unitário', required: true, step: 0.01, input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botão de Ação -->
+    <div class="text-center">
+      <%= form.button :submit, 'Salvar Produto', class: 'btn btn-primary' %>
     </div>
   </div>
-
-  <div class="form-group">
-    <%= form.input :unit_of_measure, label: 'Unidade de Medida', required: true %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :quantity_per_box, label: 'Quantidade por Caixa Master' %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :unit_net_weight, label: 'Peso Líquido por Unidade (kg)', required: true, step: 0.001 %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :unit_price, label: 'Preço Unitário', required: true, step: 0.01 %>
-  </div>
-
-  <%= form.button :submit, 'Salvar Produto', class: 'btn btn-primary' %>
 <% end %>

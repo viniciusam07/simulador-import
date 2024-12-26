@@ -1,15 +1,42 @@
 <%= simple_form_for @supplier do |form| %>
-  <div class="form-group">
-    <%= form.input :corporate_name, label: 'Razão Social', required: true %>
-  </div>
+  <div class="container">
+    <!-- Informações Básicas -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-building"></i> Informações do Fornecedor
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :corporate_name,
+                label: 'Razão Social',
+                required: true,
+                input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :trade_name,
+                label: 'Nome Fantasia',
+                required: true,
+                input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <%= form.input :country,
+                label: 'País',
+                required: true,
+                as: :country,
+                priority_countries: ['BR', 'US', 'CN'],
+                prompt: 'Selecione um país',
+                input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <div class="form-group">
-    <%= form.input :trade_name, label: 'Nome Fantasia', required: true %>
+    <!-- Botão de Ação -->
+    <div class="text-center">
+      <%= form.button :submit, 'Salvar Fornecedor', class: 'btn btn-primary' %>
+    </div>
   </div>
-
-  <div class="form-group">
-    <%= form.input :country, label: 'País', required: true %>
-  </div>
-
-  <%= form.button :submit, 'Salvar Fornecedor', class: 'btn btn-primary' %>
 <% end %>

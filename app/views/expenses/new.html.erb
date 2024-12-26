@@ -1,50 +1,113 @@
-<h1><%= @expense.new_record? ? "Nova Despesa" : "Editar Despesa" %></h1>
+<div class="container">
+  <h1 class="mb-4"><%= @expense.new_record? ? "Nova Despesa" : "Editar Despesa" %></h1>
 
-<%= simple_form_for @expense, html: { data: { controller: "expense-form", action: "change->expense-form#updateFields" } } do |form| %>
-  <% if @expense.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@expense.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
-      <ul>
-        <% @expense.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+  <%= simple_form_for @expense, html: { data: { controller: "expense-form", action: "change->expense-form#updateFields" } } do |form| %>
+    <% if @expense.errors.any? %>
+      <div id="error_explanation" class="alert alert-danger">
+        <h2><%= pluralize(@expense.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
+        <ul>
+          <% @expense.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Informações Básicas -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-info-circle"></i> Informações Básicas
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :expense_name, label: "Nome", required: true, input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :expense_description, label: "Descrição", as: :text, input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tipo de Despesa -->
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">
+        <i class="fas fa-money-check-alt"></i> Tipo de Despesa
+      </div>
+      <div class="card-body">
+        <h3 class="mb-3">Escolha o Tipo de Despesa</h3>
+        <div class="form-check form-check-inline">
+          <label class="form-check-label">
+            <%= form.radio_button :type_of_expense, 'fixed', class: 'form-check-input', data: { action: "change->expense-form#toggleFields" } %>
+            Valor Fixo
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <label class="form-check-label">
+            <%= form.radio_button :type_of_expense, 'percentage', class: 'form-check-input', data: { action: "change->expense-form#toggleFields" } %>
+            Percentual
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos para Valor Fixo -->
+    <div class="card mb-4" id="fixed-expense-fields" data-expense-form-target="fixedFields" style="display: none;">
+      <div class="card-header bg-info text-white">
+        <i class="fas fa-coins"></i> Valor Fixo
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :expense_default_value, as: :decimal, label: "Valor Fixo (R$)", step: 0.01, input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :expense_currency, collection: ["BRL", "USD", "EUR"], label: "Moeda", prompt: 'Selecione a moeda', input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos para Percentual -->
+    <div class="card mb-4" id="percentage-expense-fields" data-expense-form-target="percentageFields" style="display: none;">
+      <div class="card-header bg-warning text-white">
+        <i class="fas fa-percentage"></i> Percentual
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :percentage, as: :decimal, label: "Percentual (%)", step: 0.01, input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :calculation_base,
+                collection: [['Frete', 'freight_cost'], ['Valor Aduaneiro', 'customs_value'], ['Valor Total', 'total_value']],
+                label: "Base de Cálculo",
+                prompt: 'Selecione a base',
+                input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Local de Cobrança -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-map-marker-alt"></i> Local de Cobrança
+      </div>
+      <div class="card-body">
+        <%= form.input :expense_location,
+            collection: ["Origem", "Destino"],
+            label: "Local de Cobrança",
+            prompt: 'Selecione o local',
+            input_html: { class: 'form-control' } %>
+      </div>
+    </div>
+
+    <!-- Botões -->
+    <div class="text-center mt-4">
+      <%= form.button :submit, @expense.new_record? ? "Criar" : "Atualizar", class: 'btn btn-primary me-3' %>
+      <%= link_to 'Voltar', expenses_path, class: 'btn btn-secondary' %>
     </div>
   <% end %>
-
-  <div>
-    <%= form.input :expense_name, label: "Nome" %>
-  </div>
-
-  <div>
-    <%= form.input :expense_description, label: "Descrição", as: :text %>
-  </div>
-
-  <h3>Tipo de Despesa</h3>
-  <div>
-    <label>
-      <%= form.radio_button :type_of_expense, 'fixed', data: { action: "change->expense-form#toggleFields" } %>
-      Valor Fixo
-    </label>
-    <label>
-      <%= form.radio_button :type_of_expense, 'percentage', data: { action: "change->expense-form#toggleFields" } %>
-      Percentual
-    </label>
-  </div>
-
-  <div id="fixed-expense-fields" data-expense-form-target="fixedFields" style="display: none;">
-    <%= form.input :expense_default_value, as: :decimal, label: "Valor Fixo (R$)", step: 0.01 %>
-    <%= form.input :expense_currency, collection: ["BRL", "USD", "EUR"], label: "Moeda" %>
-  </div>
-
-  <div id="percentage-expense-fields" data-expense-form-target="percentageFields" style="display: none;">
-    <%= form.input :percentage, as: :decimal, label: "Percentual (%)", step: 0.01 %>
-    <%= form.input :calculation_base, collection: [['Frete', 'freight_cost'], ['Valor Aduaneiro', 'customs_value'], ['Valor Total', 'total_value']], label: "Base de Cálculo", prompt: 'Selecione a base' %>
-  </div>
-
-  <%= form.input :expense_location, collection: ["Origem", "Destino"], label: "Local de Cobrança" %>
-
-  <%= form.button :submit, @expense.new_record? ? "Criar" : "Atualizar", class: 'btn btn-primary' %>
-<% end %>
-
-<%= link_to 'Voltar', expenses_path, class: 'btn btn-secondary' %>
+</div>
