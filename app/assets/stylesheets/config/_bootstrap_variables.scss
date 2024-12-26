@@ -4,25 +4,25 @@
 // 2. These variables are defined with default value (see https://robots.thoughtbot.com/sass-default)
 // 3. You can override them below!
 
+// Bootstrap Variables - Atualizado para Mazzu.ai
+
 // General style
 $font-family-sans-serif: $body-font;
-$headings-font-family:   $headers-font;
-$body-bg:                $light-gray;
-$font-size-base:         1rem;
+$headings-font-family: "Space Mono", $headers-font;
+$body-bg: #ffffff; // Background branco
+$font-size-base: 1rem; // Base de 16px ajustável
 
 // Colors
-$body-color: $gray;
-$primary:    $blue;
-$success:    $green;
-$info:       $yellow;
-$danger:     $red;
-$warning:    $orange;
+$body-color: $main; // Cor principal (preto #1a1a1a)
+$primary: $aux1; // Cor auxiliar 1 (vermelho #ff5857)
+$success: $green; // Verde (já definido)
+$info: $aux2; // Cor auxiliar 2 (laranja #f09819)
+$danger: $red; // Vermelho
+$warning: $yellow; // Amarelo
 
 // Buttons & inputs' radius
-$border-radius-sm:            .0625rem;
-$border-radius:               .125rem;
-$border-radius-lg:            .25rem;
-$border-radius-xl:            .5rem;
-$border-radius-xxl:           1rem;
-
-// Override other variables below!
+$border-radius-sm: 0.125rem; // Pequeno
+$border-radius: 0.25rem; // Médio
+$border-radius-lg: 0.5rem; // Grande
+$border-radius-xl: 1rem; // Extra grande
+$border-radius-xxl: 2rem; // Ultra grande
