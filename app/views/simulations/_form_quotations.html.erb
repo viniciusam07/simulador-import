@@ -1,0 +1,63 @@
+<p>Gerencie as cotações relacionadas à simulação.</p>
+
+<div data-controller="quotations">
+  <div data-quotations-target="list">
+    <% @simulation.simulation_quotations.each do |sq| %>
+      <div data-quotations-target="item">
+        <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
+          <div class="row">
+            <!-- Seleção de Cotação -->
+            <div class="col-md-4">
+              <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name,
+                    { prompt: "Selecione uma cotação" },
+                    { class: "form-control", data: { action: "change->quotations#loadUnitPrice" } } %>
+            </div>
+
+            <!-- Quantidade -->
+            <div class="col-md-2">
+              <%= sq_form.number_field :quantity, placeholder: "Quantidade", class: "form-control",
+                    data: { action: "input->quotations#updateTotal" } %>
+            </div>
+
+            <!-- Preço Unitário -->
+            <div class="col-md-2">
+              <%= sq_form.number_field :custom_price, placeholder: "Preço Unitário", class: "form-control",
+                    data: { action: "input->quotations#updateTotal" } %>
+            </div>
+
+            <!-- Valor Total -->
+            <div class="col-md-2">
+              <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control", readonly: true %>
+            </div>
+
+            <!-- Impostos -->
+            <div class="col-md-1">
+              <%= sq_form.number_field :aliquota_ii, step: 0.01, placeholder: "II (%)", class: "form-control" %>
+            </div>
+            <div class="col-md-1">
+              <%= sq_form.number_field :aliquota_ipi, step: 0.01, placeholder: "IPI (%)", class: "form-control" %>
+            </div>
+            <div class="col-md-1">
+              <%= sq_form.number_field :aliquota_pis, step: 0.01, placeholder: "PIS (%)", class: "form-control" %>
+            </div>
+            <div class="col-md-1">
+              <%= sq_form.number_field :aliquota_cofins, step: 0.01, placeholder: "COFINS (%)", class: "form-control" %>
+            </div>
+            <div class="col-md-1">
+              <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
+            </div>
+
+            <!-- Remover Cotação -->
+            <div class="col-md-2">
+              <%= sq_form.hidden_field :_destroy, value: false %>
+              <button type="button" class="btn btn-danger btn-sm" data-action="click->quotations#remove">Remover</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Botão para Adicionar Novas Cotações -->
+  <button type="button" class="btn btn-primary btn-sm" data-action="click->quotations#add">Adicionar Cotação</button>
+</div>

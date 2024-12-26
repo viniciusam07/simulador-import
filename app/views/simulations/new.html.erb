@@ -1,178 +1,40 @@
-<h1>Nova Simulação</h1>
+<%= simple_form_for @simulation do |form| %>
+  <div class="container py-4">
+    <h1 class="mb-4">Nova Simulação</h1>
+      <!-- Dados Iniciais -->
+      <div class="section mb-5">
+        <h2 class="section-title">Dados Iniciais</h2>
+        <%= render 'simulations/form_initial_data', form: form %>
+      </div>
 
-<%= simple_form_for(@simulation, remote: true) do |form| %>
-  <% if @simulation.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@simulation.errors.count, "erro") %> proibiu este registro de ser salvo:</h2>
-      <ul>
-        <% @simulation.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+      <!-- Cotações -->
+      <div class="section mb-5">
+        <h2 class="section-title">Cotações</h2>
+        <%= render 'simulations/form_quotations', form: form %>
+      </div>
 
-  <div class="form-group">
-    <%= form.input :origin_country, as: :country, label: 'País de Origem', priority_countries: ['BR', 'US', 'GB'], prompt: 'Selecione o país de origem' %>
+      <!-- Despesas -->
+      <div class="section mb-5">
+        <h2 class="section-title">Despesas</h2>
+        <%= render 'simulations/form_expenses', form: form %>
+      </div>
+
+      <!-- Financeiro (Placeholder) -->
+      <div class="section mb-5">
+        <h2 class="section-title">Financeiro</h2>
+        <p class="text-muted">Campos financeiros serão adicionados futuramente.</p>
+      </div>
+
+      <!-- Observações (Placeholder) -->
+      <div class="section mb-5">
+        <h2 class="section-title">Observações</h2>
+        <p class="text-muted">Adicione observações ou notas relevantes aqui.</p>
+      </div>
+
+      <!-- Botões de Ação -->
+      <div class="actions text-center mt-5">
+        <%= link_to 'Cancelar', simulations_path, class: 'btn btn-secondary me-3' %>
+        <%= form.button :submit, 'Salvar Simulação', class: 'btn btn-primary' %>
+      </div>
   </div>
-
-  <div class="form-group">
-    <%= form.input :incoterm, collection: ['EXW', 'FCA', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP', 'FAS', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :modal, collection: ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal' %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :currency, collection: ['USD', 'EUR', 'BRL'], prompt: 'Selecione a moeda' %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :exchange_rate, as: :decimal, label: 'Taxa de Câmbio', placeholder: 'Digite a taxa de câmbio' %>
-    <button type="button" class="btn btn-secondary mt-2" onclick="fetchExchangeRate()">Carregar Cotação</button>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :freight_cost, as: :decimal, label: 'Custo do Frete Internacional', placeholder: 'Digite o custo do frete' %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :insurance_cost, as: :decimal, label: 'Custo do Seguro Internacional', placeholder: 'Digite o custo do seguro' %>
-  </div>
-
-  <!-- Campos relacionados à cotação -->
-  <h3>Cotações</h3>
-  <div data-controller="quotations">
-    <div data-quotations-target="list">
-      <% @simulation.simulation_quotations.each do |sq| %>
-        <div data-quotations-target="item">
-          <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
-            <div class="row">
-              <!-- Campo para selecionar a cotação -->
-              <div class="col-md-4">
-                <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name,
-                      { prompt: "Selecione uma cotação" },
-                      { class: "form-control", data: { action: "change->quotations#loadUnitPrice" } } %>
-              </div>
-
-              <!-- Campo para a quantidade -->
-              <div class="col-md-2">
-                <%= sq_form.number_field :quantity, placeholder: "Quantidade", class: "form-control",
-                      data: { action: "input->quotations#updateTotal" } %>
-              </div>
-
-              <!-- Campo para preço unitário (custom_price) -->
-              <div class="col-md-2">
-                <%= sq_form.number_field :custom_price, placeholder: "Preço Unitário", class: "form-control",
-                      data: { action: "input->quotations#updateTotal" } %>
-              </div>
-
-              <!-- Campo para valor total (calculado automaticamente) -->
-              <div class="col-md-2">
-                <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control", readonly: true %>
-              </div>
-
-              <!-- Alíquotas -->
-              <div class="col-md-1">
-                <%= sq_form.number_field :aliquota_ii, step: 0.01, placeholder: "II (%)", class: "form-control" %>
-              </div>
-              <div class="col-md-1">
-                <%= sq_form.number_field :aliquota_ipi, step: 0.01, placeholder: "IPI (%)", class: "form-control" %>
-              </div>
-              <div class="col-md-1">
-                <%= sq_form.number_field :aliquota_pis, step: 0.01, placeholder: "PIS (%)", class: "form-control" %>
-              </div>
-              <div class="col-md-1">
-                <%= sq_form.number_field :aliquota_cofins, step: 0.01, placeholder: "COFINS (%)", class: "form-control" %>
-              </div>
-              <div class="col-md-1">
-                <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
-              </div>
-
-              <!-- Botão de remover cotação -->
-              <div class="col-md-2">
-                <%= sq_form.hidden_field :_destroy, value: false %>
-                <button type="button" class="btn btn-danger btn-sm" data-action="click->quotations#remove">Remover</button>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-  </div>
-
-  <!-- Botão para adicionar novas cotações -->
-  <button type="button" class="btn btn-primary btn-sm" data-action="click->quotations#add">Adicionar Cotação</button>
-</div>
-  <!-- Estrutura User-Friendly para Despesas -->
-  <h3>Despesas Operacionais</h3>
-  <div class="table-responsive">
-    <table class="table table-striped table-bordered">
-      <thead>
-        <tr>
-          <th>Selecionar</th>
-          <th>Nome</th>
-          <th>Tipo</th>
-          <th>Valor Padrão</th>
-          <th>Percentual</th>
-          <th>Base de Cálculo</th>
-          <th>Moeda</th>
-          <th>Local</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% Expense.all.each do |expense| %>
-          <tr>
-            <td>
-              <%= form.check_box :expense_ids, { multiple: true }, expense.id, nil %>
-            </td>
-            <td><%= expense.expense_name %></td>
-            <td><%= expense.percentage.present? ? "Percentual" : "Fixo" %></td>
-            <td>
-              <% if expense.expense_default_value.present? %>
-                <%= number_to_currency(expense.expense_default_value, unit: expense.expense_currency) %>
-              <% else %>
-                -
-              <% end %>
-            </td>
-            <td>
-              <% if expense.percentage.present? %>
-                <%= number_to_percentage(expense.percentage, precision: 2) %>
-              <% else %>
-                -
-              <% end %>
-            </td>
-            <td>
-              <%= expense.calculation_base.present? ? expense.calculation_base.humanize : '-' %>
-            </td>
-            <td><%= expense.expense_currency %></td>
-            <td><%= expense.expense_location %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="actions mt-4">
-    <%= form.button :submit, 'Criar Simulação', class: 'btn btn-success' %>
-  </div>
-  <% end %>
-
-<%= link_to 'Voltar', root_path, class: 'btn btn-secondary mt-3' %>
-
-<script>
-  async function fetchExchangeRate() {
-    const currency = document.querySelector('#simulation_currency').value;
-    if (currency) {
-      try {
-        const response = await fetch(`/exchange_rate?currency=${currency}`);
-        const data = await response.json();
-        document.querySelector('#simulation_exchange_rate').value = data.rate.toFixed(2);
-      } catch (error) {
-        alert('Erro ao carregar a cotação. Por favor, tente novamente.');
-      }
-    } else {
-      alert('Por favor, selecione uma moeda primeiro.');
-    }
-  }
-</script>
+<% end %>

@@ -1,0 +1,57 @@
+<%= simple_form_for @simulation do |form| %>
+  <div class="form-group">
+    <%= form.input :origin_country, as: :country, label: 'País de Origem', priority_countries: ['BR', 'US', 'GB'], prompt: 'Selecione o país de origem' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :incoterm, collection: ['EXW', 'FCA', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :modal, collection: ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :currency, collection: ['USD', 'EUR', 'BRL'], prompt: 'Selecione a moeda', input_html: { id: 'simulation_currency' } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :exchange_rate, as: :decimal, label: 'Taxa de Câmbio', placeholder: 'Digite a taxa de câmbio', input_html: { id: 'simulation_exchange_rate' } %>
+    <button type="button" class="btn btn-secondary mt-2" onclick="fetchExchangeRate()">Carregar Cotação</button>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :freight_cost, as: :decimal, label: 'Custo do Frete Internacional', placeholder: 'Digite o custo do frete' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :insurance_cost, as: :decimal, label: 'Custo do Seguro Internacional', placeholder: 'Digite o custo do seguro' %>
+  </div>
+<% end %>
+
+<script>
+  async function fetchExchangeRate() {
+    // Seleciona o campo de moeda
+    const currencyField = document.querySelector('#simulation_currency');
+    const exchangeRateField = document.querySelector('#simulation_exchange_rate');
+
+    if (currencyField && exchangeRateField) {
+      const currency = currencyField.value;
+
+      if (currency) {
+        try {
+          const response = await fetch(`/exchange_rate?currency=${currency}`);
+          if (!response.ok) throw new Error('Erro ao buscar cotação');
+          const data = await response.json();
+          exchangeRateField.value = data.rate.toFixed(2);
+        } catch (error) {
+          alert('Erro ao carregar a cotação. Por favor, tente novamente.');
+        }
+      } else {
+        alert('Por favor, selecione uma moeda primeiro.');
+      }
+    } else {
+      console.error('Os campos de moeda ou taxa de câmbio não foram encontrados.');
+    }
+  }
+</script>
