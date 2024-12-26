@@ -1,46 +1,68 @@
-<p>Associe despesas operacionais à simulação.</p>
+<div data-controller="expense-form">
+  <!-- Campo de Filtro -->
+  <input
+    type="text"
+    class="form-control mb-3"
+    placeholder="Pesquisar despesas..."
+    data-expense-form-target="filter"
+    data-action="input->expense-form#filterExpenses">
 
-<div class="table-responsive">
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>Selecionar</th>
-        <th>Nome</th>
-        <th>Tipo</th>
-        <th>Valor Padrão</th>
-        <th>Percentual</th>
-        <th>Base de Cálculo</th>
-        <th>Moeda</th>
-        <th>Local</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% Expense.all.each do |expense| %>
+  <!-- Campos Fixos e Percentuais -->
+  <div data-expense-form-target="fixedFields" style="display: none;">
+    <p>Conteúdo para despesas fixas.</p>
+    <!-- Você pode adicionar inputs ou informações específicas aqui -->
+  </div>
+
+  <div data-expense-form-target="percentageFields" style="display: none;">
+    <p>Conteúdo para despesas percentuais.</p>
+    <!-- Você pode adicionar inputs ou informações específicas aqui -->
+  </div>
+
+  <!-- Tabela de Despesas -->
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead class="table-light">
         <tr>
-          <td>
-            <%= form.check_box :expense_ids, { multiple: true }, expense.id, nil %>
-          </td>
-          <td><%= expense.expense_name %></td>
-          <td><%= expense.percentage.present? ? "Percentual" : "Fixo" %></td>
-          <td>
-            <% if expense.expense_default_value.present? %>
-              <%= number_to_currency(expense.expense_default_value, unit: expense.expense_currency) %>
-            <% else %>
-              -
-            <% end %>
-          </td>
-          <td>
-            <% if expense.percentage.present? %>
-              <%= number_to_percentage(expense.percentage, precision: 2) %>
-            <% else %>
-              -
-            <% end %>
-          </td>
-          <td><%= expense.calculation_base.present? ? expense.calculation_base.humanize : '-' %></td>
-          <td><%= expense.expense_currency %></td>
-          <td><%= expense.expense_location %></td>
+          <th class="text-center">Selecionar</th>
+          <th>Nome</th>
+          <th>Tipo</th>
+          <th class="text-end">Valor Padrão</th>
+          <th class="text-end">Percentual</th>
+          <th>Base de Cálculo</th>
+          <th>Moeda</th>
+          <th>Local</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% Expense.all.each do |expense| %>
+          <tr
+            data-expense-form-target="tableRow"
+            data-name="<%= expense.expense_name.downcase %>">
+            <td class="text-center">
+              <%= form.check_box :expense_ids, { multiple: true }, expense.id, nil %>
+            </td>
+            <td><%= expense.expense_name %></td>
+            <td><%= expense.percentage.present? ? "Percentual" : "Fixo" %></td>
+            <td class="text-end">
+              <% if expense.expense_default_value.present? %>
+                <%= number_to_currency(expense.expense_default_value, unit: expense.expense_currency) %>
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td class="text-end">
+              <% if expense.percentage.present? %>
+                <%= number_to_percentage(expense.percentage, precision: 2) %>
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td><%= expense.calculation_base.present? ? expense.calculation_base.humanize : '-' %></td>
+            <td><%= expense.expense_currency %></td>
+            <td><%= expense.expense_location %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>

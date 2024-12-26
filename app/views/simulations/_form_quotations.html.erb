@@ -3,14 +3,14 @@
 <div data-controller="quotations">
   <div data-quotations-target="list">
     <% @simulation.simulation_quotations.each do |sq| %>
-      <div data-quotations-target="item">
+      <div data-quotations-target="item" class="mb-3 p-3 border rounded">
         <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
-          <div class="row">
+          <div class="row gy-3">
             <!-- Seleção de Cotação -->
             <div class="col-md-4">
               <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name,
                     { prompt: "Selecione uma cotação" },
-                    { class: "form-control", data: { action: "change->quotations#loadUnitPrice" } } %>
+                    { class: "form-select", data: { action: "change->quotations#loadUnitPrice" } } %>
             </div>
 
             <!-- Quantidade -->
@@ -29,28 +29,32 @@
             <div class="col-md-2">
               <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control", readonly: true %>
             </div>
+          </div>
 
-            <!-- Impostos -->
-            <div class="col-md-1">
+          <!-- Impostos -->
+          <div class="row gy-3 mt-2">
+            <div class="col-md-2">
               <%= sq_form.number_field :aliquota_ii, step: 0.01, placeholder: "II (%)", class: "form-control" %>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
               <%= sq_form.number_field :aliquota_ipi, step: 0.01, placeholder: "IPI (%)", class: "form-control" %>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
               <%= sq_form.number_field :aliquota_pis, step: 0.01, placeholder: "PIS (%)", class: "form-control" %>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
               <%= sq_form.number_field :aliquota_cofins, step: 0.01, placeholder: "COFINS (%)", class: "form-control" %>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
               <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
             </div>
 
-            <!-- Remover Cotação -->
-            <div class="col-md-2">
+            <!-- Botão Remover -->
+            <div class="col-md-2 text-end">
               <%= sq_form.hidden_field :_destroy, value: false %>
-              <button type="button" class="btn btn-danger btn-sm" data-action="click->quotations#remove">Remover</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" data-action="click->quotations#remove">
+                <i class="fas fa-trash"></i> Remover
+              </button>
             </div>
           </div>
         <% end %>
@@ -59,5 +63,9 @@
   </div>
 
   <!-- Botão para Adicionar Novas Cotações -->
-  <button type="button" class="btn btn-primary btn-sm" data-action="click->quotations#add">Adicionar Cotação</button>
+  <div class="text-end mt-3">
+    <button type="button" class="btn btn-outline-primary btn-sm" data-action="click->quotations#add">
+      <i class="fas fa-plus"></i> Adicionar Cotação
+    </button>
+  </div>
 </div>
