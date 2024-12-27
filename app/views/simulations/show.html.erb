@@ -118,6 +118,10 @@
               <th>Preço Unitário</th>
               <th>Quantidade</th>
               <th>Valor Total</th>
+              <th>Frete Alocado</th>
+              <th>Seguro Alocado</th>
+              <th>Valor Aduaneiro Unitário</th>
+              <th>Valor Aduaneiro Total</th>
               <th>Fornecedor</th>
               <th>II (%)</th>
               <th>II (R$)</th>
@@ -139,6 +143,10 @@
                 <td><%= number_to_currency(sq.custom_price || sq.quotation.price, unit: sq.quotation.currency) %></td>
                 <td><%= sq.quantity %></td>
                 <td><%= number_to_currency(sq.total_value, unit: sq.quotation.currency) %></td>
+                <td><%= number_to_currency(sq.freight_allocated || 0, unit: @simulation.currency) %></td>
+                <td><%= number_to_currency(sq.insurance_allocated || 0, unit: @simulation.currency) %></td>
+                <td><%= number_to_currency(sq.customs_unit_value || 0, unit: @simulation.currency) %></td>
+                <td><%= number_to_currency(sq.customs_total_value || 0, unit: @simulation.currency) %></td>
                 <td><%= sq.quotation.supplier.trade_name %></td>
                 <td><%= number_to_percentage(sq.aliquota_ii || 0, precision: 2) %></td>
                 <td><%= number_to_currency(sq.tributo_ii || 0, unit: 'BRL') %></td>

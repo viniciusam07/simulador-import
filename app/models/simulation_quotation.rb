@@ -12,6 +12,8 @@ class SimulationQuotation < ApplicationRecord
   # Callbacks
   before_save :set_default_custom_price
   before_save :calculate_tax_values
+  before_save :calculate_allocations
+  before_save :calculate_customs_values
 
   # Métodos públicos
 
@@ -34,6 +36,30 @@ class SimulationQuotation < ApplicationRecord
   end
 
   private
+
+  # Calcula as alocações de frete e seguro
+  def calculate_allocations
+    calculate_freight_allocation
+    calculate_insurance_allocation
+  end
+
+  # Aloca o frete com base no peso líquido
+  def calculate_freight_allocation
+    total_weight = simulation.simulation_quotations.sum { |sq| sq.quotation.product.unit_net_weight.to_f * sq.quantity.to_f }
+    self.freight_allocated = (simulation.freight_cost.to_f / total_weight) * (quotation.product.unit_net_weight.to_f * quantity.to_f)
+  end
+
+  # Aloca o seguro com base no valor aduaneiro
+  def calculate_insurance_allocation
+    total_custom_value = simulation.simulation_quotations.sum(&:total_value)
+    self.insurance_allocated = (simulation.insurance_cost.to_f / total_custom_value) * total_value
+  end
+
+  # Calcula os valores aduaneiros (unitário e total)
+  def calculate_customs_values
+    self.customs_unit_value = total_value.to_f + freight_allocated.to_f + insurance_allocated.to_f
+    self.customs_total_value = customs_unit_value * quantity.to_f
+  end
 
   # Define o preço customizado padrão como o preço da cotação, caso não esteja definido
   def set_default_custom_price

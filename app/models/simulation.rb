@@ -28,16 +28,16 @@ class Simulation < ApplicationRecord
     self.total_value = simulation_quotations.sum(&:total_value)
   end
 
-  # Valor aduaneiro = Produtos + Frete + Seguro em moeda estrangeira
+  # Calcula o valor aduaneiro total com base nas cotações
   def calculate_customs_value
-    total_value.to_f + freight_cost.to_f + insurance_cost.to_f
+    simulation_quotations.sum { |sq| sq.customs_total_value.to_f }
   end
 
-  # Valor aduaneiro em BRL = Produtos + Frete + Seguro convertidos para BRL
+  # Valor aduaneiro em BRL
+  # Converte o valor total aduaneiro e despesas para BRL
   def calculate_customs_value_brl
-    convert_to_brl(total_value, currency) +
-      convert_to_brl(freight_cost, currency) +
-      convert_to_brl(insurance_cost, currency)
+    customs_value_total = calculate_customs_value
+    convert_to_brl(customs_value_total, currency)
   end
 
   # Consolida os valores de impostos calculados por cotação
@@ -65,7 +65,8 @@ class Simulation < ApplicationRecord
 
   # Valor total da importação
   def total_importation_cost
-    total_customs_value_brl.to_f + total_taxes + total_operational_expenses
+    customs_value_brl = calculate_customs_value_brl
+    customs_value_brl + total_taxes + total_operational_expenses
   end
 
   # Conversão para BRL com base na taxa de câmbio
