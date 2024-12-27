@@ -31,6 +31,58 @@
     }
   }
 
+  .form-group {
+    display: flex;
+    align-items: center; // Alinha verticalmente o botão com o campo
+    gap: 10px; // Espaçamento entre os itens do grupo
+
+    .form-control {
+      flex-grow: 1; // Faz o campo preencher o espaço disponível
+      border-radius: $border-radius;
+      border: 1px solid $light-gray;
+
+      &:focus {
+        border-color: $primary;
+        box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+      }
+    }
+
+    .btn {
+      height: calc(100% - 4px); // Ajusta a altura para igualar ao campo
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      border-radius: $border-radius;
+
+      &.btn-outline-primary {
+        color: $aux1;
+        border-color: $aux1;
+
+        &:hover {
+          background-color: $aux1;
+          color: #fff;
+        }
+
+        i {
+          font-size: 1rem;
+          margin-right: 5px;
+        }
+      }
+
+      &.btn-outline-danger {
+        color: $danger;
+        border-color: $danger;
+
+        &:hover {
+          background-color: $danger;
+          color: #fff;
+        }
+      }
+    }
+  }
+
   .quotations {
     .btn-outline-primary {
       color: $aux1;
@@ -156,17 +208,6 @@
           background-color: darken($gray, 10%);
         }
       }
-    }
-  }
-
-  .form-control,
-  .form-select {
-    border-radius: $border-radius;
-    border: 1px solid $light-gray;
-
-    &:focus {
-      border-color: $primary;
-      box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
     }
   }
 

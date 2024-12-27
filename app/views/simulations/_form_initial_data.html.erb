@@ -8,9 +8,15 @@
     <%= form.input :currency, collection: ['USD', 'EUR', 'BRL'], prompt: 'Selecione a moeda', input_html: { id: 'simulation_currency' } %>
   </div>
 
-  <div class="form-group">
-    <%= form.input :exchange_rate, as: :decimal, label: 'Taxa de Câmbio', placeholder: 'Digite a taxa de câmbio', input_html: { id: 'simulation_exchange_rate' } %>
-    <button type="button" class="btn btn-secondary mt-2" onclick="fetchExchangeRate()">Carregar Cotação</button>
+  <div class="form-group d-flex align-items-center">
+    <div class="flex-grow-1 me-2">
+      <%= form.input :exchange_rate, as: :decimal, label: 'Taxa de Câmbio', placeholder: 'Digite a taxa de câmbio' %>
+    </div>
+    <div>
+      <button type="button" class="btn btn-outline-primary d-flex align-items-center" onclick="fetchExchangeRate()">
+        <i class="fas fa-sync-alt me-2"></i> Atualizar
+      </button>
+    </div>
   </div>
 
   <div class="form-group">
