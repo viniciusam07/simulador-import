@@ -12,3 +12,7 @@ application.register("ncm-autocomplete", NcmAutocomplete);
 // Importa e registra manualmente o controlador do formulário de despesas
 import ExpenseFormController from "./expense_form_controller";
 application.register("expense-form", ExpenseFormController);
+
+// Importa e registra controllers
+import ModalController from "./modal_controller";
+application.register("modal", ModalController);

@@ -1,40 +1,54 @@
-<div class="section mb-5">
+<div class="section mb-5" data-controller="modal">
   <!-- País de Origem -->
   <div class="form-group">
-    <%= form.input :origin_country, as: :country, label: 'País de Origem', priority_countries: ['BR', 'US', 'GB'], prompt: 'Selecione o país de origem', required: true %>
-  </div>
-
-  <!-- Modal de Transporte -->
-  <div class="form-group">
-    <%= form.input :modal, collection: ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal', label: 'Modal', required: true %>
+    <%= form.input :origin_country,
+                   as: :country,
+                   label: 'País de Origem',
+                   priority_countries: ['BR', 'US', 'GB'],
+                   prompt: 'Selecione o país de origem',
+                   required: true %>
   </div>
 
   <!-- Estado de Destino -->
   <div class="form-group">
     <%= form.input :destination_state,
-                  collection: Simulation::BRAZILIAN_STATES,
-                  label: 'Estado de Destino no Brasil',
-                  prompt: 'Selecione o estado',
-                  required: true %>
+                   collection: Simulation::BRAZILIAN_STATES,
+                   label: 'Estado de Destino no Brasil',
+                   prompt: 'Selecione o estado',
+                   required: true %>
+  </div>
+
+  <!-- Modal de Transporte -->
+  <div class="form-group">
+    <%= form.input :modal,
+                   collection: ['Aéreo', 'Marítimo', 'Rodoviário'],
+                   prompt: 'Selecione o modal',
+                   label: 'Modal',
+                   required: true,
+                   input_html: { data: { modal_target: 'modal', action: 'change->modal#toggleFields' } } %>
   </div>
 
   <!-- Campos para Modal Marítimo -->
-  <div class="row">
-    <div class="col-md-6">
-      <%= form.input :origin_port, label: 'Porto de Origem' %>
-    </div>
-    <div class="col-md-6">
-      <%= form.input :destination_port, label: 'Porto de Destino' %>
+  <div data-modal-target="maritimeFields" style="display: none;">
+    <div class="row">
+      <div class="col-md-6">
+        <%= form.input :origin_port, label: 'Porto de Origem' %>
+      </div>
+      <div class="col-md-6">
+        <%= form.input :destination_port, label: 'Porto de Destino' %>
+      </div>
     </div>
   </div>
 
   <!-- Campos para Modal Aéreo -->
-  <div class="row">
-    <div class="col-md-6">
-      <%= form.input :origin_airport, label: 'Aeroporto de Origem' %>
-    </div>
-    <div class="col-md-6">
-      <%= form.input :destination_airport, label: 'Aeroporto de Destino' %>
+  <div data-modal-target="airFields" style="display: none;">
+    <div class="row">
+      <div class="col-md-6">
+        <%= form.input :origin_airport, label: 'Aeroporto de Origem' %>
+      </div>
+      <div class="col-md-6">
+        <%= form.input :destination_airport, label: 'Aeroporto de Destino' %>
+      </div>
     </div>
   </div>
 </div>

@@ -63,6 +63,13 @@ class SimulationsController < ApplicationController
     params.require(:simulation).permit(
       :origin_country, :incoterm, :modal, :currency, :exchange_rate,
       :freight_cost, :insurance_cost,
+      :origin_country,
+      :destination_state,
+      :modal,
+      :origin_port,
+      :destination_port,
+      :origin_airport,
+      :destination_airport,
       expense_ids: [],
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
     )
