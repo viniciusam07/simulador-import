@@ -1,4 +1,15 @@
 class Simulation < ApplicationRecord
+  # Carrega os estados brasileiros do arquivo YAML
+  BRAZILIAN_STATES = [
+    ['Acre', 'AC'], ['Alagoas', 'AL'], ['Amapá', 'AP'], ['Amazonas', 'AM'],
+    ['Bahia', 'BA'], ['Ceará', 'CE'], ['Distrito Federal', 'DF'], ['Espírito Santo', 'ES'],
+    ['Goiás', 'GO'], ['Maranhão', 'MA'], ['Mato Grosso', 'MT'], ['Mato Grosso do Sul', 'MS'],
+    ['Minas Gerais', 'MG'], ['Pará', 'PA'], ['Paraíba', 'PB'], ['Paraná', 'PR'],
+    ['Pernambuco', 'PE'], ['Piauí', 'PI'], ['Rio de Janeiro', 'RJ'], ['Rio Grande do Norte', 'RN'],
+    ['Rio Grande do Sul', 'RS'], ['Rondônia', 'RO'], ['Roraima', 'RR'],
+    ['Santa Catarina', 'SC'], ['São Paulo', 'SP'], ['Sergipe', 'SE'], ['Tocantins', 'TO']
+  ].freeze
+
   has_many :simulation_expenses, dependent: :destroy
   has_many :expenses, through: :simulation_expenses
   has_many :simulation_quotations, dependent: :destroy
@@ -13,6 +24,9 @@ class Simulation < ApplicationRecord
   validates :modal, presence: true
   validates :currency, presence: true
   validates :freight_cost, :insurance_cost, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :destination_state, presence: true, inclusion: { in: BRAZILIAN_STATES.map { |state| state[1] } }
+  validates :origin_port, :destination_port, presence: true, if: -> { modal == 'Marítimo' }
+  validates :origin_airport, :destination_airport, presence: true, if: -> { modal == 'Aéreo' }
 
   # Callbacks
   before_save :calculate_total_value
