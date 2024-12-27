@@ -1,0 +1,8 @@
+<div class="section mb-5">
+  <div class="form-group">
+    <%= form.input :origin_country, as: :country, label: 'País de Origem', priority_countries: ['BR', 'US', 'GB'], prompt: 'Selecione o país de origem', required: true %>
+  </div>
+  <div class="form-group">
+    <%= form.input :modal, collection: ['Aéreo', 'Marítimo', 'Rodoviário'], prompt: 'Selecione o modal', label: 'Modal', required: true %>
+  </div>
+</div>
