@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_27_001115) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_27_173943) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -104,10 +104,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_27_001115) do
     t.decimal "tributo_pis", precision: 10, scale: 2
     t.decimal "tributo_cofins", precision: 10, scale: 2
     t.decimal "tributo_icms", precision: 10, scale: 2
-    t.decimal "freight_allocated"
-    t.decimal "insurance_allocated"
-    t.decimal "customs_unit_value"
-    t.decimal "customs_total_value"
     t.index ["quotation_id"], name: "index_simulation_quotations_on_quotation_id"
     t.index ["simulation_id"], name: "index_simulation_quotations_on_simulation_id"
   end
@@ -149,6 +145,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_27_001115) do
     t.decimal "freight_cost_brl", precision: 10, scale: 2
     t.decimal "insurance_cost_brl", precision: 10, scale: 2
     t.decimal "total_value_brl", precision: 10, scale: 2
+    t.string "destination_state"
+    t.string "origin_port"
+    t.string "destination_port"
+    t.string "origin_airport"
+    t.string "destination_airport"
   end
 
   create_table "supplier_contacts", force: :cascade do |t|
