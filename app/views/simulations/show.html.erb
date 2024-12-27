@@ -2,6 +2,41 @@
   <!-- Título Principal -->
   <h1 class="mb-4">Detalhes da Simulação</h1>
 
+  <!-- Dados Logísticos -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <i class="fas fa-shipping-fast"></i> Dados Logísticos
+    </div>
+    <div class="card-body">
+      <ul class="list-group mb-3">
+        <li class="list-group-item">
+          <strong>País de Origem:</strong> <%= @simulation.origin_country %>
+        </li>
+        <li class="list-group-item">
+          <strong>Estado de Destino no Brasil:</strong> <%= @simulation.destination_state %>
+        </li>
+        <li class="list-group-item">
+          <strong>Modal:</strong> <%= @simulation.modal %>
+        </li>
+        <% if @simulation.modal == 'Marítimo' %>
+          <li class="list-group-item">
+            <strong>Porto de Origem:</strong> <%= @simulation.origin_port %>
+          </li>
+          <li class="list-group-item">
+            <strong>Porto de Destino:</strong> <%= @simulation.destination_port %>
+          </li>
+        <% elsif @simulation.modal == 'Aéreo' %>
+          <li class="list-group-item">
+            <strong>Aeroporto de Origem:</strong> <%= @simulation.origin_airport %>
+          </li>
+          <li class="list-group-item">
+            <strong>Aeroporto de Destino:</strong> <%= @simulation.destination_airport %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
   <!-- Detalhes Gerais -->
   <div class="row">
     <!-- Coluna 1 -->
@@ -50,13 +85,7 @@
         <div class="card-body">
           <ul class="list-group mb-3">
             <li class="list-group-item">
-              <strong>País de Origem:</strong> <%= @simulation.origin_country %>
-            </li>
-            <li class="list-group-item">
               <strong>Incoterm:</strong> <%= @simulation.incoterm %>
-            </li>
-            <li class="list-group-item">
-              <strong>Modal:</strong> <%= @simulation.modal %>
             </li>
             <li class="list-group-item">
               <strong>Moeda:</strong> <%= @simulation.currency %>
@@ -166,140 +195,12 @@
     </div>
   </div>
 
-  <!-- Resumo de Impostos Totais -->
-  <div class="card mb-4">
-    <div class="card-header bg-secondary text-white">
-      <i class="fas fa-file-invoice-dollar"></i> Resumo de Impostos Totais
-    </div>
-    <div class="card-body">
-      <!-- Tabela de Resumo de Impostos -->
-      <div class="table-responsive mb-3">
-        <table class="table table-bordered table-hover">
-          <thead class="thead-light">
-            <tr>
-              <th>Imposto</th>
-              <th>Percentual (%)</th>
-              <th>Valor (BRL)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Imposto de Importação (II)</td>
-              <td><%= number_to_percentage(@simulation.tributo_ii / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
-              <td><%= number_to_currency(@simulation.tributo_ii, unit: 'BRL') %></td>
-            </tr>
-            <tr>
-              <td>Imposto sobre Produtos Industrializados (IPI)</td>
-              <td><%= number_to_percentage(@simulation.tributo_ipi / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
-              <td><%= number_to_currency(@simulation.tributo_ipi, unit: 'BRL') %></td>
-            </tr>
-            <tr>
-              <td>PIS-Importação</td>
-              <td><%= number_to_percentage(@simulation.tributo_pis / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
-              <td><%= number_to_currency(@simulation.tributo_pis, unit: 'BRL') %></td>
-            </tr>
-            <tr>
-              <td>COFINS-Importação</td>
-              <td><%= number_to_percentage(@simulation.tributo_cofins / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
-              <td><%= number_to_currency(@simulation.tributo_cofins, unit: 'BRL') %></td>
-            </tr>
-            <tr>
-              <td>ICMS</td>
-              <td><%= number_to_percentage(@simulation.tributo_icms / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
-              <td><%= number_to_currency(@simulation.tributo_icms, unit: 'BRL') %></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Progress Bar para Resumo de Impostos -->
-      <% total_taxes = @simulation.tributo_ii + @simulation.tributo_ipi + @simulation.tributo_pis + @simulation.tributo_cofins + @simulation.tributo_icms %>
-      <div class="progress">
-        <div class="progress-bar bg-primary" role="progressbar"
-            style="width: <%= ((@simulation.tributo_ii / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_ii / total_taxes) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          II (<%= number_to_percentage((@simulation.tributo_ii / total_taxes) * 100, precision: 2) %>)
-        </div>
-        <div class="progress-bar bg-success" role="progressbar"
-            style="width: <%= ((@simulation.tributo_ipi / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_ipi / total_taxes) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          IPI (<%= number_to_percentage((@simulation.tributo_ipi / total_taxes) * 100, precision: 2) %>)
-        </div>
-        <div class="progress-bar bg-warning" role="progressbar"
-            style="width: <%= ((@simulation.tributo_pis / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_pis / total_taxes) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          PIS (<%= number_to_percentage((@simulation.tributo_pis / total_taxes) * 100, precision: 2) %>)
-        </div>
-        <div class="progress-bar bg-danger" role="progressbar"
-            style="width: <%= ((@simulation.tributo_cofins / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_cofins / total_taxes) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          COFINS (<%= number_to_percentage((@simulation.tributo_cofins / total_taxes) * 100, precision: 2) %>)
-        </div>
-        <div class="progress-bar bg-info" role="progressbar"
-            style="width: <%= ((@simulation.tributo_icms / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_icms / total_taxes) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          ICMS (<%= number_to_percentage((@simulation.tributo_icms / total_taxes) * 100, precision: 2) %>)
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Despesas Operacionais -->
-  <div class="card mb-4">
-    <div class="card-header bg-secondary text-white">
-      <i class="fas fa-file-invoice-dollar"></i> Despesas Operacionais
-    </div>
-    <div class="card-body">
-      <!-- Tabela de Despesas -->
-      <div class="table-responsive mb-3">
-        <table class="table table-bordered table-hover">
-          <thead class="thead-light">
-            <tr>
-              <th>Nome</th>
-              <th>Valor (BRL)</th>
-              <th>Localização</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @simulation.simulation_expenses.includes(:expense).uniq.each do |expense| %>
-              <tr>
-                <td><%= expense.expense_custom_name %></td>
-                <td><%= number_to_currency(expense.expense_custom_value, unit: expense.expense_currency) %></td>
-                <td><%= expense.expense_location %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-
-    <!-- Progress Bar para Despesas Operacionais -->
-    <% total_expenses = @simulation.simulation_expenses.sum(&:expense_custom_value) %>
-    <div class="progress">
-      <% colors = ['bg-primary', 'bg-success', 'bg-warning', 'bg-danger', 'bg-info'] %>
-      <% @simulation.simulation_expenses.each_with_index do |expense, index| %>
-        <div class="progress-bar <%= colors[index % colors.size] %>" role="progressbar"
-            style="width: <%= ((expense.expense_custom_value / total_expenses) * 100).round %>%;"
-            aria-valuenow="<%= ((expense.expense_custom_value / total_expenses) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          <%= expense.expense_custom_name %> (<%= number_to_percentage((expense.expense_custom_value / total_expenses) * 100, precision: 2) %>)
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
-
   <!-- Resumo da Importação -->
   <div class="card mb-4">
     <div class="card-header bg-secondary text-white">
       <i class="fas fa-chart-bar"></i> Resumo da Importação
     </div>
     <div class="card-body">
-      <!-- Listagem de Valores -->
       <ul class="list-group mb-3">
         <li class="list-group-item">
           <strong>Valor Total Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.total_customs_value_brl, unit: 'BRL') %>
@@ -314,34 +215,6 @@
           <strong>Valor Total da Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %>
         </li>
       </ul>
-
-      <!-- Progress Bar para Composição -->
-      <% total_import_cost = @simulation.total_importation_cost %>
-      <div class="progress">
-        <!-- Valor Total Aduaneiro -->
-        <div class="progress-bar bg-primary" role="progressbar"
-            style="width: <%= ((@simulation.total_customs_value_brl / total_import_cost) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.total_customs_value_brl / total_import_cost) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          Aduaneiro (<%= number_to_percentage((@simulation.total_customs_value_brl / total_import_cost) * 100, precision: 2) %>)
-        </div>
-
-        <!-- Impostos -->
-        <div class="progress-bar bg-warning" role="progressbar"
-            style="width: <%= ((@simulation.total_taxes / total_import_cost) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.total_taxes / total_import_cost) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          Impostos (<%= number_to_percentage((@simulation.total_taxes / total_import_cost) * 100, precision: 2) %>)
-        </div>
-
-        <!-- Despesas Operacionais -->
-        <div class="progress-bar bg-success" role="progressbar"
-            style="width: <%= ((@simulation.total_operational_expenses / total_import_cost) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.total_operational_expenses / total_import_cost) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          Despesas (<%= number_to_percentage((@simulation.total_operational_expenses / total_import_cost) * 100, precision: 2) %>)
-        </div>
-      </div>
     </div>
   </div>
 
