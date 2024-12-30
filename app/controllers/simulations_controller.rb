@@ -8,6 +8,11 @@ class SimulationsController < ApplicationController
     @simulation = Simulation.new(simulation_params)
     @simulation.user_id = current_user.id
 
+    # Preenche automaticamente a descrição do CFOP com base no código selecionado
+    if @simulation.cfop_code.present?
+      @simulation.cfop_description = Simulation::CFOPS[@simulation.cfop_code]
+    end
+
     if @simulation.save
       attach_selected_expenses
       attach_selected_quotations
@@ -71,6 +76,8 @@ class SimulationsController < ApplicationController
       :destination_port,
       :origin_airport,
       :destination_airport,
+      :cfop_code,
+      :cfop_description,
       expense_ids: [],
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
     )

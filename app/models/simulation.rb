@@ -10,6 +10,14 @@ class Simulation < ApplicationRecord
     ['Santa Catarina', 'SC'], ['São Paulo', 'SP'], ['Sergipe', 'SE'], ['Tocantins', 'TO']
   ].freeze
 
+  CFOPS = {
+    "3101" => "Compra para industrialização",
+    "3102" => "Compra para comercialização",
+    "3949" => "Outras entradas",
+    "5160" => "Fornecimento de mercadorias adquiridas ou recebidas",
+    "3126" => "Compra para prestação de serviço sujeita ao ICMS"
+  }.freeze
+
   has_many :simulation_expenses, dependent: :destroy
   has_many :expenses, through: :simulation_expenses
   has_many :simulation_quotations, dependent: :destroy
@@ -27,6 +35,8 @@ class Simulation < ApplicationRecord
   validates :destination_state, presence: true, inclusion: { in: BRAZILIAN_STATES.map { |state| state[1] } }
   validates :origin_port, :destination_port, presence: true, if: -> { modal == 'Marítimo' }
   validates :origin_airport, :destination_airport, presence: true, if: -> { modal == 'Aéreo' }
+  validates :cfop_code, presence: true, inclusion: { in: CFOPS.keys.map(&:to_s), message: "inválido" }
+  validates :cfop_description, presence: true
 
   # Callbacks
   before_save :calculate_total_value
@@ -35,6 +45,8 @@ class Simulation < ApplicationRecord
   before_save :set_converted_values
   before_save :calculate_taxes
   before_save :calculate_import_factor
+  before_save :set_cfop_description
+
 
   # Métodos públicos
 
@@ -125,5 +137,10 @@ class Simulation < ApplicationRecord
     return if total_importation_cost.to_f.zero?
 
     self.import_factor = (total_value_brl.to_f / total_importation_cost.to_f).round(2)
+  end
+
+  def set_cfop_description
+    selected_cfop = CFOPS.find { |code, _| code == cfop_code }
+    self.cfop_description = selected_cfop ? selected_cfop[1] : nil
   end
 end
