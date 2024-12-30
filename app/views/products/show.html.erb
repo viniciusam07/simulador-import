@@ -1,43 +1,45 @@
-<h1>Detalhes do Produto</h1>
+<div class="container mt-5">
+  <!-- Título Principal -->
+  <h1 class="text-center mb-4">Detalhes do Produto</h1>
 
-<!-- Informações do Produto -->
-<p>
-  <strong>Nome do Produto:</strong>
-  <%= @product.product_name %>
-</p>
-<p>
-  <strong>HS Code:</strong>
-  <%= @product.hs_code %>
-</p>
-<p>
-  <strong>NCM:</strong>
-  <%= @product.ncm %>
-</p>
-<p>
-  <strong>Unidade de Medida:</strong>
-  <%= @product.unit_of_measure %>
-</p>
-<p>
-  <strong>Quantidade por Caixa:</strong>
-  <%= @product.quantity_per_box %>
-</p>
-<p>
-  <strong>Peso Líquido Unitário:</strong>
-  <%= @product.unit_net_weight %>
-</p>
-<p>
-  <strong>Preço Unitário:</strong>
-  <%= @product.unit_price %>
-</p>
+  <!-- Informações do Produto -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <i class="fas fa-info-circle me-2"></i> Informações do Produto
+    </div>
+    <div class="card-body">
+      <p><strong>Nome do Produto:</strong> <%= @product.product_name %></p>
+      <p><strong>HS Code:</strong> <%= @product.hs_code %></p>
+      <p><strong>NCM:</strong> <%= @product.ncm %></p>
+      <p><strong>Unidade de Medida:</strong> <%= @product.unit_of_measure %></p>
+      <p><strong>Quantidade por Caixa:</strong> <%= @product.quantity_per_box.presence || '-' %></p>
+      <p><strong>Peso Líquido Unitário:</strong> <%= number_with_precision(@product.unit_net_weight, precision: 2) %> kg</p>
+      <p><strong>Preço Unitário:</strong> <%= number_to_currency(@product.unit_price, unit: "R$") %></p>
+    </div>
+  </div>
 
-<%= link_to 'Voltar', products_path, class: 'btn btn-secondary' %>
+  <!-- Seção de Cotações -->
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+      <i class="fas fa-file-invoice-dollar me-2"></i> Cotações
+    </div>
+    <div class="card-body">
+      <%= render partial: "quotations/index", locals: { quotations: @product.quotations } %>
+    </div>
+  </div>
 
-<hr>
+  <!-- Formulário para Nova Cotação -->
+  <div class="card mb-4">
+    <div class="card-header bg-success text-white">
+      <i class="fas fa-plus-circle me-2"></i> Adicionar Nova Cotação
+    </div>
+    <div class="card-body">
+      <%= render 'quotations/form', product: @product, quotation: @quotation %>
+    </div>
+  </div>
 
-<!-- Renderiza o parcial de cotações -->
-<h2>Cotações</h2>
-<%= render partial: "quotations/index", locals: { quotations: @product.quotations } %>
-
-<!-- Formulário para Nova Cotação -->
-<h3>Adicionar Nova Cotação</h3>
-<%= render 'quotations/form', product: @product, quotation: @quotation %>
+  <!-- Botão Voltar -->
+  <div class="text-center mt-4">
+    <%= link_to 'Voltar', products_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

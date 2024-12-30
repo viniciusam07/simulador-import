@@ -4,6 +4,7 @@ class SuppliersController < ApplicationController
   # Lista todos os fornecedores
   def index
     @suppliers = Supplier.all
+    @pagy, @suppliers = pagy(Supplier.all.order(:corporate_name))
   end
 
   # Exibe detalhes de um fornecedor específico
