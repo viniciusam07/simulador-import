@@ -348,6 +348,9 @@
         <li class="list-group-item">
           <strong>Valor Total da Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %>
         </li>
+        <li class="list-group-item">
+            <strong>Fator de Importação:</strong> <%= number_with_precision(@simulation.import_factor, precision: 2) %>
+        </li>
       </ul>
 
       <!-- Progress Bar para Composição -->

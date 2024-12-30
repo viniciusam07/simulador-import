@@ -34,6 +34,7 @@ class Simulation < ApplicationRecord
   before_save :set_total_customs_value_brl
   before_save :set_converted_values
   before_save :calculate_taxes
+  before_save :calculate_import_factor
 
   # Métodos públicos
 
@@ -117,5 +118,12 @@ class Simulation < ApplicationRecord
     bank.update_rates
     Money.default_bank = bank
     Money.new(100, currency).exchange_to('BRL').to_f
+  end
+
+  # Calcula o Fator de Importação
+  def calculate_import_factor
+    return if total_importation_cost.to_f.zero?
+
+    self.import_factor = (total_value_brl.to_f / total_importation_cost.to_f).round(2)
   end
 end
