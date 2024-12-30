@@ -43,6 +43,7 @@ class SimulationsController < ApplicationController
 
   def index
     @simulations = Simulation.where(user_id: current_user.id)
+    @pagy, @simulations = pagy(Simulation.where(user_id: current_user.id), items: 10)
   end
 
   def show

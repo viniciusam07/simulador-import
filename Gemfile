@@ -54,6 +54,7 @@ gem 'country_select'
 gem 'money'
 gem 'eu_central_bank'
 gem 'ostruct'
+gem 'pagy'
 
 group :development, :test do
   gem "dotenv-rails"
