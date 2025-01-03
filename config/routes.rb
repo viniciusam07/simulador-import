@@ -38,4 +38,7 @@ Rails.application.routes.draw do
       get :autocomplete, defaults: { format: :json }
     end
   end
+
+  # Rotas para Companies
+  resources :companies
 end

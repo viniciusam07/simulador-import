@@ -10,9 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_30_161106) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_03_142042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "companies", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "cnpj", null: false
+    t.string "corporate_name", null: false
+    t.string "zip_code"
+    t.string "address"
+    t.string "state"
+    t.string "city"
+    t.string "segment"
+    t.string "company_type"
+    t.string "tax_regime"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cnpj"], name: "index_companies_on_cnpj", unique: true
+  end
 
   create_table "expenses", force: :cascade do |t|
     t.string "expense_name", null: false
