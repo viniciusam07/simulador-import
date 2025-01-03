@@ -16,3 +16,7 @@ application.register("expense-form", ExpenseFormController);
 // Importa e registra controllers
 import ModalController from "./modal_controller";
 application.register("modal", ModalController);
+
+// CNPJ
+import CnpjController from "./cnpj_controller";
+application.register("cnpj", CnpjController);

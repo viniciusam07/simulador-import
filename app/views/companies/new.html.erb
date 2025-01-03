@@ -16,7 +16,15 @@
         </div>
         <div class="row mt-3">
           <div class="col-md-6">
-            <%= form.input :cnpj, label: 'CNPJ', required: true, input_html: { id: 'cnpj-field', class: 'form-control', placeholder: '00.000.000/0000-00' } %>
+            <%= form.input :cnpj,
+                           label: 'CNPJ',
+                           required: true,
+                           input_html: {
+                             id: 'cnpj-field',
+                             class: 'form-control',
+                             placeholder: '00.000.000/0000-00',
+                             data: { controller: 'cnpj', action: 'input->cnpj#format' }
+                           } %>
           </div>
           <div class="col-md-6">
             <%= form.input :zip_code, label: 'CEP', input_html: { class: 'form-control', placeholder: '00000-000' } %>
