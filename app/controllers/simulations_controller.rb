@@ -78,6 +78,7 @@ class SimulationsController < ApplicationController
       :destination_airport,
       :cfop_code,
       :cfop_description,
+      :company_id,
       expense_ids: [],
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
     )

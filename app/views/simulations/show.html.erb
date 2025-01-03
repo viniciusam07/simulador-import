@@ -50,6 +50,14 @@
         <div class="card-body">
           <ul class="list-group mb-3">
             <li class="list-group-item">
+              <strong>Empresa:</strong>
+              <% if @simulation.company.present? %>
+                <%= @simulation.company.name %> (CNPJ: <%= @simulation.company.cnpj %>)
+              <% else %>
+                Não vinculada
+              <% end %>
+            </li>
+            <li class="list-group-item">
               <strong>País de Origem:</strong> <%= @simulation.origin_country %>
             </li>
             <li class="list-group-item">

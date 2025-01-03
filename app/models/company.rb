@@ -12,6 +12,8 @@ class Company < ApplicationRecord
   validates :tax_regime, inclusion: { in: TAX_REGIMES, message: 'Regime tributário inválido' }, allow_blank: true
   validate :valid_cnpj_format
 
+  has_many :simulations
+
   # Callback para buscar endereço pelo CEP antes de validar
   before_validation :fetch_address_from_zip_code, if: :zip_code_changed?
   before_validation :format_cnpj

@@ -18,6 +18,8 @@ class Simulation < ApplicationRecord
     "3126" => "Compra para prestação de serviço sujeita ao ICMS"
   }.freeze
 
+  belongs_to :company, optional: true
+
   has_many :simulation_expenses, dependent: :destroy
   has_many :expenses, through: :simulation_expenses
   has_many :simulation_quotations, dependent: :destroy

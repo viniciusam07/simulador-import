@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_03_142042) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_03_173817) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -173,6 +173,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_03_142042) do
     t.decimal "import_factor", precision: 10, scale: 2
     t.string "cfop_code"
     t.string "cfop_description"
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_simulations_on_company_id"
   end
 
   create_table "supplier_contacts", force: :cascade do |t|
@@ -232,6 +234,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_03_142042) do
   add_foreign_key "simulation_quotations", "simulations"
   add_foreign_key "simulation_taxes", "simulations"
   add_foreign_key "simulation_taxes", "taxes"
+  add_foreign_key "simulations", "companies"
   add_foreign_key "supplier_contacts", "suppliers"
   add_foreign_key "tax_rates", "taxes"
 end
