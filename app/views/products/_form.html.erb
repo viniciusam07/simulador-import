@@ -25,8 +25,8 @@
       <div class="card-body">
         <div data-controller="ncm-autocomplete">
           <div class="form-group mb-3">
-            <%= form.label :ncm, "NCM" %>
-            <%= form.text_field :ncm, id: "ncm-input", class: "form-control",
+            <%= form.label :ncm, "NCM", for: "product_ncm" %>
+            <%= form.text_field :ncm, id: "product_ncm", class: "form-control",
               data: { "ncm-autocomplete-target": "input",
                       action: "input->ncm-autocomplete#search change->ncm-autocomplete#select" },
               list: "ncm-suggestions" %>
