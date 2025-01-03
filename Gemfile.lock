@@ -92,6 +92,9 @@ GEM
     bootstrap (5.3.3)
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 2.11.8, < 3)
+    br_zip_code (1.0.5)
+      dotenv-rails
+      rails
     builder (3.3.0)
     capybara (3.40.0)
       addressable
@@ -108,7 +111,9 @@ GEM
       unaccent (~> 0.3)
     country_select (10.0.0)
       countries (> 5.0, < 8.0)
+    cpf_cnpj (1.0.1)
     crass (1.0.6)
+    csv (3.3.2)
     date (3.4.1)
     debug (1.9.2)
       irb (~> 1.10)
@@ -143,6 +148,10 @@ GEM
       sassc (~> 2.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    httparty (0.22.0)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.0.3)
@@ -172,6 +181,8 @@ GEM
     money (6.19.0)
       i18n (>= 0.6.4, <= 2)
     msgpack (1.7.5)
+    multi_xml (0.7.1)
+      bigdecimal (~> 3.1)
     mutex_m (0.3.0)
     net-imap (0.5.1)
       date
@@ -326,13 +337,16 @@ DEPENDENCIES
   autoprefixer-rails
   bootsnap
   bootstrap (~> 5.2)
+  br_zip_code
   capybara
   country_select
+  cpf_cnpj
   debug
   devise
   dotenv-rails
   eu_central_bank
   font-awesome-sass (~> 6.1)
+  httparty
   importmap-rails
   jbuilder
   money

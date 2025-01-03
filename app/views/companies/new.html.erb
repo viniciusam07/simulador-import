@@ -1,0 +1,83 @@
+<%= simple_form_for @company do |form| %>
+  <div class="container">
+    <!-- Informações Gerais -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-info-circle"></i> Informações Gerais
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :name, label: 'Nome Fantasia', required: true, input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :corporate_name, label: 'Razão Social', required: true, input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <%= form.input :cnpj,
+                           label: 'CNPJ',
+                           required: true,
+                           input_html: {
+                             id: 'cnpj-field',
+                             class: 'form-control',
+                             placeholder: '00.000.000/0000-00',
+                             data: { controller: 'cnpj', action: 'input->cnpj#format' }
+                           } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :zip_code, label: 'CEP', input_html: { class: 'form-control', placeholder: '00000-000' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Endereço -->
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">
+        <i class="fas fa-map-marker-alt"></i> Endereço
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :address, label: 'Endereço Completo', input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-3">
+            <%= form.input :state, label: 'Estado', input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-3">
+            <%= form.input :city, label: 'Cidade', input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações Adicionais -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-building"></i> Informações Adicionais
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <%= form.input :segment, label: 'Segmento', as: :select, collection: Company::SEGMENTS, include_blank: 'Selecione', input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= form.input :company_type, label: 'Tipo de Empresa', as: :select, collection: Company::COMPANY_TYPES, include_blank: 'Selecione', input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <%= form.input :tax_regime, label: 'Regime Tributário', as: :select, collection: Company::TAX_REGIMES, include_blank: 'Selecione', input_html: { class: 'form-control' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botão de Ação -->
+    <div class="text-center">
+      <%= form.button :submit, 'Salvar Empresa', class: 'btn btn-primary' %>
+    </div>
+  </div>
+<% end %>

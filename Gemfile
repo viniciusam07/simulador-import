@@ -54,7 +54,10 @@ gem 'country_select'
 gem 'money'
 gem 'eu_central_bank'
 gem 'ostruct'
-gem 'pagy'
+gem 'pagy' # Para paginação
+gem 'cpf_cnpj' # Para validação e manipulação de CNPJ
+gem 'br_zip_code' # Para busca de endereço baseado no CEP
+gem 'httparty' # Para requisições HTTP e dependencia da br_zip_code gem
 
 group :development, :test do
   gem "dotenv-rails"
