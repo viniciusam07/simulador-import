@@ -63,6 +63,19 @@ class SimulationsController < ApplicationController
     render json: { rate: rate }
   end
 
+  def generate_pdf
+    @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
+    respond_to do |format|
+      format.pdf do
+        pdf = SimulationPdf.new(@simulation, view_context)
+        send_data pdf.render,
+                filename: "simulacao_#{@simulation.id}.pdf",
+                type: 'application/pdf',
+                disposition: 'attachment'
+      end
+    end
+  end
+
   private
 
   def simulation_params

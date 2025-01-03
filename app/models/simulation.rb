@@ -19,6 +19,7 @@ class Simulation < ApplicationRecord
   }.freeze
 
   belongs_to :company, optional: true
+  belongs_to :user
 
   has_many :simulation_expenses, dependent: :destroy
   has_many :expenses, through: :simulation_expenses

@@ -10,6 +10,9 @@ Rails.application.routes.draw do
 
   # Rotas para Simulações
   resources :simulations, only: [:index, :new, :create, :show, :edit] do
+    member do
+      get :generate_pdf
+    end
     resources :simulation_quotations, only: [:create, :destroy], shallow: true
   end
   get 'exchange_rate', to: 'simulations#exchange_rate'

@@ -397,6 +397,11 @@
   <!-- Botões de Ação -->
   <div class="btn-group mt-4" role="group">
     <%= link_to 'Editar Simulação', edit_simulation_path(@simulation), class: 'btn btn-primary' %>
+    <%= link_to generate_pdf_simulation_path(@simulation, format: :pdf),
+                class: 'btn btn-success',
+                data: { turbo: false } do %>
+      <i class="fas fa-file-pdf me-2"></i>Baixar PDF
+    <% end %>
     <%= link_to 'Voltar', simulations_path, class: 'btn btn-secondary' %>
   </div>
 </div>

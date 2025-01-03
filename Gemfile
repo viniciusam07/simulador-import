@@ -50,14 +50,17 @@ gem "autoprefixer-rails"
 gem "font-awesome-sass", "~> 6.1"
 gem 'simple_form'
 gem "sassc-rails"
-gem 'country_select'
-gem 'money'
-gem 'eu_central_bank'
-gem 'ostruct'
+gem 'country_select' # Para seleção de países
+gem 'money' # Para manipulação de moedas
+gem 'eu_central_bank' # Para busca de taxas de câmbio
+gem 'ostruct' # Para manipulação de objetos
 gem 'pagy' # Para paginação
 gem 'cpf_cnpj' # Para validação e manipulação de CNPJ
-gem 'br_zip_code' # Para busca de endereço baseado no CEP
+gem 'br_zip_code' # Para busca de endereço baseado no CEP - Não esta sendo usada ainda
 gem 'httparty' # Para requisições HTTP e dependencia da br_zip_code gem
+gem 'prawn' # Para gerar PDFs
+gem 'prawn-table' # Para gerar tabelas em PDFs
+
 
 group :development, :test do
   gem "dotenv-rails"
