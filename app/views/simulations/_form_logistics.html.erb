@@ -38,6 +38,17 @@
         <%= form.input :destination_port, label: 'Porto de Destino' %>
       </div>
     </div>
+    <!-- Campos Adicionais para Equipamento -->
+    <div data-modal-target="equipmentFields" style="display: none;">
+      <div class="form-group">
+        <%= form.label :equipment_id, "Equipamento", class: "form-label" %>
+        <%= form.collection_select :equipment_id, Equipment.all, :id, :name, prompt: "Selecione o equipamento", class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.input :quantity, label: "Quantidade", input_html: { type: "number", min: 1, required: true } %>
+      </div>
+    </div>
   </div>
 
   <!-- Campos para Modal Aéreo -->

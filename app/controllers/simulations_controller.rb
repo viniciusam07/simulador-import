@@ -20,8 +20,12 @@ class SimulationsController < ApplicationController
 
       @simulation.calculate_total_value # Recalcula o total_value
       @simulation.save
+
+      # Redireciona para a página de sucesso
       redirect_to simulation_path(@simulation), notice: 'Simulação criada com sucesso.'
     else
+      # Adiciona mensagens de erro ao flash
+      flash.now[:alert] = "Houve problemas ao salvar a simulação. Verifique os erros abaixo."
       render :new, status: :unprocessable_entity
     end
   end
@@ -85,13 +89,11 @@ class SimulationsController < ApplicationController
       :origin_country,
       :destination_state,
       :modal,
-      :origin_port,
-      :destination_port,
-      :origin_airport,
-      :destination_airport,
-      :cfop_code,
-      :cfop_description,
+      :origin_port, :destination_port,
+      :origin_airport, :destination_airport,
+      :cfop_code, :cfop_description,
       :company_id,
+      :equipment_id, :quantity,
       expense_ids: [],
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
     )
@@ -116,16 +118,32 @@ class SimulationsController < ApplicationController
 
     return if selected_quotations.blank? # Retorna se não houver cotações
 
+    existing_quotation_ids = @simulation.simulation_quotations.pluck(:quotation_id)
+
     selected_quotations.each do |quotation_params|
       next if quotation_params[:_destroy] == "true"
 
       begin
-        quotation = Quotation.find(quotation_params[:quotation_id])
-        @simulation.simulation_quotations.find_or_initialize_by(quotation: quotation).update!(
-          quantity: quotation_params[:quantity]
+        quotation_id = quotation_params[:quotation_id].to_i
+
+        # Verifica duplicidade antes de adicionar a cotação
+        if existing_quotation_ids.include?(quotation_id)
+          Rails.logger.warn "A cotação #{quotation_id} já está associada a esta simulação."
+          next
+        end
+
+        # Cria ou atualiza a cotação
+        quotation = Quotation.find(quotation_id)
+        @simulation.simulation_quotations.create!(
+          quotation: quotation,
+          quantity: quotation_params[:quantity],
+          custom_price: quotation_params[:custom_price]
         )
+        existing_quotation_ids << quotation_id # Atualiza a lista de IDs existentes
       rescue ActiveRecord::RecordNotFound
         Rails.logger.warn "Quotation não encontrada: #{quotation_params[:quotation_id]}"
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "Erro ao adicionar cotação: #{e.message}"
       end
     end
   end

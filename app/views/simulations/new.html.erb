@@ -1,5 +1,23 @@
 <%= simple_form_for @simulation do |form| %>
   <div class="container py-4">
+    <!-- Mensagens de Erro -->
+    <% if flash[:alert] %>
+      <div class="alert alert-danger">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <% if @simulation.errors.any? %>
+      <div class="alert alert-danger">
+        <h4>Foram encontrados os seguintes problemas:</h4>
+        <ul>
+          <% @simulation.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <h1 class="mb-4">Nova Simulação</h1>
       <!-- Dados Iniciais -->
       <div class="section mb-5">

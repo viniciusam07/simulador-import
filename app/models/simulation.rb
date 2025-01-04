@@ -18,6 +18,7 @@ class Simulation < ApplicationRecord
     "3126" => "Compra para prestação de serviço sujeita ao ICMS"
   }.freeze
 
+  belongs_to :equipment, optional: true
   belongs_to :company, optional: true
   belongs_to :user
 
@@ -40,8 +41,10 @@ class Simulation < ApplicationRecord
   validates :origin_airport, :destination_airport, presence: true, if: -> { modal == 'Aéreo' }
   validates :cfop_code, presence: true, inclusion: { in: CFOPS.keys.map(&:to_s), message: "inválido" }
   validates :cfop_description, presence: true
+  validates :equipment_id, :quantity, presence: true, if: -> { modal == 'Marítimo' }
 
   # Callbacks
+  before_validation :set_default_tax_rates
   before_save :calculate_total_value
   before_save :set_customs_value
   before_save :set_total_customs_value_brl
@@ -49,7 +52,6 @@ class Simulation < ApplicationRecord
   before_save :calculate_taxes
   before_save :calculate_import_factor
   before_save :set_cfop_description
-
 
   # Métodos públicos
 
@@ -109,6 +111,15 @@ class Simulation < ApplicationRecord
   end
 
   private
+
+  # Define valores padrão para alíquotas se estiverem nil
+  def set_default_tax_rates
+    self.aliquota_ii ||= 0
+    self.aliquota_ipi ||= 0
+    self.aliquota_pis ||= 0
+    self.aliquota_cofins ||= 0
+    self.aliquota_icms ||= 0
+  end
 
   # Define o valor aduaneiro
   def set_customs_value

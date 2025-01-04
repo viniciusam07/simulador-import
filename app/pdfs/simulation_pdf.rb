@@ -113,9 +113,9 @@ class SimulationPdf < Prawn::Document
       [{ content: "Composição de Valores", colspan: 3, font_style: :bold, size: 12, align: :center }],
       ["Descrição", "Valor (#{@simulation.currency})", "Valor (BRL)"],
       ["Valor Total Produtos", format_currency(@simulation.total_value), format_currency(@simulation.total_value_brl)],
-      ["Valor Aduaneiro", format_currency(@simulation.customs_value), format_currency(@simulation.total_customs_value_brl)],
       ["Frete", format_currency(@simulation.freight_cost), format_currency(@simulation.freight_cost_brl)],
-      ["Seguro", format_currency(@simulation.insurance_cost), format_currency(@simulation.insurance_cost_brl)]
+      ["Seguro", format_currency(@simulation.insurance_cost), format_currency(@simulation.insurance_cost_brl)],
+      ["Valor Aduaneiro", format_currency(@simulation.customs_value), format_currency(@simulation.total_customs_value_brl)]
     ]
 
     # Verificar espaço disponível dinamicamente

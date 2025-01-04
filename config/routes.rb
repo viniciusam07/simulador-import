@@ -44,4 +44,7 @@ Rails.application.routes.draw do
 
   # Rotas para Companies
   resources :companies
+
+  # Rotas para Equipamentos
+  resources :equipments, only: [:index]
 end
