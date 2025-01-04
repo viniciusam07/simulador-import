@@ -20,191 +20,235 @@ class SimulationPdf < Prawn::Document
   def generate
     header
     move_down 10
-    general_details
-    move_down 15
-    logistics_details
-    move_down 15
-    quotations_details
-    move_down 15
-    taxes_and_expenses
-    move_down 15
-    summary
+    general_and_logistics_section
+    move_down 10
+    value_composition
+    move_down 10
+    quotations_section
+    move_down 10
+    tax_summary
+    move_down 10
+    expenses_section
+    move_down 10
+    final_summary
     footer
+    add_page_numbers
   end
 
   def header
     image "#{Rails.root}/app/assets/images/mazzu_logo_alta.png", width: 120, position: :left
-    move_down 10
-    text "Simulação de Importação ##{@simulation.id}", size: 16, style: :bold, align: :center
     move_down 5
-    text "Empresa: #{@simulation.company&.name} | Criado em: #{@simulation.created_at.strftime('%d/%m/%Y')}", size: 10, align: :center
+    text "Simulação de Importação ##{@simulation.id}", size: 12, style: :bold, align: :center
+    text "Data: #{@simulation.created_at.strftime('%d/%m/%Y')}", size: 9, align: :center
+    move_down 10
+    stroke_horizontal_rule
   end
 
-  def general_details
-    text "Detalhes Gerais", size: 12, style: :bold
+  def general_and_logistics_section
+    text "Informações Gerais e Logística", size: 12, style: :bold
+    move_down 5
 
-    pad(10) do
-      table(general_data, width: bounds.width) do |t|
-        t.cells.borders = []
-        t.cells.padding = [2, 5]
-        t.columns(0).font_style = :bold
-        t.columns(0).width = 150
+    column_width = (bounds.width - 20) / 2
+
+    bounding_box([0, cursor], width: bounds.width) do
+      # Coluna Esquerda - Dados Gerais
+      bounding_box([0, cursor], width: column_width, height: 150) do
+        text "Dados Gerais", size: 10, style: :bold
+        move_down 3
+        table(general_data, width: column_width) do |t|
+          t.cells.borders = []
+          t.cells.padding = [3, 3]
+          t.row_colors = ["F9F9F9", "FFFFFF"]
+          t.cells.size = 9
+        end
+      end
+
+      # Coluna Direita - Dados Logísticos
+      bounding_box([column_width + 10, cursor + 150], width: column_width, height: 150) do
+        text "Dados Logísticos", size: 10, style: :bold
+        move_down 3
+        table(logistics_data, width: column_width) do |t|
+          t.cells.borders = []
+          t.cells.padding = [3, 3]
+          t.row_colors = ["F9F9F9", "FFFFFF"]
+          t.cells.size = 9
+        end
       end
     end
-
-    draw_progress_bar("Composição dos Custos Gerais", {
-      "Produtos" => @simulation.total_value,
-      "Frete" => @simulation.freight_cost,
-      "Seguro" => @simulation.insurance_cost
-    })
   end
 
   def general_data
     [
-      ["Empresa:", @simulation.company&.name.to_s],
-      ["CNPJ:", @simulation.company&.cnpj.to_s],
-      ["País de Origem:", @simulation.origin_country.to_s],
-      ["Incoterm:", @simulation.incoterm.to_s],
-      ["Modal:", @simulation.modal.to_s],
-      ["Moeda:", @simulation.currency.to_s],
-      ["Taxa de Câmbio:", @simulation.exchange_rate.to_s],
-      ["CFOP:", "#{@simulation.cfop_code} - #{@simulation.cfop_description}"],
-      ["Valor Total:", @view.number_to_currency(@simulation.total_value.to_f, unit: @simulation.currency)],
-      ["Valor Total (BRL):", @view.number_to_currency(@simulation.total_value_brl.to_f, unit: 'BRL')],
-      ["Valor Aduaneiro:", @view.number_to_currency(@simulation.customs_value.to_f, unit: @simulation.currency)],
-      ["Valor Aduaneiro (BRL):", @view.number_to_currency(@simulation.total_customs_value_brl.to_f, unit: 'BRL')]
+      ["Empresa", @simulation.company&.name.to_s],
+      ["CNPJ", @simulation.company&.cnpj.to_s],
+      ["Incoterm", @simulation.incoterm.to_s],
+      ["CFOP", "#{@simulation.cfop_code} - #{@simulation.cfop_description}"],
+      ["Moeda", @simulation.currency.to_s],
+      ["Taxa de Câmbio", @simulation.exchange_rate.to_s]
     ]
   end
 
-  def logistics_details
-    text "Dados Logísticos", size: 12, style: :bold
-
-    logistics_data = [
-      ["Estado de Destino:", @simulation.destination_state.to_s],
-      ["Frete:", @view.number_to_currency(@simulation.freight_cost.to_f, unit: @simulation.currency)],
-      ["Frete (BRL):", @view.number_to_currency(@simulation.freight_cost_brl.to_f, unit: 'BRL')],
-      ["Seguro:", @view.number_to_currency(@simulation.insurance_cost.to_f, unit: @simulation.currency)],
-      ["Seguro (BRL):", @view.number_to_currency(@simulation.insurance_cost_brl.to_f, unit: 'BRL')]
+  def logistics_data
+    data = [
+      ["País de Origem", @simulation.origin_country.to_s],
+      ["Estado Destino", @simulation.destination_state.to_s],
+      ["Modal", @simulation.modal.to_s]
     ]
 
     if @simulation.modal == 'Marítimo'
-      logistics_data += [
-        ["Porto de Origem:", @simulation.origin_port.to_s],
-        ["Porto de Destino:", @simulation.destination_port.to_s]
+      data += [
+        ["Porto Origem", @simulation.origin_port.to_s],
+        ["Porto Destino", @simulation.destination_port.to_s]
       ]
     elsif @simulation.modal == 'Aéreo'
-      logistics_data += [
-        ["Aeroporto de Origem:", @simulation.origin_airport.to_s],
-        ["Aeroporto de Destino:", @simulation.destination_airport.to_s]
+      data += [
+        ["Aeroporto Origem", @simulation.origin_airport.to_s],
+        ["Aeroporto Destino", @simulation.destination_airport.to_s]
       ]
     end
-
-    pad(10) do
-      table(logistics_data, width: bounds.width) do |t|
-        t.cells.borders = []
-        t.cells.padding = [2, 5]
-        t.columns(0).font_style = :bold
-        t.columns(0).width = 150
-      end
-    end
+    data
   end
 
-  def quotations_details
-    text "Cotações", size: 12, style: :bold
-
-    quotations_data = [["Produto", "NCM", "Preço", "Qtd.", "Total", "Fornecedor", "II%", "IPI%", "PIS%", "COFINS%", "ICMS%"]]
-    @simulation.simulation_quotations.each do |sq|
-      quotations_data << [
-        sq.quotation.product.product_name,
-        sq.quotation.product.ncm,
-        @view.number_to_currency(sq.custom_price || sq.quotation.price, unit: sq.quotation.currency),
-        sq.quantity,
-        @view.number_to_currency(sq.total_value, unit: sq.quotation.currency),
-        sq.quotation.supplier.trade_name,
-        @view.number_to_percentage(sq.aliquota_ii || 0, precision: 2),
-        @view.number_to_percentage(sq.aliquota_ipi || 0, precision: 2),
-        @view.number_to_percentage(sq.aliquota_pis || 0, precision: 2),
-        @view.number_to_percentage(sq.aliquota_cofins || 0, precision: 2),
-        @view.number_to_percentage(sq.aliquota_icms || 0, precision: 2)
-      ]
-    end
-
-    pad(5) do
-      table(quotations_data, width: bounds.width) do |t|
-        t.cells.size = 8
-        t.cells.padding = [3, 3]
-        t.row(0).font_style = :bold
-        t.row_colors = ["F0F0F0", "FFFFFF"]
-      end
-    end
-  end
-
-  def taxes_and_expenses
-    text "Impostos e Despesas", size: 12, style: :bold
-    move_down 10
-
-    taxes_data = [["Imposto", "Alíquota", "Valor (BRL)"]]
-    taxes_data += [
-      ["II", "#{@view.number_to_percentage(@simulation.aliquota_ii || 0, precision: 2)}", @view.number_to_currency(@simulation.tributo_ii.to_f, unit: 'BRL')],
-      ["IPI", "#{@view.number_to_percentage(@simulation.aliquota_ipi || 0, precision: 2)}", @view.number_to_currency(@simulation.tributo_ipi.to_f, unit: 'BRL')],
-      ["PIS", "#{@view.number_to_percentage(@simulation.aliquota_pis || 0, precision: 2)}", @view.number_to_currency(@simulation.tributo_pis.to_f, unit: 'BRL')],
-      ["COFINS", "#{@view.number_to_percentage(@simulation.aliquota_cofins || 0, precision: 2)}", @view.number_to_currency(@simulation.tributo_cofins.to_f, unit: 'BRL')],
-      ["ICMS", "#{@view.number_to_percentage(@simulation.aliquota_icms || 0, precision: 2)}", @view.number_to_currency(@simulation.tributo_icms.to_f, unit: 'BRL')]
+  def value_composition
+    data = [
+      [{ content: "Composição de Valores", colspan: 3, font_style: :bold, size: 12, align: :center }],
+      ["Descrição", "Valor (#{@simulation.currency})", "Valor (BRL)"],
+      ["Valor Total Produtos", format_currency(@simulation.total_value), format_currency(@simulation.total_value_brl)],
+      ["Valor Aduaneiro", format_currency(@simulation.customs_value), format_currency(@simulation.total_customs_value_brl)],
+      ["Frete", format_currency(@simulation.freight_cost), format_currency(@simulation.freight_cost_brl)],
+      ["Seguro", format_currency(@simulation.insurance_cost), format_currency(@simulation.insurance_cost_brl)]
     ]
 
-    table(taxes_data, width: bounds.width) do |t|
-      t.cells.padding = [3, 3]
+    # Verificar espaço disponível dinamicamente
+    check_table_space("Composição de Valores",data)
+
+    text "Composição de Valores", size: 12, style: :bold
+    move_down 5
+
+    table(data, width: bounds.width) do |t|
       t.row(0).font_style = :bold
-      t.row_colors = ["F0F0F0", "FFFFFF"]
+      t.cells.padding = [3, 3]
+      t.row_colors = ["F9F9F9", "FFFFFF"]
+      t.cells.size = 9
+    end
+  end
+
+  def quotations_section
+    move_down 5
+
+    data = [
+      [{ content: "Cotações de Produtos", colspan: 11, font_style: :bold, size: 12, align: :center }],
+      ["Produto", "NCM", "Preço", "Qtd", "Total", "Fornecedor", "II", "IPI", "PIS", "COFINS", "ICMS"]
+    ]
+    @simulation.simulation_quotations.each do |sq|
+      data << [
+        sq.quotation.product.product_name,
+        sq.quotation.product.ncm,
+        format_currency(sq.custom_price || sq.quotation.price),
+        sq.quantity,
+        format_currency(sq.total_value),
+        sq.quotation.supplier.trade_name,
+        format_currency(sq.tributo_ii),
+        format_currency(sq.tributo_ipi),
+        format_currency(sq.tributo_pis),
+        format_currency(sq.tributo_cofins),
+        format_currency(sq.tributo_icms)
+      ]
     end
 
-    move_down 15
-    text "Despesas Operacionais", size: 12, style: :bold
-    move_down 10
+    # Verificar espaço antes de renderizar
+    check_table_space("Resumo de Impostos", data)
 
-    expenses_data = [["Despesa", "Valor", "Localização"]]
+    # Ajusta o tamanho da fonte dinamicamente
+    font_size = adjust_font_for_table(data)
+
+    # Renderiza a tabela com o tamanho ajustado
+    font_size(font_size) do
+      table(data, width: bounds.width, header: true) do |t|
+        t.row(0).font_style = :bold
+        t.cells.padding = [3, 3]
+        t.row_colors = ["F9F9F9", "FFFFFF"]
+        t.cells.size = font_size
+      end
+    end
+  end
+
+  def tax_summary
+    move_down 5
+
+    data = [
+      [{ content: "Resumo dos Impostos", colspan: 3, font_style: :bold, size: 12, align: :center }],
+      ["Imposto", "Valor (BRL)", "% do Total"],
+      ["II", format_currency(@simulation.tributo_ii), format_percentage(@simulation.tributo_ii / @simulation.total_taxes)],
+      ["IPI", format_currency(@simulation.tributo_ipi), format_percentage(@simulation.tributo_ipi / @simulation.total_taxes)],
+      ["PIS", format_currency(@simulation.tributo_pis), format_percentage(@simulation.tributo_pis / @simulation.total_taxes)],
+      ["COFINS", format_currency(@simulation.tributo_cofins), format_percentage(@simulation.tributo_cofins / @simulation.total_taxes)],
+      ["ICMS", format_currency(@simulation.tributo_icms), format_percentage(@simulation.tributo_icms / @simulation.total_taxes)]
+    ]
+
+    # Verificar espaço antes de renderizar
+    check_table_space("Despesas Operacionais", data)
+
+    table(data, width: bounds.width) do |t|
+      t.row(0).font_style = :bold
+      t.cells.padding = [3, 3]
+      t.row_colors = ["F9F9F9", "FFFFFF"]
+      t.cells.size = 9
+    end
+  end
+
+  def expenses_section
+    move_down 5
+
+    data = [
+      [{ content: "Despesas Operacionais", colspan: 3, font_style: :bold, size: 12, align: :center }],
+      ["Nome", "Valor", "Localização"]
+    ]
     @simulation.simulation_expenses.each do |expense|
-      expenses_data << [
+      data << [
         expense.expense_custom_name,
-        @view.number_to_currency(expense.expense_custom_value, unit: expense.expense_currency),
+        format_currency(expense.expense_custom_value),
         expense.expense_location
       ]
     end
 
-    table(expenses_data, width: bounds.width) do |t|
-      t.cells.padding = [3, 3]
+    # Verificar espaço antes de renderizar
+    check_table_space("Despesas Operacionais", data)
+
+
+    table(data, width: bounds.width) do |t|
       t.row(0).font_style = :bold
-      t.row_colors = ["F0F0F0", "FFFFFF"]
+      t.cells.padding = [3, 3]
+      t.row_colors = ["F9F9F9", "FFFFFF"]
+      t.cells.size = 9
     end
   end
 
-  def summary
-    text "Resumo da Importação", size: 12, style: :bold
-    move_down 10
+  def final_summary
+    move_down 5
 
-    summary_data = [
-      ["Valor Aduaneiro Total (BRL):", @view.number_to_currency(@simulation.total_customs_value_brl.to_f, unit: 'BRL')],
-      ["Valor Total de Impostos:", @view.number_to_currency(@simulation.total_taxes.to_f, unit: 'BRL')],
-      ["Valor Total de Despesas Operacionais:", @view.number_to_currency(@simulation.total_operational_expenses.to_f, unit: 'BRL')],
-      ["Valor Total da Importação:", @view.number_to_currency(@simulation.total_importation_cost.to_f, unit: 'BRL')],
-      ["Fator de Importação:", @view.number_with_precision(@simulation.import_factor.to_f, precision: 2)]
+    data = [
+      [{ content: "Resumo Final da Importação", colspan: 2, font_style: :bold, size: 12, align: :center }],
+      ["Descrição", "Valor"],
+      ["Valor Total Aduaneiro", format_currency(@simulation.total_customs_value_brl)],
+      ["Total de Impostos", format_currency(@simulation.total_taxes)],
+      ["Total de Despesas", format_currency(@simulation.total_operational_expenses)],
+      ["Custo Total da Importação", format_currency(@simulation.total_importation_cost)],
+      ["Fator de Importação", format_number(@simulation.import_factor)]
     ]
 
-    table(summary_data, width: bounds.width) do |t|
-      t.cells.padding = [3, 5]
-      t.cells.borders = []
-      t.columns(0).font_style = :bold
-    end
+    # Verificar espaço antes de renderizar
+    check_table_space("Resumo Final da Importação", data)
 
-    draw_progress_bar("Composição do Custo Total", {
-      "Aduaneiro" => @simulation.total_customs_value_brl,
-      "Impostos" => @simulation.total_taxes,
-      "Despesas" => @simulation.total_operational_expenses
-    })
+    table(data, width: bounds.width) do |t|
+      t.row(0).font_style = :bold
+      t.cells.padding = [3, 3]
+      t.row_colors = ["F9F9F9", "FFFFFF"]
+      t.cells.size = 9
+    end
   end
 
   def footer
-    go_to_page(page_count)
     bounding_box [bounds.left, bounds.bottom + 20], width: bounds.width do
       stroke_horizontal_rule
       move_down 5
@@ -213,28 +257,72 @@ class SimulationPdf < Prawn::Document
     end
   end
 
-  def draw_progress_bar(title, components)
-    move_down 10
-    text title, size: 10, style: :bold
-    move_down 5
+  def adjust_font_for_table(data, options = {})
+    # Tamanhos de fonte disponíveis
+    font_sizes = options[:font_sizes] || [9, 8, 7, 6]
 
-    total = components.values.sum
-    components.each do |name, value|
-      percentage = ((value / total.to_f) * 100).round
-      text "#{name}: #{percentage}%", size: 9
+    # Itera sobre os tamanhos de fonte
+    font_sizes.each do |size|
+      pdf_temp = Prawn::Document.new(page_size: "A4")
+      pdf_temp.font_size(size) do
+        pdf_temp.bounding_box([0, pdf_temp.cursor], width: bounds.width) do
+          begin
+            pdf_temp.table(data, width: bounds.width, cell_style: { padding: [3, 3], size: size })
+          rescue Prawn::Errors::CannotFit
+            next # Tente o próximo tamanho de fonte
+          end
+        end
+      end
 
-      fill_color = case name
-                  when "Produtos" then "007BFF"
-                  when "Frete" then "FFA500"
-                  when "Seguro" then "008000"
-                  when "Impostos" then "FFC107"
-                  when "Despesas" then "FF5733"
-                  else "CCCCCC" # Valor padrão para nomes não especificados
-                  end
-
-      fill_rectangle([bounds.left, cursor], bounds.width * (percentage / 100.0), 10)
-      fill_color "000000" # Reseta a cor para o texto padrão
-      move_down 15
+      # Retorna o tamanho da fonte se couber
+      return size
     end
+
+    # Retorna o menor tamanho de fonte se nenhum couber perfeitamente
+    font_sizes.last
+  end
+
+  def check_table_space(title, data)
+    # Calcula altura do título
+    title_height = title.empty? ? 0 : height_of(title, size: 12) + 10
+
+    # Calcula altura da tabela
+    rows = data.size
+    header_height = 25
+    row_height = 20
+    table_height = (rows * row_height) + header_height
+
+    # Altura total necessária
+    total_height = title_height + table_height
+
+    # Verifica espaço na página
+    start_new_page if cursor < total_height + 20
+  end
+
+  def estimate_table_height(data)
+    # Estima a altura necessária para a tabela com base no número de linhas e espaçamento
+    rows = data.size
+    header_height = 25
+    row_height = 20
+    header_height + (rows * row_height)
+  end
+
+  def add_page_numbers
+    number_pages "Página <page> de <total>",
+                 at: [bounds.right - 50, 0],
+                 align: :right,
+                 size: 8
+  end
+
+  def format_currency(value)
+    @view.number_to_currency(value || 0, unit: 'BRL')
+  end
+
+  def format_percentage(value)
+    @view.number_to_percentage(value || 0, precision: 2)
+  end
+
+  def format_number(value)
+    @view.number_with_precision(value || 0, precision: 2)
   end
 end
