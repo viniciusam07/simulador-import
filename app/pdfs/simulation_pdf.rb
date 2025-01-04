@@ -24,13 +24,13 @@ class SimulationPdf < Prawn::Document
     move_down 10
     value_composition
     move_down 10
-    quotations_section
-    move_down 10
     tax_summary
     move_down 10
     expenses_section
     move_down 10
     final_summary
+    move_down 10
+    quotations_section
     footer
     add_page_numbers
   end
@@ -45,7 +45,6 @@ class SimulationPdf < Prawn::Document
   end
 
   def general_and_logistics_section
-    text "Informações Gerais e Logística", size: 12, style: :bold
     move_down 5
 
     column_width = (bounds.width - 20) / 2
@@ -122,9 +121,6 @@ class SimulationPdf < Prawn::Document
     # Verificar espaço disponível dinamicamente
     check_table_space("Composição de Valores",data)
 
-    text "Composição de Valores", size: 12, style: :bold
-    move_down 5
-
     table(data, width: bounds.width) do |t|
       t.row(0).font_style = :bold
       t.cells.padding = [3, 3]
@@ -134,30 +130,48 @@ class SimulationPdf < Prawn::Document
   end
 
   def quotations_section
-    move_down 5
+    # Adiciona uma nova página em layout horizontal
+    start_new_page(layout: :landscape)
 
+    # Título da página
+    text "Cotações de Produtos", size: 16, style: :bold, align: :center
+    move_down 10
+
+    # Dados da tabela
     data = [
-      [{ content: "Cotações de Produtos", colspan: 11, font_style: :bold, size: 12, align: :center }],
-      ["Produto", "NCM", "Preço", "Qtd", "Total", "Fornecedor", "II", "IPI", "PIS", "COFINS", "ICMS"]
+      ["Produto", "NCM", "Preço Unitário", "Quantidade", "Valor Total", "Frete Alocado", "Seguro Alocado",
+      "Valor Aduaneiro Unitário", "Valor Aduaneiro Total", "Fornecedor",
+      "II (%)", "II (R$)", "IPI (%)", "IPI (R$)",
+      "PIS (%)", "PIS (R$)", "COFINS (%)", "COFINS (R$)", "ICMS (%)", "ICMS (R$)"]
     ]
+
     @simulation.simulation_quotations.each do |sq|
       data << [
-        sq.quotation.product.product_name,
-        sq.quotation.product.ncm,
-        format_currency(sq.custom_price || sq.quotation.price),
-        sq.quantity,
-        format_currency(sq.total_value),
-        sq.quotation.supplier.trade_name,
-        format_currency(sq.tributo_ii),
-        format_currency(sq.tributo_ipi),
-        format_currency(sq.tributo_pis),
-        format_currency(sq.tributo_cofins),
-        format_currency(sq.tributo_icms)
+        sq.quotation.product.product_name || "N/A",
+        sq.quotation.product.ncm || "N/A",
+        format_currency(sq.custom_price || sq.quotation.price) || "N/A",
+        sq.quantity || 0,
+        format_currency(sq.total_value) || "N/A",
+        format_currency(sq.freight_allocated || 0) || "N/A",
+        format_currency(sq.insurance_allocated || 0) || "N/A",
+        format_currency(sq.customs_unit_value || 0) || "N/A",
+        format_currency(sq.customs_total_value || 0) || "N/A",
+        sq.quotation.supplier.trade_name || "N/A",
+        format_percentage(sq.aliquota_ii || 0) || "N/A",
+        format_currency(sq.tributo_ii || 0) || "N/A",
+        format_percentage(sq.aliquota_ipi || 0) || "N/A",
+        format_currency(sq.tributo_ipi || 0) || "N/A",
+        format_percentage(sq.aliquota_pis || 0) || "N/A",
+        format_currency(sq.tributo_pis || 0) || "N/A",
+        format_percentage(sq.aliquota_cofins || 0) || "N/A",
+        format_currency(sq.tributo_cofins || 0) || "N/A",
+        format_percentage(sq.aliquota_icms || 0) || "N/A",
+        format_currency(sq.tributo_icms || 0) || "N/A"
       ]
     end
 
     # Verificar espaço antes de renderizar
-    check_table_space("Resumo de Impostos", data)
+    check_table_space("Cotações de Produtos", data)
 
     # Ajusta o tamanho da fonte dinamicamente
     font_size = adjust_font_for_table(data)
@@ -166,8 +180,9 @@ class SimulationPdf < Prawn::Document
     font_size(font_size) do
       table(data, width: bounds.width, header: true) do |t|
         t.row(0).font_style = :bold
-        t.cells.padding = [3, 3]
+        t.row(0).background_color = "F0F0F0"
         t.row_colors = ["F9F9F9", "FFFFFF"]
+        t.cells.padding = [3, 3]
         t.cells.size = font_size
       end
     end
@@ -249,11 +264,11 @@ class SimulationPdf < Prawn::Document
   end
 
   def footer
-    bounding_box [bounds.left, bounds.bottom + 20], width: bounds.width do
+    bounding_box [bounds.left, bounds.bottom + 30], width: bounds.width do
       stroke_horizontal_rule
       move_down 5
       text "Gerado em: #{Time.current.strftime('%d/%m/%Y às %H:%M')} por #{@simulation.user.email}",
-           size: 8, align: :center
+          size: 8, align: :center
     end
   end
 
@@ -308,10 +323,17 @@ class SimulationPdf < Prawn::Document
   end
 
   def add_page_numbers
-    number_pages "Página <page> de <total>",
-                 at: [bounds.right - 50, 0],
-                 align: :right,
-                 size: 8
+    page_count.times do |i|
+      go_to_page(i + 1)
+      layout = page.layout
+
+      x_position = layout == :landscape ? bounds.right - 150 : bounds.right - 100
+      y_position = bounds.bottom + 15
+
+      bounding_box([x_position, y_position], width: 100, height: 20) do
+        text "Página #{i + 1} de #{page_count}", size: 8, align: :right
+      end
+    end
   end
 
   def format_currency(value)
