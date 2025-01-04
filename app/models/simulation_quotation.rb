@@ -56,11 +56,11 @@ class SimulationQuotation < ApplicationRecord
   end
 
   # Calcula os valores aduaneiros (unitário e total)
+
   def calculate_customs_values
-    self.customs_unit_value = total_value.to_f + freight_allocated.to_f + insurance_allocated.to_f
+    self.customs_unit_value = (total_value.to_f + freight_allocated.to_f + insurance_allocated.to_f) / (quantity.to_f.nonzero? || 1)
     self.customs_total_value = customs_unit_value * quantity.to_f
   end
-
   # Define o preço customizado padrão como o preço da cotação, caso não esteja definido
   def set_default_custom_price
     self.custom_price ||= quotation&.price if quotation.present?

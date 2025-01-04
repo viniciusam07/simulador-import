@@ -41,7 +41,7 @@ class Simulation < ApplicationRecord
   validates :origin_airport, :destination_airport, presence: true, if: -> { modal == 'Aéreo' }
   validates :cfop_code, presence: true, inclusion: { in: CFOPS.keys.map(&:to_s), message: "inválido" }
   validates :cfop_description, presence: true
-  validates :equipment_id, :quantity, presence: true, if: -> { modal == 'Marítimo' }
+  validates :equipment_id, :equipment_quantity, presence: true, if: -> { modal == 'Marítimo' }
 
   # Callbacks
   before_validation :set_default_tax_rates
