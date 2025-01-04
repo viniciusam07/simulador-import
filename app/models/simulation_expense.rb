@@ -19,7 +19,7 @@ class SimulationExpense < ApplicationRecord
     base_value = calculate_base_value(expense.calculation_base)
 
     # Retorna 0 se a base de cálculo for inválida ou não definida
-    return 0 if base_value.nil?
+    return 0 unless base_value.to_f.positive?
 
     # Calcula o valor percentual com base na base de cálculo e arredonda
     (base_value * (expense.percentage / 100.0)).round(2)
@@ -38,7 +38,7 @@ class SimulationExpense < ApplicationRecord
     when 'customs_value'
       simulation.total_customs_value_brl || simulation.convert_to_brl(simulation.customs_value, simulation.currency)
     else
-      nil # Retorna nil se a base de cálculo não for reconhecida
+      0 # Retorna 0 se a base de cálculo não for reconhecida
     end
   end
 
