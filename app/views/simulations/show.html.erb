@@ -11,35 +11,44 @@
           <i class="fas fa-info-circle"></i> Detalhes Gerais - Produtos e Valores
         </div>
         <div class="card-body">
-          <ul class="list-group mb-3">
-            <li class="list-group-item">
-              <strong>Valor Total Produtos:</strong> <%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %>
-            </li>
-            <li class="list-group-item">
-              <strong>Valor Total Produtos (BRL):</strong> <%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %>
-            </li>
-            <li class="list-group-item">
-              <strong>Valor Aduaneiro:</strong> <%= number_to_currency(@simulation.customs_value || 0, unit: @simulation.currency || '') %>
-            </li>
-            <li class="list-group-item">
-              <strong>Valor Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.total_customs_value_brl || 0, unit: 'BRL') %>
-            </li>
-            <li class="list-group-item">
-              <strong>Custo do Frete:</strong> <%= number_to_currency(@simulation.freight_cost || 0, unit: @simulation.currency || '') %>
-            </li>
-            <li class="list-group-item">
-              <strong>Custo do Frete (BRL):</strong> <%= number_to_currency(@simulation.freight_cost_brl, unit: 'BRL') %>
-            </li>
-            <li class="list-group-item">
-              <strong>Custo do Seguro:</strong> <%= number_to_currency(@simulation.insurance_cost || 0, unit: @simulation.currency || '') %>
-            </li>
-            <li class="list-group-item">
-              <strong>Custo do Seguro (BRL):</strong> <%= number_to_currency(@simulation.insurance_cost_brl, unit: 'BRL') %>
-            </li>
-          </ul>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th>Descrição</th>
+                  <th class="text-center">Valor (BRL)</th>
+                  <th class="text-center">Valor (<%= @simulation.currency %>)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Valor Total Produtos</td>
+                  <td class="text-end"><%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></td>
+                  <td class="text-end"><%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %></td>
+                </tr>
+                <tr>
+                  <td>Custo do Frete</td>
+                  <td class="text-end"><%= number_to_currency(@simulation.freight_cost_brl || 0, unit: 'BRL') %></td>
+                  <td class="text-end"><%= number_to_currency(@simulation.freight_cost || 0, unit: @simulation.currency || '') %></td>
+                </tr>
+                <tr>
+                  <td>Custo do Seguro</td>
+                  <td class="text-end"><%= number_to_currency(@simulation.insurance_cost_brl || 0, unit: 'BRL') %></td>
+                  <td class="text-end"><%= number_to_currency(@simulation.insurance_cost || 0, unit: @simulation.currency || '') %></td>
+                </tr>
+                <tr>
+                  <td>Valor Aduaneiro</td>
+                  <td class="text-end"><%= number_to_currency(@simulation.total_customs_value_brl || 0, unit: 'BRL') %></td>
+                  <td class="text-end"><%= number_to_currency(@simulation.customs_value || 0, unit: @simulation.currency || '') %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
+
+
 
     <!-- Coluna 2 -->
     <div class="col-md-6">
