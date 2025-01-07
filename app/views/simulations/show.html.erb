@@ -154,9 +154,20 @@
             <strong>Aeroporto de Destino:</strong> <%= @simulation.destination_airport %>
           </li>
         <% end %>
+        <!-- Campos de Carga -->
+        <li class="list-group-item">
+          <strong>CBM Total (Cubagem em m³):</strong> <%= @simulation.cbm_total || 0 %>
+        </li>
+        <li class="list-group-item">
+          <strong>Peso Líquido Total (Kg):</strong> <%= @simulation.weight_net_total || 0 %>
+        </li>
+        <li class="list-group-item">
+          <strong>Peso Bruto Total (Kg):</strong> <%= @simulation.weight_gross_total || 0 %>
+        </li>
       </ul>
     </div>
   </div>
+
 
   <!-- Cotações -->
   <div class="card mb-4">

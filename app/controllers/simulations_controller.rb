@@ -94,6 +94,7 @@ class SimulationsController < ApplicationController
       :cfop_code, :cfop_description,
       :company_id,
       :equipment_id, :equipment_quantity,
+      :cbm_total, :weight_net_total, :weight_gross_total,
       expense_ids: [],
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
     )

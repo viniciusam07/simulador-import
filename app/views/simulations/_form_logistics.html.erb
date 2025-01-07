@@ -18,6 +18,33 @@
                    required: true %>
   </div>
 
+  <!-- Carga -->
+  <div class="section">
+    <h3 class="section-title">Carga</h3>
+    <div class="row">
+      <!-- CBM Total -->
+      <div class="col-md-4">
+        <%= form.input :cbm_total,
+                       label: 'CBM Total (Cubagem em m³)',
+                       input_html: { type: "number", step: "0.01", min: 0, required: true, class: "form-control" } %>
+      </div>
+
+      <!-- Peso Líquido Total -->
+      <div class="col-md-4">
+        <%= form.input :weight_net_total,
+                       label: 'Peso Líquido Total (Kg)',
+                       input_html: { type: "number", step: "0.01", min: 0, required: true, class: "form-control" } %>
+      </div>
+
+      <!-- Peso Bruto Total -->
+      <div class="col-md-4">
+        <%= form.input :weight_gross_total,
+                       label: 'Peso Bruto Total (Kg)',
+                       input_html: { type: "number", step: "0.01", min: 0, required: true, class: "form-control" } %>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal de Transporte -->
   <div class="form-group">
     <%= form.input :modal,

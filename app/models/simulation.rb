@@ -42,6 +42,8 @@ class Simulation < ApplicationRecord
   validates :cfop_code, presence: true, inclusion: { in: CFOPS.keys.map(&:to_s), message: "inválido" }
   validates :cfop_description, presence: true
   validates :equipment_id, :equipment_quantity, presence: true, if: -> { modal == 'Marítimo' }
+  validates :cbm_total, :weight_net_total, :weight_gross_total, numericality: { greater_than_or_equal_to: 0 }
+
 
   # Callbacks
   before_validation :set_default_tax_rates
