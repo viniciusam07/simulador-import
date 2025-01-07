@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_06_141359) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_07_132757) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_06_141359) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "port_airports", force: :cascade do |t|
+    t.string "country", null: false
+    t.string "location", null: false
+    t.string "name", null: false
+    t.string "name_without_diacritics"
+    t.string "status"
+    t.string "iata"
+    t.decimal "latitude", precision: 10, scale: 6
+    t.decimal "longitude", precision: 10, scale: 6
+    t.jsonb "function_array", default: []
+    t.jsonb "function_description", default: []
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location"], name: "index_port_airports_on_location"
   end
 
   create_table "products", force: :cascade do |t|
