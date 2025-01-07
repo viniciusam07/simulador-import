@@ -50,7 +50,11 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-6">
-            <%= form.input :unit_of_measure, label: 'Unidade de Medida', required: true, input_html: { class: 'form-control' } %>
+            <%= form.input :unit_of_measure,
+                            label: 'Unidade de Medida',
+                            collection: Product::UNIT_OF_MEASURE_OPTIONS,
+                            include_blank: "Selecione a Unidade",
+                            input_html: { id: 'product_unit_of_measure', class: 'form-control' } %>
           </div>
           <div class="col-md-6">
             <%= form.input :quantity_per_box, label: 'Quantidade por Caixa Master', input_html: { class: 'form-control' } %>
