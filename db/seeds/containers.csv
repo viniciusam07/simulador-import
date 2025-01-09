@@ -1,0 +1,17 @@
+Name,Type,Capacity (m³),Max Weight (kg),Description
+20' STANDARD,STANDARD,33.2,28000,Container padrão para cargas secas de tamanho 20 pés.
+40' STANDARD,STANDARD,67.7,30480,Container padrão para cargas secas de tamanho 40 pés.
+40' HIGH-CUBE,STANDARD,76.3,30480,"Container com maior altura, ideal para cargas volumosas."
+45' HIGH-CUBE,STANDARD,85.9,32000,Container extra grande com altura aumentada para grandes volumes.
+20' OPEN TOP,OPEN TOP,32.0,28000,"Container com teto aberto, ideal para cargas altas."
+40' OPEN TOP,OPEN TOP,66.5,30480,Container maior com teto aberto para cargas altas.
+20' FLATRACK,FLATRACK,,30000,"Container sem laterais, para cargas grandes ou pesadas."
+40' FLATRACK,FLATRACK,,45000,"Container maior sem laterais, para cargas grandes ou pesadas."
+20' FLATRACK COLLAPSIBLE,FLATRACK,,30000,"Flat rack dobrável, fácil de transportar quando vazio."
+40' FLATRACK COLLAPSIBLE,FLATRACK,,45000,"Flat rack dobrável maior, ideal para logística flexível."
+20' PLATFORM,PLATFORM,,20000,Plataforma para cargas extra largas ou longas.
+40' PLATFORM,PLATFORM,,40000,Plataforma maior para cargas extra largas ou longas.
+20' REFRIGERATED,REFRIGERATED,27.0,25000,"Container refrigerado, ideal para transporte de produtos perecíveis."
+40' REFRIGERATED,REFRIGERATED,58.0,30000,"Container refrigerado maior, para produtos perecíveis em grande escala."
+20' BULK,BULK,33.0,25000,"Container a granel, ideal para transporte de grãos ou sólidos."
+20' TANK,TANK,25.0,24000,"Container tanque, usado para líquidos ou químicos."
