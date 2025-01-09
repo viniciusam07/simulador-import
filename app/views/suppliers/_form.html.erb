@@ -1,42 +1,49 @@
-<%= simple_form_for @supplier do |form| %>
-  <div class="container">
-    <!-- Informações Básicas -->
-    <div class="card mb-4">
-      <div class="card-header bg-primary text-white">
-        <i class="fas fa-building"></i> Informações do Fornecedor
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <%= form.input :corporate_name,
-                label: 'Razão Social',
-                required: true,
-                input_html: { class: 'form-control' } %>
-          </div>
-          <div class="col-md-6">
-            <%= form.input :trade_name,
-                label: 'Nome Fantasia',
-                required: true,
-                input_html: { class: 'form-control' } %>
-          </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col-md-6">
-            <%= form.input :country,
-                label: 'País',
-                required: true,
-                as: :country,
-                priority_countries: ['BR', 'US', 'CN'],
-                prompt: 'Selecione um país',
-                input_html: { class: 'form-control' } %>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="container mt-5">
+  <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+    <div class="card-body">
+      <h1 class="text-center mb-4">Novo Fornecedor</h1>
 
-    <!-- Botão de Ação -->
-    <div class="text-center">
-      <%= form.button :submit, 'Salvar Fornecedor', class: 'btn btn-primary' %>
+      <%= simple_form_for @supplier do |form| %>
+        <!-- Informações Básicas -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <i class="fas fa-building"></i> Informações do Fornecedor
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <%= form.input :corporate_name,
+                  label: 'Razão Social',
+                  required: true,
+                  input_html: { class: 'form-control', placeholder: 'Digite a razão social' } %>
+            </div>
+            <div class="mb-3">
+              <%= form.input :trade_name,
+                  label: 'Nome Fantasia',
+                  required: true,
+                  input_html: { class: 'form-control', placeholder: 'Digite o nome fantasia' } %>
+            </div>
+            <div class="mb-3">
+              <%= form.input :country,
+                  label: 'País',
+                  required: true,
+                  as: :country,
+                  priority_countries: ['BR', 'US', 'CN'],
+                  prompt: 'Selecione um país',
+                  input_html: { class: 'form-control' } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botão de Ação -->
+        <div class="text-center">
+          <%= form.button :submit, 'Salvar Fornecedor', class: 'btn btn-success w-100' %>
+        </div>
+      <% end %>
+
+      <!-- Botão Voltar -->
+      <div class="text-center mt-4">
+        <%= link_to 'Voltar', suppliers_path, class: 'btn btn-secondary' %>
+      </div>
     </div>
   </div>
-<% end %>
+</div>
