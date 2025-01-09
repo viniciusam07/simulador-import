@@ -80,6 +80,18 @@
         <%= form.input :equipment_quantity, label: "Quantidade", input_html: { type: "number", min: 1, required: true, class: "form-control" } %>
       </div>
     </div>
+
+    <!--Tipo de Carga (FLC ou LCL) -->
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <%= form.label :cargo_type, "Tipo de Carga (FLC ou LCL)", class: "form-label" %>
+        <%= form.select :cargo_type,
+                options_for_select([['FCL - Carga Completa', 'FCL'], ['LCL - Carga Consolidada', 'LCL']], @simulation.cargo_type),
+                { prompt: "Selecione o tipo de carga" },
+                class: "form-select",
+                required: true %>
+      </div>
+    </div>
   </div>
 
   <!-- Campos para Modal Aéreo -->

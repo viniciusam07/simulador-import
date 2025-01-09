@@ -43,17 +43,18 @@ class Simulation < ApplicationRecord
   validates :cfop_description, presence: true
   validates :equipment_id, :equipment_quantity, presence: true, if: -> { modal == 'Marítimo' }
   validates :cbm_total, :weight_net_total, :weight_gross_total, numericality: { greater_than_or_equal_to: 0 }
+  validates :cargo_type, inclusion: { in: ['FCL', 'LCL'], message: 'Tipo de carga inválido' }, if: :maritime_modal?
 
 
   # Callbacks
   before_validation :set_default_tax_rates
+  before_save :set_cfop_description
   before_save :calculate_total_value
   before_save :set_customs_value
   before_save :set_total_customs_value_brl
   before_save :set_converted_values
   before_save :calculate_taxes
   before_save :calculate_import_factor
-  before_save :set_cfop_description
 
   # Métodos públicos
 
@@ -158,5 +159,10 @@ class Simulation < ApplicationRecord
   def set_cfop_description
     selected_cfop = CFOPS.find { |code, _| code == cfop_code }
     self.cfop_description = selected_cfop ? selected_cfop[1] : nil
+  end
+
+  def maritime_modal?
+    Rails.logger.debug "Modal atual: #{modal}"
+    modal == 'Marítimo'
   end
 end

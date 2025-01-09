@@ -1,1 +1,4 @@
-<p class="text-muted">Adicione observações ou notas relevantes aqui.</p>
+<div class="form-group">
+  <%= form.label :observations, "Observações", class: "form-label" %>
+  <%= form.text_area :observations, rows: 6, class: "form-control", placeholder: "Adicione suas anotações..." %>
+</div>

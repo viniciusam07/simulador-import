@@ -146,6 +146,12 @@
           <li class="list-group-item">
             <strong>Porto de Destino:</strong> <%= @simulation.destination_port %>
           </li>
+          <li class="list-group-item">
+            <strong>Tipo de Carga:</strong> <%= @simulation.cargo_type || "Não especificado" %>
+          </li>
+          <li class="list-group-item">
+            <strong>Equipamento:</strong> <%= "#{@simulation.equipment&.name || 'Não especificado'} X #{@simulation.equipment_quantity || 'Não especificado'}" %>
+          </li>
         <% elsif @simulation.modal == 'Aéreo' %>
           <li class="list-group-item">
             <strong>Aeroporto de Origem:</strong> <%= @simulation.origin_airport %>
@@ -413,6 +419,20 @@
       </div>
     </div>
   </div>
+
+  <!-- Observações -->
+  <% if @simulation.observations.present? %>
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">
+        <i class="fas fa-sticky-note"></i> Observações
+      </div>
+      <div class="card-body">
+        <div class="observations-content">
+          <%= simple_format(@simulation.observations) %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 
   <!-- Botões de Ação -->
   <div class="btn-group mt-4" role="group">
