@@ -14,12 +14,17 @@ class SimulationsController < ApplicationController
     end
 
     if @simulation.save
+      # Recalcula o total_value
+      @simulation.calculate_total_value
+      @simulation.save!
+
       attach_selected_expenses
       attach_selected_quotations
       attach_afrmm_if_needed
 
-      @simulation.calculate_total_value # Recalcula o total_value
-      @simulation.save
+      # Garante que as despesas sejam recalculadas
+      @simulation.simulation_expenses.each(&:recalculate_custom_value)
+      @simulation.save!
 
       # Redireciona para a página de sucesso
       redirect_to simulation_path(@simulation), notice: 'Simulação criada com sucesso.'
@@ -42,8 +47,12 @@ class SimulationsController < ApplicationController
       attach_selected_expenses
       attach_selected_quotations
 
-      @simulation.calculate_total_value # Recalcula o total_value
-      @simulation.save
+      # Recalcular valores customizados das despesas
+      @simulation.simulation_expenses.each(&:recalculate_custom_value)
+
+      # Salvar novamente para persistir os valores recalculados
+      @simulation.save!
+
       redirect_to simulation_path(@simulation), notice: 'Simulação atualizada com sucesso.'
     else
       render :edit, status: :unprocessable_entity
@@ -105,13 +114,13 @@ class SimulationsController < ApplicationController
     selected_expenses = Expense.where(id: params[:simulation][:expense_ids])
 
     selected_expenses.each do |expense|
-      @simulation.simulation_expenses.find_or_create_by!(expense: expense) do |sim_expense|
-        sim_expense.expense_custom_name = expense.expense_name
-        sim_expense.expense_custom_value = sim_expense.calculate_custom_value
-        sim_expense.expense_currency = expense.expense_currency
-        sim_expense.expense_location = expense.expense_location
-        sim_expense.save!
-      end
+      sim_expense = @simulation.simulation_expenses.find_or_initialize_by(expense: expense)
+      sim_expense.assign_attributes(
+        expense_custom_name: expense.expense_name,
+        expense_currency: expense.expense_currency,
+        expense_location: expense.expense_location
+      )
+      sim_expense.save! # Chama o callback `before_save` para recalcular o valor customizado
     end
   end
 
