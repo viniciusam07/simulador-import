@@ -1,37 +1,34 @@
-require 'json'
+require 'csv'
 
 puts "Iniciando o seed de PortAirports..."
 
-# Caminho do arquivo JSON
-file_path = Rails.root.join('db', 'seeds', 'unlocode_v2_20250109.json')
+# Caminho do arquivo CSV
+file_path = Rails.root.join('db', 'seeds', 'unlocode_v3_20250110.csv')
 
 # Verificar se o arquivo existe
 unless File.exist?(file_path)
-  puts "Arquivo JSON não encontrado: #{file_path}"
+  puts "Arquivo CSV não encontrado: #{file_path}"
   exit
 end
 
-# Carregar o arquivo JSON
-data = JSON.parse(File.read(file_path))
-
 # Total de registros
-total_records = data.size
+total_records = CSV.read(file_path, headers: true).size
 puts "Total de registros a processar: #{total_records}"
 
 # Processar registros
-data.each_with_index do |record, index|
+CSV.foreach(file_path, headers: true).with_index do |row, index|
+  # Verificar se o registro já existe
+  next if PortAirport.exists?(location: row["Location"], country: row["Country"])
+
   # Criar o registro no banco de dados
   PortAirport.create!(
-    country: record["Country"],
-    location: record["Location"],
-    name: record["Name"],
-    name_without_diacritics: record["NameWoDiacritics"],
-    status: record["Status"],
-    iata: record["IATA"],
-    latitude: record["Latitude"],
-    longitude: record["Longitude"],
-    function_array: record["FunctionArray"],
-    function_description: record["FunctionDescription"]
+    country: row["Country"],                   # País do local
+    location: row["Location"],                 # Código UN/LOCODE
+    name: row["Name"],                         # Nome do porto/aeroporto
+    latitude: row["Latitude"].to_f,            # Latitude
+    longitude: row["Longitude"].to_f,          # Longitude
+    function_array: row["FunctionArray"].split(','), # Converter string para array
+    function_description: row["FunctionDescription"].split(',') # Converter string para array
   )
 
   # Mostrar progresso a cada 10%
@@ -40,4 +37,4 @@ data.each_with_index do |record, index|
   end
 end
 
-puts "Seed concluído com sucesso!"
+puts "Seed de PortAirports concluído com sucesso!"
