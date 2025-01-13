@@ -14,17 +14,19 @@ class SimulationsController < ApplicationController
     end
 
     if @simulation.save
-      # Recalcula o total_value
-      @simulation.calculate_total_value
-      @simulation.save!
+      PaperTrail.request(enabled: false) do
+        # Recalcula o total_value
+        @simulation.calculate_total_value
+        @simulation.save!
 
-      attach_selected_expenses
-      attach_selected_quotations
-      attach_afrmm_if_needed
+        attach_selected_expenses
+        attach_selected_quotations
+        attach_afrmm_if_needed
 
-      # Garante que as despesas sejam recalculadas
-      @simulation.simulation_expenses.each(&:recalculate_custom_value)
-      @simulation.save!
+        # Garante que as despesas sejam recalculadas
+        @simulation.simulation_expenses.each(&:recalculate_custom_value)
+        @simulation.save!
+      end
 
       # Redireciona para a página de sucesso
       redirect_to simulation_path(@simulation), notice: 'Simulação criada com sucesso.'
@@ -34,6 +36,7 @@ class SimulationsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
+
 
   def edit
     @simulation = Simulation.find(params[:id])

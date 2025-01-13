@@ -60,6 +60,8 @@ gem 'br_zip_code' # Para busca de endereço baseado no CEP - Não esta sendo usa
 gem 'httparty' # Para requisições HTTP e dependencia da br_zip_code gem
 gem 'prawn' # Para gerar PDFs
 gem 'prawn-table' # Para gerar tabelas em PDFs
+gem 'paper_trail' # Para versionamento de registros
+
 
 
 group :development, :test do

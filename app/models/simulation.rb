@@ -1,4 +1,10 @@
 class Simulation < ApplicationRecord
+  has_paper_trail(
+    versions: { class_name: 'SimulationVersion' }, # Nome personalizado para a associação
+    on: %i[create update destroy],                # Eventos que criam versões
+    ignore: [:updated_at],                        # Ignorar atributos que não criam versões
+    meta: { user_id: :user_id, simulation_id: :id }                   # Salvar informações extras
+  )
   # Carrega os estados brasileiros do arquivo YAML
   BRAZILIAN_STATES = [
     ['Acre', 'AC'], ['Alagoas', 'AL'], ['Amapá', 'AP'], ['Amazonas', 'AM'],

@@ -1,0 +1,64 @@
+<%= simple_form_for @simulation do |form| %>
+  <div class="container py-4">
+    <!-- Mensagens de Erro -->
+    <% if flash[:alert] %>
+      <div class="alert alert-danger">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <% if @simulation.errors.any? %>
+      <div class="alert alert-danger">
+        <h4>Foram encontrados os seguintes problemas:</h4>
+        <ul>
+          <% @simulation.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <h1 class="mb-4">Nova Simulação</h1>
+      <!-- Dados Iniciais -->
+      <div class="section mb-5">
+        <h2 class="section-title">Dados Iniciais</h2>
+        <%= render 'simulations/form_initial_data', form: form %>
+      </div>
+
+      <!-- Dados Logisticos -->
+      <div class="section mb-5">
+        <h2 class="section-title">Dados Logisticos</h2>
+        <%= render 'simulations/form_logistics', form: form %>
+      </div>
+
+      <!-- Cotações -->
+      <div class="section mb-5">
+        <h2 class="section-title">Cotações</h2>
+        <%= render 'simulations/form_quotations', form: form %>
+      </div>
+
+      <!-- Despesas -->
+      <div class="section mb-5">
+        <h2 class="section-title">Despesas</h2>
+        <%= render 'simulations/form_expenses', form: form %>
+      </div>
+
+      <!-- Financeiro (Placeholder) -->
+      <div class="section mb-5">
+        <h2 class="section-title">Financeiro</h2>
+        <p class="text-muted">Campos financeiros serão adicionados futuramente.</p>
+      </div>
+
+      <!-- Observações (Placeholder) -->
+      <div class="section mb-5">
+        <h2 class="section-title">Observações</h2>
+        <%= render 'simulations/form_observations', form: form %>
+      </div>
+
+      <!-- Botões de Ação -->
+      <div class="actions text-center mt-5">
+        <%= link_to 'Cancelar', simulations_path, class: 'btn btn-secondary me-3' %>
+        <%= form.button :submit, 'Salvar Simulação', class: 'btn btn-primary' %>
+      </div>
+  </div>
+<% end %>

@@ -1,6 +1,6 @@
 <div class="container py-4 show-simulation">
   <!-- Título Principal -->
-  <h1 class="mb-4">Detalhes da Simulação</h1>
+  <h1 class="mb-4">Detalhes da Simulação - Versão Atual: V<%= @simulation.versions.size %></h1>
 
   <!-- Detalhes Gerais -->
   <div class="row">
@@ -433,6 +433,46 @@
       </div>
     </div>
   <% end %>
+
+  <!-- Log Histórico PaperTrail -->
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+      <i class="fas fa-history"></i> Histórico de Alterações
+    </div>
+    <div class="card-body">
+      <% if @simulation.versions.any? %>
+        <ul class="list-group">
+          <% @simulation.versions.each_with_index do |version, index| %>
+            <li class="list-group-item">
+              <strong>Versão:</strong> V<%= @simulation.versions.size - index %>
+              <br>
+              <strong>Alterado por:</strong>
+              <% if version.whodunnit.present? %>
+                <%= User.find(version.whodunnit).email rescue 'Usuário desconhecido' %>
+              <% else %>
+                Sistema
+              <% end %>
+              <br>
+              <strong>Alterações:</strong>
+              <ul>
+                <% version.changeset.each do |field, values| %>
+                  <li>
+                    <strong><%= field.humanize %>:</strong>
+                    <em>De:</em> <%= values[0] || 'N/A' %>
+                    <em>Para:</em> <%= values[1] || 'N/A' %>
+                  </li>
+                <% end %>
+              </ul>
+              <small><strong>Data:</strong> <%= version.created_at.strftime('%d/%m/%Y %H:%M') %></small>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>Sem alterações registradas.</p>
+      <% end %>
+    </div>
+  </div>
+
 
   <!-- Botões de Ação -->
   <div class="btn-group mt-4" role="group">

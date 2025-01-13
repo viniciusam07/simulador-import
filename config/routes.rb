@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Rotas para Simulações
-  resources :simulations, only: [:index, :new, :create, :show, :edit] do
+  resources :simulations, only: [:index, :new, :create, :show, :edit, :update] do
     member do
       get :generate_pdf
     end

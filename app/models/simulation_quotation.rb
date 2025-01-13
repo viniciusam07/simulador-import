@@ -2,6 +2,11 @@ class SimulationQuotation < ApplicationRecord
   belongs_to :simulation
   belongs_to :quotation
 
+  # Adiciona versionamento com PaperTrail
+  has_paper_trail on: %i[create update destroy], # Acompanha todas as alterações
+                  ignore: [:updated_at],        # Ignora atualizações irrelevantes
+                  meta: { simulation_id: :simulation_id } # Adiciona metadados relevantes
+
   # Validações
   validates :quotation_id, uniqueness: { scope: :simulation_id, message: "já está adicionada à simulação" }
   validates :quantity, numericality: { greater_than_or_equal_to: 0 }
