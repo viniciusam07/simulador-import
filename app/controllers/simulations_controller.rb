@@ -40,27 +40,31 @@ class SimulationsController < ApplicationController
 
   def edit
     @simulation = Simulation.find(params[:id])
-    @simulation.simulation_quotations.build if @simulation.simulation_quotations.empty?
   end
 
   def update
     @simulation = Simulation.find(params[:id])
 
-    if @simulation.update(simulation_params)
-      attach_selected_expenses
-      attach_selected_quotations
+    ActiveRecord::Base.transaction do
+      if @simulation.update(simulation_params.except(:simulation_quotations_attributes))
+        attach_selected_expenses
+        update_or_create_simulation_quotations # Novo método para manipular as quotations
 
-      # Recalcular valores customizados das despesas
-      @simulation.simulation_expenses.each(&:recalculate_custom_value)
+        @simulation.simulation_expenses.each(&:recalculate_custom_value)
+        @simulation.save!
 
-      # Salvar novamente para persistir os valores recalculados
-      @simulation.save!
-
-      redirect_to simulation_path(@simulation), notice: 'Simulação atualizada com sucesso.'
-    else
+        redirect_to simulation_path(@simulation), notice: 'Simulação atualizada com sucesso.'
+      else
+        flash.now[:alert] = 'Erro ao atualizar a simulação. Verifique os campos e tente novamente.'
+        render :edit, status: :unprocessable_entity
+      end
+    rescue => e
+      Rails.logger.error "Erro ao atualizar a simulação: #{e.message}"
+      flash.now[:alert] = 'Erro ao atualizar a simulação. Verifique os campos e tente novamente.'
       render :edit, status: :unprocessable_entity
     end
   end
+
 
   def index
     @simulations = Simulation.where(user_id: current_user.id)
@@ -192,4 +196,42 @@ class SimulationsController < ApplicationController
       expense.expense_default_value
     end
   end
+  def update_or_create_simulation_quotations
+    return unless params[:simulation][:simulation_quotations_attributes]
+
+    params[:simulation][:simulation_quotations_attributes].each do |_, attributes|
+      next if attributes[:_destroy] == "true" # Ignora registros marcados para exclusão
+
+      quotation_id = attributes[:quotation_id].to_i
+      existing_record = @simulation.simulation_quotations.find_by(quotation_id: quotation_id)
+
+      if existing_record
+        # Atualiza o registro existente
+        existing_record.update!(
+          quantity: attributes[:quantity],
+          custom_price: attributes[:custom_price],
+          total_value: attributes[:total_value],
+          aliquota_ii: attributes[:aliquota_ii],
+          aliquota_ipi: attributes[:aliquota_ipi],
+          aliquota_pis: attributes[:aliquota_pis],
+          aliquota_cofins: attributes[:aliquota_cofins],
+          aliquota_icms: attributes[:aliquota_icms]
+        )
+      else
+        # Cria um novo registro
+        @simulation.simulation_quotations.create!(
+          quotation_id: quotation_id,
+          quantity: attributes[:quantity],
+          custom_price: attributes[:custom_price],
+          total_value: attributes[:total_value],
+          aliquota_ii: attributes[:aliquota_ii],
+          aliquota_ipi: attributes[:aliquota_ipi],
+          aliquota_pis: attributes[:aliquota_pis],
+          aliquota_cofins: attributes[:aliquota_cofins],
+          aliquota_icms: attributes[:aliquota_icms]
+        )
+      end
+    end
+  end
+
 end

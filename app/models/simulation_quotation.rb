@@ -8,7 +8,7 @@ class SimulationQuotation < ApplicationRecord
                   meta: { simulation_id: :simulation_id } # Adiciona metadados relevantes
 
   # Validações
-  validates :quotation_id, uniqueness: { scope: :simulation_id, message: "já está adicionada à simulação" }
+  validates :quotation_id, uniqueness: { scope: :simulation_id, message: "já está adicionada à simulação" }, on: :create
   validates :quantity, numericality: { greater_than_or_equal_to: 0 }
   validates :custom_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms,
