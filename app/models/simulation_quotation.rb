@@ -13,6 +13,7 @@ class SimulationQuotation < ApplicationRecord
   validates :custom_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms,
             numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }, allow_nil: true
+  validates :total_value, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   # Callbacks
   before_save :set_default_custom_price
