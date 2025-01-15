@@ -31,7 +31,7 @@ class SimulationQuotation < ApplicationRecord
   # Calcula os valores de impostos para esta cotação
   def calculate_tax_values
     # Valor aduaneiro: soma do valor total dos produtos, custo de frete e custo de seguro
-    customs_value = total_value.to_f + (simulation.freight_cost || 0) + (simulation.insurance_cost || 0)
+    customs_value = calculate_customs_values
 
     # Calcular os valores de cada imposto individualmente
     self.tributo_ii = calculate_ii(customs_value)                      # Imposto de Importação
@@ -42,6 +42,11 @@ class SimulationQuotation < ApplicationRecord
   end
 
   private
+
+  # Define o preço customizado padrão como o preço da cotação, caso não esteja definido
+  def set_default_custom_price
+    self.custom_price ||= quotation&.price if quotation.present?
+  end
 
   # Calcula as alocações de frete e seguro
   def calculate_allocations
@@ -64,13 +69,16 @@ class SimulationQuotation < ApplicationRecord
   # Calcula os valores aduaneiros (unitário e total)
 
   def calculate_customs_values
+    # Calcula o valor unitário aduaneiro
     self.customs_unit_value = (total_value.to_f + freight_allocated.to_f + insurance_allocated.to_f) / (quantity.to_f.nonzero? || 1)
+
+    # Calcula o valor total aduaneiro
     self.customs_total_value = customs_unit_value * quantity.to_f
+
+    # Converte para BRL, se necessário, e retorna o valor
+    simulation.convert_to_brl(customs_total_value, simulation.currency)
   end
-  # Define o preço customizado padrão como o preço da cotação, caso não esteja definido
-  def set_default_custom_price
-    self.custom_price ||= quotation&.price if quotation.present?
-  end
+
 
   # Cálculo de Impostos
 
