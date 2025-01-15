@@ -112,10 +112,10 @@ class SimulationPdf < Prawn::Document
     data = [
       [{ content: "Composição de Valores", colspan: 3, font_style: :bold, size: 12, align: :center }],
       ["Descrição", "Valor (#{@simulation.currency})", "Valor (BRL)"],
-      ["Valor Total Produtos", format_currency(@simulation.total_value), format_currency(@simulation.total_value_brl)],
-      ["Frete", format_currency(@simulation.freight_cost), format_currency(@simulation.freight_cost_brl)],
-      ["Seguro", format_currency(@simulation.insurance_cost), format_currency(@simulation.insurance_cost_brl)],
-      ["Valor Aduaneiro", format_currency(@simulation.customs_value), format_currency(@simulation.total_customs_value_brl)]
+      ["Valor Total Produtos", format_currency(@simulation.total_value, @simulation.currency), format_currency(@simulation.total_value_brl)],
+      ["Frete", format_currency(@simulation.freight_cost, @simulation.currency), format_currency(@simulation.freight_cost_brl)],
+      ["Seguro", format_currency(@simulation.insurance_cost, @simulation.currency), format_currency(@simulation.insurance_cost_brl)],
+      ["Valor Aduaneiro", format_currency(@simulation.customs_value, @simulation.currency), format_currency(@simulation.total_customs_value_brl)]
     ]
 
     # Verificar espaço disponível dinamicamente
@@ -149,13 +149,13 @@ class SimulationPdf < Prawn::Document
       data << [
         sq.quotation.product.product_name || "N/A",
         sq.quotation.product.ncm || "N/A",
-        format_currency(sq.custom_price || sq.quotation.price) || "N/A",
+        format_currency(sq.custom_price || sq.quotation.price, @simulation.currency) || "N/A",
         sq.quantity || 0,
-        format_currency(sq.total_value) || "N/A",
-        format_currency(sq.freight_allocated || 0) || "N/A",
-        format_currency(sq.insurance_allocated || 0) || "N/A",
-        format_currency(sq.customs_unit_value || 0) || "N/A",
-        format_currency(sq.customs_total_value || 0) || "N/A",
+        format_currency(sq.total_value, @simulation.currency) || "N/A",
+        format_currency(sq.freight_allocated || 0, @simulation.currency) || "N/A",
+        format_currency(sq.insurance_allocated || 0, @simulation.currency) || "N/A",
+        format_currency(sq.customs_unit_value || 0, @simulation.currency) || "N/A",
+        format_currency(sq.customs_total_value || 0, @simulation.currency) || "N/A",
         sq.quotation.supplier.trade_name || "N/A",
         format_percentage(sq.aliquota_ii || 0) || "N/A",
         format_currency(sq.tributo_ii || 0) || "N/A",
@@ -336,9 +336,16 @@ class SimulationPdf < Prawn::Document
     end
   end
 
-  def format_currency(value)
-    @view.number_to_currency(value || 0, unit: 'BRL')
+  def format_currency(value, currency = 'BRL')
+    unit = case currency
+          when 'USD' then '$'
+          when 'EUR' then '€'
+          when 'GBP' then '£'
+          else 'R$'
+          end
+    @view.number_to_currency(value || 0, unit: unit)
   end
+
 
   def format_percentage(value)
     @view.number_to_percentage(value || 0, precision: 2)

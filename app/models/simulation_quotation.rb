@@ -110,7 +110,7 @@ class SimulationQuotation < ApplicationRecord
   # Fórmula: (Base ICMS) * Alíquota ICMS
   # Base ICMS: Valor Aduaneiro (CIF) + II + IPI + PIS + Cofins
   def calculate_icms(customs_value, ii_value, ipi_value, pis_value, cofins_value)
-    base_icms = customs_value + ii_value.to_f + ipi_value.to_f + pis_value.to_f + cofins_value.to_f
-    base_icms * ((aliquota_icms || 0) / 100.0)
+    base_icms = (customs_value + ii_value.to_f + ipi_value.to_f + pis_value.to_f + cofins_value.to_f)/(100-aliquota_icms)
+    base_icms * (aliquota_icms || 0)
   end
 end
