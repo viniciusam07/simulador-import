@@ -4,6 +4,14 @@
   </div>
 
   <div class="form-group">
+    <%= form.input :sku_supplier_id, label: ' ID do SKU do Fornecedor', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :product_quotation_description, label: 'Descrição do Produto na Cotação', required: false %>
+  </div>
+
+  <div class="form-group">
     <%= form.input :price, label: 'Preço', required: true, step: 0.01 %>
   </div>
 
@@ -12,11 +20,29 @@
   </div>
 
   <div class="form-group">
-    <%= form.input :validity, as: :date, label: 'Validade', required: true %>
+    <%= form.input :moq, label: 'Pedido Mínimo (MOQ) ou Qtd da Cotação', required: true %>
   </div>
 
   <div class="form-group">
-    <%= form.input :moq, label: 'Pedido Mínimo (MOQ)', required: true %>
+    <%= form.input :cargo_type, label: 'Cargo Type',
+                   collection: Quotation::CARGO_TYPES,
+                   prompt: 'Selecione o tipo de carga' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :total_cbm, label: 'CBM Total', required: false, step: 0.01 %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :total_gross_weight, label: 'Peso Bruto Total (kg)', step: 0.01 %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :total_net_weight, label: 'Peso Líquido Total (kg)', step: 0.01 %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :validity, as: :date, label: 'Validade da Cotação', required: true %>
   </div>
 
   <div class="form-group">
@@ -25,6 +51,10 @@
 
   <div class="form-group">
     <%= form.input :lead_time, label: 'Tempo de Entrega (dias)', step: 1 %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :observations, as: :text, label: 'Observações', required: false %>
   </div>
 
   <%= form.button :submit, 'Salvar Cotação', class: 'btn btn-primary' %>

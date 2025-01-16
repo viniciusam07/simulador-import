@@ -61,6 +61,10 @@ class QuotationsController < ApplicationController
   end
 
   def quotation_params
-    params.require(:quotation).permit(:supplier_id, :price, :currency, :validity, :moq, :payment_terms, :lead_time)
+    params.require(:quotation).permit(
+      :supplier_id, :price, :currency, :validity, :moq, :payment_terms, :lead_time,
+      :sku_supplier_id, :total_cbm, :cargo_type,
+      :total_gross_weight, :total_net_weight, :observations, :product_quotation_description
+    )
   end
 end
