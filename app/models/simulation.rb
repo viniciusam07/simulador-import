@@ -159,7 +159,7 @@ class Simulation < ApplicationRecord
   def calculate_import_factor
     return if total_importation_cost.to_f.zero?
 
-    self.import_factor = (total_value_brl.to_f / total_importation_cost.to_f).round(2)
+    self.import_factor = (total_importation_cost.to_f / total_value_brl.to_f).round(2)
   end
 
   def set_cfop_description
