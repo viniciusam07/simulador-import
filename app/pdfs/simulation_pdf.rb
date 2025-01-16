@@ -192,13 +192,23 @@ class SimulationPdf < Prawn::Document
     move_down 5
 
     data = [
-      [{ content: "Resumo dos Impostos", colspan: 3, font_style: :bold, size: 12, align: :center }],
-      ["Imposto", "Valor (BRL)", "% do Total"],
-      ["II", format_currency(@simulation.tributo_ii), format_percentage(@simulation.tributo_ii / @simulation.total_taxes)],
-      ["IPI", format_currency(@simulation.tributo_ipi), format_percentage(@simulation.tributo_ipi / @simulation.total_taxes)],
-      ["PIS", format_currency(@simulation.tributo_pis), format_percentage(@simulation.tributo_pis / @simulation.total_taxes)],
-      ["COFINS", format_currency(@simulation.tributo_cofins), format_percentage(@simulation.tributo_cofins / @simulation.total_taxes)],
-      ["ICMS", format_currency(@simulation.tributo_icms), format_percentage(@simulation.tributo_icms / @simulation.total_taxes)]
+      [{ content: "Resumo dos Impostos Totais", colspan: 3, font_style: :bold, size: 12, align: :center }],
+      ["Imposto", "Percentual (%)", "Valor (BRL)"],
+      ["Imposto de Importação (II)",
+      format_percentage((@simulation.tributo_ii || 0) / (@simulation.total_taxes || 1) * 100),
+      format_currency(@simulation.tributo_ii)],
+      ["Imposto sobre Produtos Industrializados (IPI)",
+      format_percentage((@simulation.tributo_ipi || 0) / (@simulation.total_taxes || 1) * 100),
+      format_currency(@simulation.tributo_ipi)],
+      ["PIS-Importação",
+      format_percentage((@simulation.tributo_pis || 0) / (@simulation.total_taxes || 1) * 100),
+      format_currency(@simulation.tributo_pis)],
+      ["COFINS-Importação",
+      format_percentage((@simulation.tributo_cofins || 0) / (@simulation.total_taxes || 1) * 100),
+      format_currency(@simulation.tributo_cofins)],
+      ["ICMS",
+      format_percentage((@simulation.tributo_icms || 0) / (@simulation.total_taxes || 1) * 100),
+      format_currency(@simulation.tributo_icms)]
     ]
 
     # Verificar espaço antes de renderizar

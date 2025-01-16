@@ -257,27 +257,27 @@
           <tbody>
             <tr>
               <td>Imposto de Importação (II)</td>
-              <td><%= number_to_percentage(@simulation.tributo_ii / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
+              <td><%= number_to_percentage((@simulation.tributo_ii || 0) / (@simulation.total_taxes || 1) * 100, precision: 2) %></td>
               <td><%= number_to_currency(@simulation.tributo_ii, unit: 'BRL') %></td>
             </tr>
             <tr>
               <td>Imposto sobre Produtos Industrializados (IPI)</td>
-              <td><%= number_to_percentage(@simulation.tributo_ipi / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
+              <td><%= number_to_percentage((@simulation.tributo_ipi || 0) / (@simulation.total_taxes || 1) * 100, precision: 2) %></td>
               <td><%= number_to_currency(@simulation.tributo_ipi, unit: 'BRL') %></td>
             </tr>
             <tr>
               <td>PIS-Importação</td>
-              <td><%= number_to_percentage(@simulation.tributo_pis / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
+              <td><%= number_to_percentage((@simulation.tributo_pis || 0) / (@simulation.total_taxes || 1) * 100, precision: 2) %></td>
               <td><%= number_to_currency(@simulation.tributo_pis, unit: 'BRL') %></td>
             </tr>
             <tr>
               <td>COFINS-Importação</td>
-              <td><%= number_to_percentage(@simulation.tributo_cofins / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
+              <td><%= number_to_percentage((@simulation.tributo_cofins || 0) / (@simulation.total_taxes || 1) * 100, precision: 2) %></td>
               <td><%= number_to_currency(@simulation.tributo_cofins, unit: 'BRL') %></td>
             </tr>
             <tr>
               <td>ICMS</td>
-              <td><%= number_to_percentage(@simulation.tributo_icms / @simulation.total_customs_value_brl * 100, precision: 2) %></td>
+              <td><%= number_to_percentage((@simulation.tributo_icms || 0) / (@simulation.total_taxes || 1) * 100, precision: 2) %></td>
               <td><%= number_to_currency(@simulation.tributo_icms, unit: 'BRL') %></td>
             </tr>
           </tbody>
