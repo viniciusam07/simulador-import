@@ -60,7 +60,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-6">
-            <%= form.input :expense_default_value, as: :decimal, label: "Valor Fixo (R$)", step: 0.01, input_html: { class: 'form-control' } %>
+            <%= form.input :expense_default_value, as: :decimal, label: "Valor Fixo", step: 0.01, input_html: { class: 'form-control' } %>
           </div>
           <div class="col-md-6">
             <%= form.input :expense_currency, collection: ["BRL", "USD", "EUR"], label: "Moeda", prompt: 'Selecione a moeda', input_html: { class: 'form-control' } %>
