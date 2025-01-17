@@ -67,6 +67,14 @@
               <% end %>
             </li>
             <li class="list-group-item">
+              <strong>Regime Tributário:</strong>
+              <% if @simulation.company.present? %>
+                <%= @simulation.company.tax_regime %>
+              <% else %>
+                Não vinculada
+              <% end %>
+            </li>
+            <li class="list-group-item">
               <strong>País de Origem:</strong> <%= @simulation.origin_country %>
             </li>
             <li class="list-group-item">

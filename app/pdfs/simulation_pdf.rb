@@ -80,6 +80,7 @@ class SimulationPdf < Prawn::Document
     [
       ["Empresa", @simulation.company&.name.to_s],
       ["CNPJ", @simulation.company&.cnpj.to_s],
+      ["Regime Tributário", @simulation.company.tax_regime.to_s],
       ["Incoterm", @simulation.incoterm.to_s],
       ["CFOP", "#{@simulation.cfop_code} - #{@simulation.cfop_description}"],
       ["Moeda", @simulation.currency.to_s],
@@ -97,7 +98,9 @@ class SimulationPdf < Prawn::Document
     if @simulation.modal == 'Marítimo'
       data += [
         ["Porto Origem", @simulation.origin_port.to_s],
-        ["Porto Destino", @simulation.destination_port.to_s]
+        ["Porto Destino", @simulation.destination_port.to_s],
+        ["Equipamento e Qtd", "#{@simulation.equipment.name.to_s} x #{@simulation.equipment_quantity.to_s}"],
+        ["Tipo de Carga", @simulation.cargo_type.to_s]
       ]
     elsif @simulation.modal == 'Aéreo'
       data += [
