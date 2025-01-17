@@ -41,6 +41,37 @@ class SimulationQuotation < ApplicationRecord
     self.tributo_icms = calculate_icms(customs_value, tributo_ii, tributo_ipi, tributo_pis, tributo_cofins) # ICMS
   end
 
+  #Regras de Rateios
+
+  def unit_price_brl
+    simulation.convert_to_brl(custom_price || quotation.price, quotation.currency)
+  end
+
+  def logistic_cost_per_unit
+    total_quantity = simulation.simulation_quotations.sum(&:quantity)
+    return 0 if total_quantity.zero?
+
+    (simulation.freight_cost_brl.to_f + simulation.insurance_cost_brl.to_f) / total_quantity
+  end
+  def tax_cost_per_unit
+    return 0 if quantity.zero?
+
+    (tributo_ii.to_f + tributo_ipi.to_f + tributo_pis.to_f + tributo_cofins.to_f + tributo_icms.to_f) / quantity.to_f
+  end
+  def operational_cost_per_unit
+    total_quantity = simulation.simulation_quotations.sum(&:quantity)
+    return 0 if total_quantity.zero?
+
+    # Divide o custo total operacional proporcionalmente à quantidade de itens
+    total_operational_expenses = simulation.total_operational_expenses
+    (total_operational_expenses.to_f / total_quantity).round(2)
+  end
+
+  def total_unit_inventory_cost
+    unit_price_brl + logistic_cost_per_unit + tax_cost_per_unit + operational_cost_per_unit
+  end
+
+
   private
 
   # Define o preço customizado padrão como o preço da cotação, caso não esteja definido

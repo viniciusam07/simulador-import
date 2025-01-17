@@ -110,6 +110,33 @@ class Simulation < ApplicationRecord
     customs_value_brl + total_taxes + total_operational_expenses
   end
 
+  # Rateio das despesas operacionais proporcional à quantidade de produtos
+  def operational_expense_allocation
+    total_quantity = simulation_quotations.sum(&:quantity)
+    return [] if total_quantity.zero?
+
+    simulation_quotations.includes(:quotation).map do |sq|
+      allocated_expense = (total_operational_expenses.to_f / total_quantity * sq.quantity).round(2)
+      {
+        product_name: sq.quotation.product.product_name,
+        supplier_name: sq.quotation.supplier.trade_name,
+        quantity: sq.quantity,
+        allocated_expense: allocated_expense,
+        unit_expense: (allocated_expense / sq.quantity.to_f).round(2) # Valor unitário
+      }
+    end
+  end
+
+  # Total de despesas operacionais
+  def total_operational_expenses
+    simulation_expenses.sum(:expense_custom_value)
+  end
+
+  # Total de despesas operacionais
+  def total_operational_expenses
+    simulation_expenses.sum(:expense_custom_value)
+  end
+
   # Conversão para BRL com base na taxa de câmbio
   def convert_to_brl(amount, currency)
     return 0 if amount.blank? || currency.blank?
@@ -117,6 +144,24 @@ class Simulation < ApplicationRecord
 
     exchange_rate_value = exchange_rate.presence || fetch_exchange_rate(currency)
     amount.to_f * exchange_rate_value.to_f
+  end
+
+  # Resumo de custos unitários
+  def unit_cost_summary
+    simulation_quotations.includes(:quotation).map do |sq|
+      {
+        product_name: sq.quotation.product.product_name,
+        supplier_name: sq.quotation.supplier.trade_name,
+        quantity: sq.quantity,
+        unit_price_brl: sq.unit_price_brl.round(2),
+        logistic_cost_per_unit: sq.logistic_cost_per_unit.round(2),
+        tax_cost_per_unit: sq.tax_cost_per_unit.round(2),
+        operational_cost_per_unit: sq.operational_cost_per_unit.round(2),
+        total_unit_inventory_cost: sq.total_unit_inventory_cost.round(2),
+        allocated_expense: sq.operational_cost_per_unit.round(2), # Apenas para alinhamento
+        unit_expense: (sq.operational_cost_per_unit / sq.quantity.to_f).round(2)
+      }
+    end
   end
 
   private

@@ -73,6 +73,7 @@ class SimulationsController < ApplicationController
 
   def show
     @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
+    @unit_cost_summary = @simulation.unit_cost_summary # Certifique-se de que este método retorna dados válidos
   end
 
   def exchange_rate

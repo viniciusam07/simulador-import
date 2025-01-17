@@ -246,6 +246,45 @@
     </div>
   </div>
 
+  <!-- Custos Unitarios -->
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+      <i class="fas fa-calculator"></i> Resumo de Custos Unitários e Rateio
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="thead-light">
+            <tr>
+              <th>Produto</th>
+              <th>Quantidade</th>
+              <th>Preço Unitário (FOB em BRL)</th>
+              <th>Custo Logístico (BRL/unidade)</th>
+              <th>Custo de Impostos (BRL/unidade)</th>
+              <th>Custo Operacional (BRL/unidade)</th>
+              <th>Custo Total Unitário (BRL)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @unit_cost_summary.each do |summary| %>
+              <tr>
+                <td><%= summary[:product_name] %></td>
+                <td><%= summary[:quantity] %></td>
+                <td><%= number_to_currency(summary[:unit_price_brl], unit: 'BRL') %></td>
+                <td><%= number_to_currency(summary[:logistic_cost_per_unit], unit: 'BRL') %></td>
+                <td><%= number_to_currency(summary[:tax_cost_per_unit], unit: 'BRL') %></td>
+                <td><%= number_to_currency(summary[:operational_cost_per_unit], unit: 'BRL') %></td>
+                <td><%= number_to_currency(summary[:total_unit_inventory_cost], unit: 'BRL') %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+
   <!-- Resumo de Impostos Totais -->
   <div class="card mb-4">
     <div class="card-header bg-secondary text-white">
@@ -480,7 +519,6 @@
       <% end %>
     </div>
   </div>
-
 
   <!-- Botões de Ação -->
   <div class="btn-group mt-4" role="group">
