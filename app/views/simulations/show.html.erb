@@ -263,6 +263,7 @@
               <th>Custo de Impostos (BRL/unidade)</th>
               <th>Custo Operacional (BRL/unidade)</th>
               <th>Custo Total Unitário (BRL)</th>
+              <th>Fator de Importação Unitário</th>
             </tr>
           </thead>
           <tbody>
@@ -275,6 +276,7 @@
                 <td><%= number_to_currency(summary[:tax_cost_per_unit], unit: 'BRL') %></td>
                 <td><%= number_to_currency(summary[:operational_cost_per_unit], unit: 'BRL') %></td>
                 <td><%= number_to_currency(summary[:total_unit_inventory_cost], unit: 'BRL') %></td>
+                <td><%= summary[:unit_import_factor] %></td>
               </tr>
             <% end %>
           </tbody>

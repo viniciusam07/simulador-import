@@ -71,6 +71,16 @@ class SimulationQuotation < ApplicationRecord
     unit_price_brl + logistic_cost_per_unit + tax_cost_per_unit + operational_cost_per_unit
   end
 
+  # Cálculo do Fator de Importação por Unidade
+  def unit_import_factor
+    return 0 if unit_price_brl.to_f.zero?
+
+    # Total de custos por unidade
+    total_costs_per_unit = unit_price_brl + logistic_cost_per_unit + tax_cost_per_unit + operational_cost_per_unit
+
+    # Fator de importação por unidade = (Custo Total por Unidade / Valor FOB por Unidade)
+    (total_costs_per_unit / unit_price_brl).round(2)
+  end
 
   private
 

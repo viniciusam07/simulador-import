@@ -159,7 +159,8 @@ class Simulation < ApplicationRecord
         operational_cost_per_unit: sq.operational_cost_per_unit.round(2),
         total_unit_inventory_cost: sq.total_unit_inventory_cost.round(2),
         allocated_expense: sq.operational_cost_per_unit.round(2), # Apenas para alinhamento
-        unit_expense: (sq.operational_cost_per_unit / sq.quantity.to_f).round(2)
+        unit_expense: (sq.operational_cost_per_unit / sq.quantity.to_f).round(2),
+        unit_import_factor: sq.unit_import_factor.round(2)
       }
     end
   end
