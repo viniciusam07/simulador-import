@@ -24,27 +24,43 @@
     <%= form.input :incoterm, collection: ['EXW', 'FCA', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
   </div>
 
-  <div class="form-group">
-    <%= form.input :currency, collection: ['USD', 'EUR', 'BRL'], prompt: 'Selecione a moeda', input_html: { id: 'simulation_currency' } %>
-  </div>
-
-  <div class="form-group d-flex align-items-center">
-    <div class="flex-grow-1 me-2">
-      <%= form.input :exchange_rate, as: :decimal, label: 'Taxa de Câmbio', placeholder: 'Digite a taxa de câmbio' %>
+  <!-- Currency e Taxa de Câmbio -->
+  <div class="row">
+    <div class="col-md-6">
+      <%= form.input :currency,
+                     collection: ['USD', 'EUR', 'BRL'],
+                     prompt: 'Selecione a moeda',
+                     input_html: { id: 'simulation_currency', class: 'form-select' },
+                     label: 'Moeda' %>
     </div>
-    <div>
+    <div class="col-md-6 d-flex align-items-center">
+      <div class="flex-grow-1 me-2">
+        <%= form.input :exchange_rate,
+                       as: :decimal,
+                       label: 'Taxa de Câmbio',
+                       placeholder: 'Digite a taxa de câmbio',
+                       input_html: { id: 'simulation_exchange_rate' } %>
+      </div>
       <button type="button" class="btn btn-outline-primary d-flex align-items-center" onclick="fetchExchangeRate()">
         <i class="fas fa-sync-alt me-2"></i> Atualizar
       </button>
     </div>
   </div>
 
-  <div class="form-group">
-    <%= form.input :freight_cost, as: :decimal, label: 'Custo do Frete Internacional', placeholder: 'Digite o custo do frete' %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :insurance_cost, as: :decimal, label: 'Custo do Seguro Internacional', placeholder: 'Digite o custo do seguro' %>
+  <!-- Custo do Frete Internacional e Seguro -->
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <%= form.input :freight_cost,
+                     as: :decimal,
+                     label: 'Custo do Frete Internacional',
+                     placeholder: 'Digite o custo do frete' %>
+    </div>
+    <div class="col-md-6">
+      <%= form.input :insurance_cost,
+                     as: :decimal,
+                     label: 'Custo do Seguro Internacional',
+                     placeholder: 'Digite o custo do seguro' %>
+    </div>
   </div>
 <% end %>
 
