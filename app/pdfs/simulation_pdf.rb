@@ -432,10 +432,10 @@ class SimulationPdf < Prawn::Document
   end
 
   def generate_pie_chart(data)
-    require 'gruff' # Biblioteca para gerar gráficos
+    require 'gruff'
 
     # Inicializa o gráfico
-    g = Gruff::Pie.new(400) # Tamanho do gráfico
+    g = Gruff::Pie.new(400) # Define o tamanho do gráfico
     g.theme = {
       colors: ['#3366CC', '#DC3912', '#FF9900'], # Paleta de cores
       marker_color: '#AAAAAA',
@@ -443,13 +443,14 @@ class SimulationPdf < Prawn::Document
       background_colors: ['#FFFFFF', '#FFFFFF']
     }
 
-    # Calcula o valor total para gerar os percentuais
-    total_value = data.values.sum
+    # Exibe a legenda fora do gráfico
+    g.hide_legend = false
+    g.legend_at_bottom = true # Coloca a legenda na parte inferior
+    g.legend_font_size = 30 # Ajusta o tamanho da fonte da legenda
 
-    # Adiciona os dados ao gráfico com valores formatados
+    # Adiciona os dados ao gráfico com rótulos simples
     data.each do |label, value|
-      percentage = ((value / total_value.to_f) * 100).round(1) # Calcula o percentual
-      g.data("#{label} (#{percentage}%)", value) # Adiciona rótulos com percentuais
+      g.data(label, value) # Apenas o nome da categoria
     end
 
     # Salva o gráfico em um arquivo temporário
