@@ -1,5 +1,5 @@
 class SimulationPdf < Prawn::Document
-  def initialize(simulation, view)
+  def initialize(simulation, view, unit_cost_summary)
     super(
       page_size: "A4",
       margin: [30, 30, 30, 30],
@@ -12,6 +12,7 @@ class SimulationPdf < Prawn::Document
     )
     @simulation = simulation
     @view = view
+    @unit_cost_summary = unit_cost_summary
     generate
   end
 
@@ -31,6 +32,8 @@ class SimulationPdf < Prawn::Document
     final_summary
     move_down 10
     quotations_section
+    move_down 10
+    unit_costs_summary_section
     footer
     add_page_numbers
   end
@@ -175,6 +178,48 @@ class SimulationPdf < Prawn::Document
 
     # Verificar espaço antes de renderizar
     check_table_space("Cotações de Produtos", data)
+
+    # Ajusta o tamanho da fonte dinamicamente
+    font_size = adjust_font_for_table(data)
+
+    # Renderiza a tabela com o tamanho ajustado
+    font_size(font_size) do
+      table(data, width: bounds.width, header: true) do |t|
+        t.row(0).font_style = :bold
+        t.row(0).background_color = "F0F0F0"
+        t.row_colors = ["F9F9F9", "FFFFFF"]
+        t.cells.padding = [3, 3]
+        t.cells.size = font_size
+      end
+    end
+  end
+  def unit_costs_summary_section
+    # Cria uma nova página em formato horizontal
+    start_new_page(layout: :landscape)
+
+    # Título da página
+    text "Resumo de Custos Unitários e Rateio", size: 16, style: :bold, align: :center
+    move_down 10
+
+    # Dados da tabela
+    data = [
+      ["Produto", "Quantidade", "Preço Unitário (FOB em BRL)", "Custo Logístico (BRL/unidade)",
+      "Custo de Impostos (BRL/unidade)", "Custo Operacional (BRL/unidade)",
+      "Custo Total Unitário (BRL)", "Fator de Importação Unitário"]
+    ]
+
+    @unit_cost_summary.each do |summary|
+      data << [
+        summary[:product_name],
+        summary[:quantity],
+        format_currency(summary[:unit_price_brl]),
+        format_currency(summary[:logistic_cost_per_unit]),
+        format_currency(summary[:tax_cost_per_unit]),
+        format_currency(summary[:operational_cost_per_unit]),
+        format_currency(summary[:total_unit_inventory_cost]),
+        summary[:unit_import_factor]
+      ]
+    end
 
     # Ajusta o tamanho da fonte dinamicamente
     font_size = adjust_font_for_table(data)

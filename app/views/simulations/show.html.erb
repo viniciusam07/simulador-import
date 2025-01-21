@@ -337,32 +337,32 @@
       <% total_taxes = @simulation.tributo_ii + @simulation.tributo_ipi + @simulation.tributo_pis + @simulation.tributo_cofins + @simulation.tributo_icms %>
       <div class="progress">
         <div class="progress-bar bg-primary" role="progressbar"
-            style="width: <%= ((@simulation.tributo_ii / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_ii / total_taxes) * 100).round %>"
+            style="width: <%= ((@simulation.tributo_ii / total_taxes) * 100).round(2) %>%;"
+            aria-valuenow="<%= ((@simulation.tributo_ii / total_taxes) * 100).round(2) %>"
             aria-valuemin="0" aria-valuemax="100">
           II (<%= number_to_percentage((@simulation.tributo_ii / total_taxes) * 100, precision: 2) %>)
         </div>
         <div class="progress-bar bg-success" role="progressbar"
-            style="width: <%= ((@simulation.tributo_ipi / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_ipi / total_taxes) * 100).round %>"
+            style="width: <%= ((@simulation.tributo_ipi / total_taxes) * 100).round(2) %>%;"
+            aria-valuenow="<%= ((@simulation.tributo_ipi / total_taxes) * 100).round(2) %>"
             aria-valuemin="0" aria-valuemax="100">
           IPI (<%= number_to_percentage((@simulation.tributo_ipi / total_taxes) * 100, precision: 2) %>)
         </div>
         <div class="progress-bar bg-warning" role="progressbar"
-            style="width: <%= ((@simulation.tributo_pis / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_pis / total_taxes) * 100).round %>"
+            style="width: <%= ((@simulation.tributo_pis / total_taxes) * 100).round(2) %>%;"
+            aria-valuenow="<%= ((@simulation.tributo_pis / total_taxes) * 100).round(2) %>"
             aria-valuemin="0" aria-valuemax="100">
           PIS (<%= number_to_percentage((@simulation.tributo_pis / total_taxes) * 100, precision: 2) %>)
         </div>
         <div class="progress-bar bg-danger" role="progressbar"
-            style="width: <%= ((@simulation.tributo_cofins / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_cofins / total_taxes) * 100).round %>"
+            style="width: <%= ((@simulation.tributo_cofins / total_taxes) * 100).round(2) %>%;"
+            aria-valuenow="<%= ((@simulation.tributo_cofins / total_taxes) * 100).round(2) %>"
             aria-valuemin="0" aria-valuemax="100">
           COFINS (<%= number_to_percentage((@simulation.tributo_cofins / total_taxes) * 100, precision: 2) %>)
         </div>
         <div class="progress-bar bg-info" role="progressbar"
-            style="width: <%= ((@simulation.tributo_icms / total_taxes) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.tributo_icms / total_taxes) * 100).round %>"
+            style="width: <%= ((@simulation.tributo_icms / total_taxes) * 100).round(2) %>%;"
+            aria-valuenow="<%= ((@simulation.tributo_icms / total_taxes) * 100).round(2) %>"
             aria-valuemin="0" aria-valuemax="100">
           ICMS (<%= number_to_percentage((@simulation.tributo_icms / total_taxes) * 100, precision: 2) %>)
         </div>

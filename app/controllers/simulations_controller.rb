@@ -86,16 +86,32 @@ class SimulationsController < ApplicationController
 
   def generate_pdf
     @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
+
+    # Calcula @unit_cost_summary antes de gerar o PDF
+    @unit_cost_summary = @simulation.simulation_quotations.map do |sq|
+      {
+        product_name: sq.quotation.product.product_name || "N/A",
+        quantity: sq.quantity || 0,
+        unit_price_brl: sq.unit_price_brl,
+        logistic_cost_per_unit: sq.logistic_cost_per_unit,
+        tax_cost_per_unit: sq.tax_cost_per_unit,
+        operational_cost_per_unit: sq.operational_cost_per_unit,
+        total_unit_inventory_cost: sq.total_unit_inventory_cost,
+        unit_import_factor: sq.unit_import_factor
+      }
+    end
+
     respond_to do |format|
       format.pdf do
-        pdf = SimulationPdf.new(@simulation, view_context)
+        pdf = SimulationPdf.new(@simulation, view_context, @unit_cost_summary)
         send_data pdf.render,
-                filename: "simulacao_#{@simulation.id}.pdf",
-                type: 'application/pdf',
-                disposition: 'attachment'
+                  filename: "simulacao_#{@simulation.id}.pdf",
+                  type: 'application/pdf',
+                  disposition: 'attachment'
       end
     end
   end
+
 
   private
 
