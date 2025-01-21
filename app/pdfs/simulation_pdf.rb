@@ -298,26 +298,53 @@ class SimulationPdf < Prawn::Document
   end
 
   def final_summary
+    # Configuração para duas colunas lado a lado
+    move_down 10
+    text "Resumo Final da Importação", size: 12, style: :bold, align: :center
     move_down 5
 
-    data = [
-      [{ content: "Resumo Final da Importação", colspan: 2, font_style: :bold, size: 12, align: :center }],
-      ["Descrição", "Valor"],
-      ["Valor Total Aduaneiro", format_currency(@simulation.total_customs_value_brl)],
-      ["Total de Impostos", format_currency(@simulation.total_taxes)],
-      ["Total de Despesas", format_currency(@simulation.total_operational_expenses)],
-      ["Custo Total da Importação", format_currency(@simulation.total_importation_cost)],
-      ["Fator de Importação", format_number(@simulation.import_factor)]
-    ]
+    column_width = (bounds.width - 20) / 2
 
-    # Verificar espaço antes de renderizar
-    check_table_space("Resumo Final da Importação", data)
+    # Ajusta o cursor para considerar o espaço da tabela superior
+    move_down 10
 
-    table(data, width: bounds.width) do |t|
-      t.row(0).font_style = :bold
-      t.cells.padding = [3, 3]
-      t.row_colors = ["F9F9F9", "FFFFFF"]
-      t.cells.size = 9
+    bounding_box([0, cursor], width: bounds.width, height: 200) do
+      # Coluna Esquerda: Tabela
+      bounding_box([0, cursor], width: column_width, height: 150) do
+        data = [
+          ["Descrição", "Valor"],
+          ["Valor Total Aduaneiro", format_currency(@simulation.total_customs_value_brl)],
+          ["Total de Impostos", format_currency(@simulation.total_taxes)],
+          ["Total de Despesas", format_currency(@simulation.total_operational_expenses)],
+          ["Custo Total da Importação", format_currency(@simulation.total_importation_cost)],
+          ["Fator de Importação", format_number(@simulation.import_factor)]
+        ]
+
+        table(data, width: column_width) do |t|
+          t.row(0).font_style = :bold
+          t.row(0).background_color = "F0F0F0"
+          t.cells.padding = [3, 3]
+          t.row_colors = ["F9F9F9", "FFFFFF"]
+          t.cells.size = 9
+        end
+      end
+
+      # Coluna Direita: Gráfico
+      bounding_box([column_width + 10, cursor + 150], width: column_width, height: 150) do
+        # Dados do gráfico
+        graph_data = {
+          "Valor Total Aduaneiro" => @simulation.total_customs_value_brl,
+          "Total de Impostos" => @simulation.total_taxes,
+          "Total de Despesas" => @simulation.total_operational_expenses
+        }
+
+        # Gera o gráfico e insere no PDF
+        chart_path = generate_pie_chart(graph_data)
+        image chart_path, position: :center, fit: [column_width - 10, 150]
+
+        # Remove o gráfico temporário
+        File.delete(chart_path) if File.exist?(chart_path)
+      end
     end
   end
 
@@ -404,6 +431,32 @@ class SimulationPdf < Prawn::Document
     @view.number_to_currency(value || 0, unit: unit)
   end
 
+  def generate_pie_chart(data)
+    require 'gruff' # Biblioteca para gerar gráficos
+
+    # Inicializa o gráfico
+    g = Gruff::Pie.new(400) # Tamanho do gráfico
+    g.theme = {
+      colors: ['#3366CC', '#DC3912', '#FF9900'], # Paleta de cores
+      marker_color: '#AAAAAA',
+      font_color: '#333333',
+      background_colors: ['#FFFFFF', '#FFFFFF']
+    }
+
+    # Calcula o valor total para gerar os percentuais
+    total_value = data.values.sum
+
+    # Adiciona os dados ao gráfico com valores formatados
+    data.each do |label, value|
+      percentage = ((value / total_value.to_f) * 100).round(1) # Calcula o percentual
+      g.data("#{label} (#{percentage}%)", value) # Adiciona rótulos com percentuais
+    end
+
+    # Salva o gráfico em um arquivo temporário
+    file_path = Rails.root.join("tmp", "chart_#{SecureRandom.uuid}.png")
+    g.write(file_path)
+    file_path.to_s
+  end
 
   def format_percentage(value)
     @view.number_to_percentage(value || 0, precision: 2)

@@ -75,6 +75,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_16_142524) do
 
   create_table "products", force: :cascade do |t|
     t.string "product_name"
+    t.string "supplier_code"
     t.string "hs_code"
     t.string "ncm"
     t.string "unit_of_measure"
@@ -120,12 +121,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_16_142524) do
     t.index ["simulation_id"], name: "index_simulation_expenses_on_simulation_id"
   end
 
+  create_table "simulation_products", force: :cascade do |t|
+    t.bigint "simulation_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "product_quantity"
+    t.decimal "custom_unit_price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_simulation_products_on_product_id"
+    t.index ["simulation_id"], name: "index_simulation_products_on_simulation_id"
+  end
+
   create_table "simulation_quotations", force: :cascade do |t|
     t.bigint "simulation_id", null: false
     t.bigint "quotation_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
+    t.decimal "custom_price", precision: 10, scale: 2
     t.decimal "total_value"
     t.decimal "aliquota_ii", precision: 5, scale: 2
     t.decimal "aliquota_ipi", precision: 5, scale: 2
@@ -141,7 +154,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_16_142524) do
     t.decimal "customs_unit_value", precision: 10, scale: 2
     t.decimal "freight_allocated", precision: 10, scale: 2
     t.decimal "insurance_allocated", precision: 10, scale: 2
-    t.decimal "custom_price", precision: 10, scale: 2
     t.index ["quotation_id"], name: "index_simulation_quotations_on_quotation_id"
     t.index ["simulation_id"], name: "index_simulation_quotations_on_simulation_id"
   end
@@ -202,6 +214,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_16_142524) do
     t.index ["company_id"], name: "index_simulations_on_company_id"
   end
 
+  create_table "supplier_contacts", force: :cascade do |t|
+    t.bigint "supplier_id", null: false
+    t.string "contact_name"
+    t.string "email"
+    t.string "phone"
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["supplier_id"], name: "index_supplier_contacts_on_supplier_id"
+  end
+
   create_table "suppliers", force: :cascade do |t|
     t.string "corporate_name"
     t.string "trade_name"
@@ -257,11 +280,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_16_142524) do
   add_foreign_key "quotations", "suppliers"
   add_foreign_key "simulation_expenses", "expenses"
   add_foreign_key "simulation_expenses", "simulations"
+  add_foreign_key "simulation_products", "products"
+  add_foreign_key "simulation_products", "simulations"
   add_foreign_key "simulation_quotations", "quotations"
   add_foreign_key "simulation_quotations", "simulations"
   add_foreign_key "simulation_taxes", "simulations"
   add_foreign_key "simulation_taxes", "taxes"
   add_foreign_key "simulations", "companies"
   add_foreign_key "simulations", "equipments"
+  add_foreign_key "supplier_contacts", "suppliers"
   add_foreign_key "tax_rates", "taxes"
 end
