@@ -1,0 +1,29 @@
+<div class="container mt-5">
+  <div class="text-center">
+    <h1 class="display-4">Gerencie Cronogramas</h1>
+    <p class="lead">Crie e gerencie etapas e cronogramas padrões.</p>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-6">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="fas fa-cogs fa-3x mb-3"></i>
+          <h5 class="card-title">Criar Etapas</h5>
+          <p class="card-text">Configure e gerencie etapas personalizadas.</p>
+          <%= link_to 'Gerenciar Etapas', steps_path, class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="fas fa-calendar-alt fa-3x mb-3"></i>
+          <h5 class="card-title">Criar Cronogramas Padrões</h5>
+          <p class="card-text">Monte cronogramas reutilizáveis para suas simulações.</p>
+          <%= link_to 'Gerenciar Cronogramas', schedules_path, class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

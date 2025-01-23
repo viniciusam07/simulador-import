@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   # Página inicial
   root to: "pages#home"
 
+  # Página de Cronogramas
+  get 'cronogramas', to: 'pages#cronogramas', as: 'cronogramas'
+
   # Verificação de saúde da aplicação
   get "up" => "rails/health#show", as: :rails_health_check
 

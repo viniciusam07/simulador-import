@@ -469,6 +469,32 @@
     </div>
   </div>
 
+  <!-- Cronograma-->
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+      <i class="fas fa-calendar-alt"></i> Cronograma
+    </div>
+    <div class="card-body">
+      <% if @simulation.simulation_schedule.present? %>
+        <h5><%= @simulation.simulation_schedule.schedule_name %></h5>
+        <ul class="list-group">
+          <% @simulation.simulation_schedule.steps.each do |step| %>
+            <li class="list-group-item">
+              <strong>Etapa:</strong> <%= step["name"] %><br>
+              <strong>Data de Início:</strong> <%= step["start_date"] %><br>
+              <strong>Data de Fim:</strong> <%= step["end_date"] %><br>
+              <strong>SLA (dias):</strong> <%= step["sla"] %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="text-muted">Nenhum cronograma vinculado a esta simulação.</p>
+        <%= link_to 'Criar Cronograma', new_simulation_simulation_schedule_path(@simulation), class: 'btn btn-warning mt-3' %>
+      <% end %>
+    </div>
+  </div>
+
+
   <!-- Observações -->
   <% if @simulation.observations.present? %>
     <div class="card mb-4">
@@ -530,6 +556,7 @@
                 data: { turbo: false } do %>
       <i class="fas fa-file-pdf me-2"></i>Baixar PDF
     <% end %>
+    <%= link_to 'Criar Cronograma', new_simulation_simulation_schedule_path(@simulation), class: 'btn btn-warning' %>
     <%= link_to 'Voltar', simulations_path, class: 'btn btn-secondary' %>
   </div>
 </div>
