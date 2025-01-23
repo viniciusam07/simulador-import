@@ -51,4 +51,8 @@ Rails.application.routes.draw do
   # Rotas para Steps (Schedules)
   resources :steps, only: [:index, :new, :create, :edit, :update, :destroy]
 
+  # Rotas para Schedules
+  resources :schedules, only: [:index, :new, :create, :edit, :update, :destroy]
+
+
 end

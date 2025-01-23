@@ -1,0 +1,24 @@
+<h1><%= @schedule.new_record? ? "Novo Cronograma" : "Editar Cronograma" %></h1>
+
+<%= simple_form_for @schedule do |f| %>
+  <div class="mb-3">
+    <%= f.input :name, label: "Nome do Cronograma" %>
+  </div>
+
+  <h5>Selecione as Etapas</h5>
+  <ul>
+    <% @steps.each_with_index do |step, index| %>
+      <li>
+        <%= f.fields_for :schedule_steps, @schedule.schedule_steps.find { |s| s.step_id == step.id } || @schedule.schedule_steps.build(step: step) do |sf| %>
+          <%= sf.hidden_field :step_id, value: step.id %>
+          <%= sf.input :order, label: "#{step.name} - Ordem", as: :integer, input_html: { min: 1 } %>
+          <%= sf.check_box :_destroy %> Remover
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+  <%= f.submit "Salvar", class: "btn btn-success" %>
+<% end %>
+
+<%= link_to "Voltar", schedules_path, class: "btn btn-secondary mt-3" %>

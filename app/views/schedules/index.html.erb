@@ -1,0 +1,30 @@
+<h1>Cronogramas</h1>
+<%= link_to "Novo Cronograma", new_schedule_path, class: "btn btn-primary mb-3" %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Etapas</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @schedules.each do |schedule| %>
+      <tr>
+        <td><%= schedule.name %></td>
+        <td>
+          <ul>
+            <% schedule.schedule_steps.order(:order).each do |schedule_step| %>
+              <li><%= schedule_step.step.name %> (Ordem: <%= schedule_step.order %>)</li>
+            <% end %>
+          </ul>
+        </td>
+        <td>
+          <%= link_to "Editar", edit_schedule_path(schedule), class: "btn btn-warning btn-sm" %>
+          <%= link_to "Excluir", schedule_path(schedule), method: :delete, data: { confirm: "Tem certeza?" }, class: "btn btn-danger btn-sm" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

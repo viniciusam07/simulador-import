@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_23_152517) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_23_181851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -107,13 +107,20 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_23_152517) do
     t.index ["supplier_id"], name: "index_quotations_on_supplier_id"
   end
 
-  create_table "schedules", force: :cascade do |t|
-    t.bigint "simulation_id", null: false
-    t.date "start_date", null: false
-    t.jsonb "steps", default: {}
+  create_table "schedule_steps", force: :cascade do |t|
+    t.bigint "schedule_id", null: false
+    t.bigint "step_id", null: false
+    t.integer "order", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["simulation_id"], name: "index_schedules_on_simulation_id"
+    t.index ["schedule_id"], name: "index_schedule_steps_on_schedule_id"
+    t.index ["step_id"], name: "index_schedule_steps_on_step_id"
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "simulation_expenses", force: :cascade do |t|
@@ -273,7 +280,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_23_152517) do
 
   add_foreign_key "quotations", "products"
   add_foreign_key "quotations", "suppliers"
-  add_foreign_key "schedules", "simulations"
+  add_foreign_key "schedule_steps", "schedules"
+  add_foreign_key "schedule_steps", "steps"
   add_foreign_key "simulation_expenses", "expenses"
   add_foreign_key "simulation_expenses", "simulations"
   add_foreign_key "simulation_quotations", "quotations"
