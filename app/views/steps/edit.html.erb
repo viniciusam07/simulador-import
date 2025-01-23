@@ -1,0 +1,19 @@
+<h1><%= @step.new_record? ? "Nova Etapa" : "Editar Etapa" %></h1>
+
+<%= simple_form_for @step do |f| %>
+  <div class="mb-3">
+    <%= f.input :name, label: "Nome" %>
+  </div>
+  <div class="mb-3">
+    <%= f.input :location, label: "Local (Origem, Trânsito, Destino)" %>
+  </div>
+  <div class="mb-3">
+    <%= f.input :default_sla, as: :integer, label: "SLA Padrão (dias)", input_html: { min: 0 } %>
+  </div>
+  <div class="mb-3">
+    <%= f.input :icon, label: "Ícone FontAwesome" %>
+  </div>
+  <%= f.submit "Salvar", class: "btn btn-success" %>
+<% end %>
+
+<%= link_to "Voltar", steps_path, class: "btn btn-secondary mt-3" %>

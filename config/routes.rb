@@ -47,4 +47,8 @@ Rails.application.routes.draw do
 
   # Rotas para Equipamentos
   resources :equipments, only: [:index]
+
+  # Rotas para Steps (Schedules)
+  resources :steps, only: [:index, :new, :create, :edit, :update, :destroy]
+
 end

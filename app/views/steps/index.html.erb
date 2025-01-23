@@ -1,0 +1,28 @@
+<h1>Etapas Cadastradas</h1>
+<%= link_to "Nova Etapa", new_step_path, class: "btn btn-primary mb-3" %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Local</th>
+      <th>SLA Padrão (dias)</th>
+      <th>Ícone</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @steps.each do |step| %>
+      <tr>
+        <td><%= step.name %></td>
+        <td><%= step.location %></td>
+        <td><%= step.default_sla %></td>
+        <td><i class="<%= step.icon %>"></i></td>
+        <td>
+          <%= link_to "Editar", edit_step_path(step), class: "btn btn-warning btn-sm" %>
+          <%= link_to "Excluir", step_path(step), method: :delete, data: { confirm: "Tem certeza?" }, class: "btn btn-danger btn-sm" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
