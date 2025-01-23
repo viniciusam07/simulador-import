@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       get :generate_pdf
     end
     resources :simulation_quotations, only: [:create, :destroy], shallow: true
+    resource :simulation_schedule, only: [:new, :create, :edit, :update]
   end
   get 'exchange_rate', to: 'simulations#exchange_rate'
 

@@ -32,6 +32,8 @@ class Simulation < ApplicationRecord
   has_many :expenses, through: :simulation_expenses
   has_many :simulation_quotations, dependent: :destroy
   has_many :quotations, through: :simulation_quotations
+  has_one :simulation_schedule, dependent: :destroy
+
 
   accepts_nested_attributes_for :simulation_quotations, allow_destroy: true
 
