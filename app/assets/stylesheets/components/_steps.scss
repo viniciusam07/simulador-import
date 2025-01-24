@@ -1,0 +1,24 @@
+.container {
+  margin-top: 20px;
+}
+
+.selected-step,
+.available-step {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.selected-step {
+  background-color: #f8f9fa;
+}
+
+.available-step {
+  background-color: #e9ecef;
+}
+
+button {
+  margin-left: 10px;
+}

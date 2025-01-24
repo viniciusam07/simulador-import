@@ -1,0 +1,12 @@
+<% steps.each do |step| %>
+  <div class="available-step mb-2 p-2 border" data-step-id="<%= step.id %>" data-step-name="<%= step.name %>" data-step-sla="<%= step.default_sla %>">
+    <strong><%= step.name %></strong> - SLA: <%= step.default_sla %> dias
+    <a href="#" class="btn btn-primary btn-sm add-step"
+      data-action="click->schedule-steps#add"
+      data-step-id-value="<%= step.id %>"
+      data-step-name-value="<%= step.name %>"
+      data-step-sla-value="<%= step.default_sla %>">
+      Adicionar
+    </a>
+  </div>
+<% end %>

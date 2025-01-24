@@ -5,20 +5,53 @@
     <%= f.input :name, label: "Nome do Cronograma" %>
   </div>
 
-  <h5>Selecione as Etapas</h5>
-  <ul>
-    <% @steps.each_with_index do |step, index| %>
-      <li>
-        <%= f.fields_for :schedule_steps, @schedule.schedule_steps.find { |s| s.step_id == step.id } || @schedule.schedule_steps.build(step: step) do |sf| %>
-          <%= sf.hidden_field :step_id, value: step.id %>
-          <%= sf.input :order, label: "#{step.name} - Ordem", as: :integer, input_html: { min: 1 } %>
-          <%= sf.check_box :_destroy %> Remover
+  <div class="row" data-controller="schedule-steps">
+    <!-- Coluna de Steps Selecionados -->
+    <div class="col-md-6">
+      <h5>Steps Selecionados</h5>
+      <div data-schedule-steps-target="selectedList">
+        <%= turbo_frame_tag "selected_steps" do %>
+          <% @schedule.schedule_steps.each do |schedule_step| %>
+            <div class="selected-step mb-2 p-2 border"
+                 data-step-id="<%= schedule_step.step.id %>"
+                 data-step-name="<%= schedule_step.step.name %>"
+                 data-step-sla="<%= schedule_step.step.default_sla %>">
+              <strong><%= schedule_step.step.name %></strong> - SLA: <%= schedule_step.step.default_sla %> dias
+              <input type="hidden" name="schedule[schedule_steps_attributes][][id]" value="<%= schedule_step.id %>">
+              <input type="hidden" name="schedule[schedule_steps_attributes][][step_id]" value="<%= schedule_step.step.id %>">
+              <input type="hidden" name="schedule[schedule_steps_attributes][][order]" value="<%= schedule_step.order %>">
+              <input type="hidden" name="schedule[schedule_steps_attributes][][_destroy]" value="false" class="destroy-flag">
+              <a href="#" class="btn btn-danger btn-sm remove-step" data-action="click->schedule-steps#remove">Remover</a>
+            </div>
+          <% end %>
         <% end %>
-      </li>
-    <% end %>
-  </ul>
+      </div>
+    </div>
 
-  <%= f.submit "Salvar", class: "btn btn-success" %>
+    <!-- Coluna de Steps Disponíveis -->
+    <div class="col-md-6">
+      <h5>Steps Disponíveis</h5>
+      <div data-schedule-steps-target="availableList">
+        <%= turbo_frame_tag "available_steps" do %>
+          <% @steps.each do |step| %>
+            <div class="available-step mb-2 p-2 border"
+                 data-step-id="<%= step.id %>"
+                 data-step-name="<%= step.name %>"
+                 data-step-sla="<%= step.default_sla %>">
+              <strong><%= step.name %></strong> - SLA: <%= step.default_sla %> dias
+              <a href="#" class="btn btn-primary btn-sm add-step"
+                 data-action="click->schedule-steps#add"
+                 data-step-id-value="<%= step.id %>"
+                 data-step-name-value="<%= step.name %>"
+                 data-step-sla-value="<%= step.default_sla %>">Adicionar</a>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%= f.submit "Salvar", class: "btn btn-success mt-3" %>
 <% end %>
 
 <%= link_to "Voltar", schedules_path, class: "btn btn-secondary mt-3" %>

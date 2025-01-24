@@ -1,0 +1,11 @@
+<% schedule.schedule_steps.each do |schedule_step| %>
+  <div class="selected-step mb-2 p-2 border" data-step-id="<%= schedule_step.step.id %>">
+    <strong><%= schedule_step.step.name %></strong> - SLA: <%= schedule_step.step.default_sla %> dias
+    <%= hidden_field_tag "schedule[schedule_steps_attributes][][step_id]", schedule_step.step.id %>
+    <%= hidden_field_tag "schedule[schedule_steps_attributes][][order]", schedule_step.order || (@schedule.schedule_steps.index(schedule_step) + 1) %>
+    <%= hidden_field_tag "schedule[schedule_steps_attributes][][_destroy]", "false" %>
+    <%= link_to "Remover", "#",
+                class: "btn btn-danger btn-sm remove-step",
+                data: { action: "click->schedule-steps#remove", step_id_value: schedule_step.step.id } %>
+  </div>
+<% end %>

@@ -5,20 +5,29 @@
     <%= f.input :name, label: "Nome do Cronograma" %>
   </div>
 
-  <h5>Selecione as Etapas</h5>
-  <ul>
-    <% @steps.each_with_index do |step, index| %>
-      <li>
-        <%= f.fields_for :schedule_steps, @schedule.schedule_steps.find { |s| s.step_id == step.id } || @schedule.schedule_steps.build(step: step) do |sf| %>
-          <%= sf.hidden_field :step_id, value: step.id %>
-          <%= sf.input :order, label: "#{step.name} - Ordem", as: :integer, input_html: { min: 1 } %>
-          <%= sf.check_box :_destroy %> Remover
+  <div class="row" data-controller="schedule-steps">
+    <!-- Coluna de Steps Selecionados -->
+    <div class="col-md-6">
+      <h5>Steps Selecionados</h5>
+      <div data-schedule-steps-target="selectedList">
+        <%= turbo_frame_tag "selected_steps" do %>
+          <%= render partial: "selected_steps", locals: { schedule: @schedule } %>
         <% end %>
-      </li>
-    <% end %>
-  </ul>
+      </div>
+    </div>
 
-  <%= f.submit "Salvar", class: "btn btn-success" %>
+    <!-- Coluna de Steps Disponíveis -->
+    <div class="col-md-6">
+      <h5>Steps Disponíveis</h5>
+      <div data-schedule-steps-target="availableList">
+        <%= turbo_frame_tag "available_steps" do %>
+          <%= render partial: "available_steps", locals: { steps: @steps, schedule: @schedule } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%= f.submit "Salvar", class: "btn btn-success mt-3" %>
 <% end %>
 
 <%= link_to "Voltar", schedules_path, class: "btn btn-secondary mt-3" %>
