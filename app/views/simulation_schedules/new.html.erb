@@ -10,28 +10,37 @@
   </div>
 
   <h5>Etapas</h5>
-  <ul>
-    <% @simulation_schedule.steps_with_defaults.each_with_index do |step, index| %>
-      <li data-simulation-schedule-target="step" data-index="<%= index %>">
-        <%= hidden_field_tag "simulation_schedule[steps][#{index}][name]", step[:name] %>
-        <strong><%= step[:name] %></strong>
-        <div>
-          <%= label_tag "simulation_schedule[steps][#{index}][start_date]", "Data de Início" %>
-          <%= date_field_tag "simulation_schedule[steps][#{index}][start_date]", step[:start_date], class: "form-control step-start-date", data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
-        </div>
-        <div>
-          <%= label_tag "simulation_schedule[steps][#{index}][end_date]", "Data de Fim" %>
-          <%= date_field_tag "simulation_schedule[steps][#{index}][end_date]", step[:end_date], class: "form-control step-end-date", readonly: true %>
-        </div>
-        <div>
-          <%= label_tag "simulation_schedule[steps][#{index}][sla]", "SLA (dias corridos)" %>
-          <%= number_field_tag "simulation_schedule[steps][#{index}][sla]", step[:sla], class: "form-control step-sla", min: 1, data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
-        </div>
-      </li>
-    <% end %>
-  </ul>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Etapa</th>
+        <th>Data de Início</th>
+        <th>SLA (dias)</th>
+        <th>Data de Fim</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @simulation_schedule.steps_with_defaults.each_with_index do |step, index| %>
+        <tr data-simulation-schedule-target="step" data-index="<%= index %>">
+          <td>
+            <%= hidden_field_tag "simulation_schedule[steps][#{index}][name]", step[:name] %>
+            <strong><%= step[:name] %></strong>
+          </td>
+          <td>
+            <%= date_field_tag "simulation_schedule[steps][#{index}][start_date]", step[:start_date], class: "form-control step-start-date", data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
+          </td>
+          <td>
+            <%= number_field_tag "simulation_schedule[steps][#{index}][sla]", step[:sla], class: "form-control step-sla", min: 1, data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
+          </td>
+          <td>
+            <%= date_field_tag "simulation_schedule[steps][#{index}][end_date]", step[:end_date], class: "form-control step-end-date", readonly: true %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-  <%= f.submit "Salvar Cronograma", class: "btn btn-success" %>
+  <%= f.submit "Salvar Cronograma", class: "btn btn-success mt-3" %>
 <% end %>
 
 <%= link_to "Voltar", simulation_path(@simulation), class: "btn btn-secondary mt-3" %>
