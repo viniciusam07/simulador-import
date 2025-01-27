@@ -1,54 +1,88 @@
-<h1>Vincular Cronograma</h1>
+<div class="container my-4">
+  <h1 class="text-center mb-4">Vincular Cronograma</h1>
 
-<%= simple_form_for @simulation_schedule, url: simulation_simulation_schedule_path(@simulation), method: :post, data: { controller: "simulation-schedule" } do |f| %>
-  <div class="mb-3">
-    <div class="mb-3">
-      <%= label_tag :schedule_id, "Buscar Cronograma" %>
+  <%= simple_form_for @simulation_schedule,
+                      url: simulation_simulation_schedule_path(@simulation),
+                      method: :post,
+                      data: { controller: "simulation-schedule" },
+                      html: { class: "card shadow-sm p-4" } do |f| %>
+
+    <!-- Seleção do Cronograma -->
+    <div class="mb-4">
+      <%= label_tag :schedule_id, "Buscar Cronograma", class: "form-label" %>
       <%= select_tag :schedule_id,
                     options_for_select(Schedule.all.map { |s| ["#{s.name} (#{s.schedule_steps.count} etapas)", s.id] }, selected: nil),
                     include_blank: "Selecione um cronograma",
                     class: "form-select",
                     data: { action: "change->simulation-schedule#loadSchedule" } %>
     </div>
-    <%= f.input :schedule_name, label: "Nome do Cronograma" %>
-  </div>
 
-  <div class="mb-3">
-    <%= f.input :start_date, as: :date, label: "Data de Início", input_html: { data: { action: "input->simulation-schedule#updateEndDate", index: -1 } } %>
-  </div>
+    <!-- Nome do Cronograma -->
+    <div class="mb-4">
+      <%= f.input :schedule_name,
+                  label: "Nome do Cronograma",
+                  input_html: { class: "form-control", placeholder: "Digite o nome do cronograma" } %>
+    </div>
 
-  <h5>Etapas</h5>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Etapa</th>
-        <th>Data de Início</th>
-        <th>SLA (dias)</th>
-        <th>Data de Fim</th>
-      </tr>
-    </thead>
-    <tbody data-simulation-schedule-target="stepsList">
-      <% @simulation_schedule.steps_with_defaults.each_with_index do |step, index| %>
-        <tr data-simulation-schedule-target="step" data-index="<%= index %>">
-          <td>
-            <%= hidden_field_tag "simulation_schedule[steps][#{index}][name]", step[:name] %>
-            <strong><%= step[:name] %></strong>
-          </td>
-          <td>
-            <%= date_field_tag "simulation_schedule[steps][#{index}][start_date]", step[:start_date], class: "form-control step-start-date", data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
-          </td>
-          <td>
-            <%= number_field_tag "simulation_schedule[steps][#{index}][sla]", step[:sla], class: "form-control step-sla", min: 1, data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
-          </td>
-          <td>
-            <%= date_field_tag "simulation_schedule[steps][#{index}][end_date]", step[:end_date], class: "form-control step-end-date", readonly: true %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+    <!-- Data de Início -->
+    <div class="mb-4">
+      <%= f.input :start_date,
+                  as: :date,
+                  label: "Data de Início",
+                  input_html: {
+                    class: "form-control",
+                    data: { action: "input->simulation-schedule#updateEndDate", index: -1 }
+                  } %>
+    </div>
 
-  <%= f.submit "Salvar Cronograma", class: "btn btn-success mt-3" %>
-<% end %>
+    <!-- Tabela de Etapas -->
+    <h5 class="mb-3">Etapas</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Etapa</th>
+            <th>Data de Início</th>
+            <th>SLA (dias)</th>
+            <th>Data de Fim</th>
+          </tr>
+        </thead>
+        <tbody data-simulation-schedule-target="stepsList">
+          <% @simulation_schedule.steps_with_defaults.each_with_index do |step, index| %>
+            <tr data-simulation-schedule-target="step" data-index="<%= index %>">
+              <td>
+                <%= hidden_field_tag "simulation_schedule[steps][#{index}][name]", step[:name] %>
+                <strong><%= step[:name] %></strong>
+              </td>
+              <td>
+                <%= date_field_tag "simulation_schedule[steps][#{index}][start_date]",
+                                   step[:start_date],
+                                   class: "form-control step-start-date",
+                                   data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
+              </td>
+              <td>
+                <%= number_field_tag "simulation_schedule[steps][#{index}][sla]",
+                                     step[:sla],
+                                     class: "form-control step-sla",
+                                     min: 1,
+                                     data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
+              </td>
+              <td>
+                <%= date_field_tag "simulation_schedule[steps][#{index}][end_date]",
+                                   step[:end_date],
+                                   class: "form-control step-end-date",
+                                   readonly: true %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
 
-<%= link_to "Voltar", simulation_path(@simulation), class: "btn btn-secondary mt-3" %>
+    <!-- Botões -->
+    <div class="text-center mt-4">
+      <%= f.submit "Salvar Cronograma", class: "btn btn-success me-3" %>
+      <%= link_to "Voltar", simulation_path(@simulation), class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

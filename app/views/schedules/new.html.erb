@@ -1,33 +1,51 @@
-<h1><%= @schedule.new_record? ? "Novo Cronograma" : "Editar Cronograma" %></h1>
+<div class="container my-4">
+  <h1 class="mb-4 text-center"><%= @schedule.new_record? ? "Novo Cronograma" : "Editar Cronograma" %></h1>
 
-<%= simple_form_for @schedule do |f| %>
-  <div class="mb-3">
-    <%= f.input :name, label: "Nome do Cronograma" %>
-  </div>
+  <%= simple_form_for @schedule, html: { class: "card shadow-sm p-4" } do |f| %>
+    <!-- Nome do Cronograma -->
+    <div class="mb-4">
+      <%= f.input :name, label: "Nome do Cronograma", input_html: { class: "form-control", placeholder: "Digite o nome do cronograma", autofocus: true } %>
+    </div>
 
-  <div class="row" data-controller="schedule-steps">
-    <!-- Coluna de Steps Selecionados -->
-    <div class="col-md-6">
-      <h5>Steps Selecionados</h5>
-      <div data-schedule-steps-target="selectedList">
-        <%= turbo_frame_tag "selected_steps" do %>
-          <%= render partial: "selected_steps", locals: { schedule: @schedule } %>
-        <% end %>
+    <!-- Steps Selecionados e Disponíveis -->
+    <div class="row" data-controller="schedule-steps">
+      <!-- Coluna de Steps Selecionados -->
+      <div class="col-md-6">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Steps Selecionados</h5>
+          </div>
+          <div class="card-body">
+            <div data-schedule-steps-target="selectedList">
+              <%= turbo_frame_tag "selected_steps" do %>
+                <%= render partial: "selected_steps", locals: { schedule: @schedule } %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna de Steps Disponíveis -->
+      <div class="col-md-6">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Steps Disponíveis</h5>
+          </div>
+          <div class="card-body">
+            <div data-schedule-steps-target="availableList">
+              <%= turbo_frame_tag "available_steps" do %>
+                <%= render partial: "available_steps", locals: { steps: @steps, schedule: @schedule } %>
+              <% end %>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Coluna de Steps Disponíveis -->
-    <div class="col-md-6">
-      <h5>Steps Disponíveis</h5>
-      <div data-schedule-steps-target="availableList">
-        <%= turbo_frame_tag "available_steps" do %>
-          <%= render partial: "available_steps", locals: { steps: @steps, schedule: @schedule } %>
-        <% end %>
-      </div>
+    <!-- Botões -->
+    <div class="text-center">
+      <%= f.submit "Salvar", class: "btn btn-success me-3" %>
+      <%= link_to "Voltar", schedules_path, class: "btn btn-secondary" %>
     </div>
-  </div>
-
-  <%= f.submit "Salvar", class: "btn btn-success mt-3" %>
-<% end %>
-
-<%= link_to "Voltar", schedules_path, class: "btn btn-secondary mt-3" %>
+  <% end %>
+</div>

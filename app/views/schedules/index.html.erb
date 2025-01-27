@@ -1,30 +1,53 @@
-<h1>Cronogramas</h1>
-<%= link_to "Novo Cronograma", new_schedule_path, class: "btn btn-primary mb-3" %>
+<div class="container">
+  <h1 class="mb-4">Cronogramas</h1>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Nome</th>
-      <th>Etapas</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @schedules.each do |schedule| %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <%= link_to "Novo Cronograma", new_schedule_path, class: "btn btn-primary" %>
+    <p class="text-muted">Total: <%= @schedules.count %> cronogramas</p>
+  </div>
+
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
       <tr>
-        <td><%= schedule.name %></td>
-        <td>
-          <ul>
-            <% schedule.schedule_steps.order(:order).each do |schedule_step| %>
-              <li><%= schedule_step.step.name %> (Ordem: <%= schedule_step.order %>)</li>
-            <% end %>
-          </ul>
-        </td>
-        <td>
-          <%= link_to "Editar", edit_schedule_path(schedule), class: "btn btn-warning btn-sm" %>
-          <%= link_to "Excluir", schedule_path(schedule), method: :delete, data: { confirm: "Tem certeza?" }, class: "btn btn-danger btn-sm" %>
-        </td>
+        <th scope="col">Nome</th>
+        <th scope="col">Etapas</th>
+        <th scope="col" class="text-center">Ações</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @schedules.each do |schedule| %>
+        <tr>
+          <td>
+            <strong><%= schedule.name %></strong>
+          </td>
+          <td>
+            <ul class="list-unstyled mb-0">
+              <% schedule.schedule_steps.order(:order).each do |schedule_step| %>
+                <li>
+                  <span class="badge bg-secondary">
+                    Ordem: <%= schedule_step.order %>
+                  </span>
+                  <%= schedule_step.step.name %>
+                </li>
+              <% end %>
+            </ul>
+          </td>
+          <td class="text-center">
+            <%= link_to edit_schedule_path(schedule), class: "btn btn-sm btn-outline-warning me-2", title: "Editar", aria_label: "Editar #{schedule.name}" do %>
+              <i class="fa fa-edit"></i>
+            <% end %>
+            <%= link_to schedule_path(schedule), method: :delete, data: { confirm: "Tem certeza que deseja excluir o cronograma \"#{schedule.name}\"?" }, class: "btn btn-sm btn-outline-danger", title: "Excluir", aria_label: "Excluir #{schedule.name}" do %>
+              <i class="fa fa-trash"></i>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @schedules.empty? %>
+    <div class="alert alert-info text-center mt-4">
+      Nenhum cronograma cadastrado até o momento. <%= link_to "Adicione o primeiro agora", new_schedule_path, class: "alert-link" %>.
+    </div>
+  <% end %>
+</div>
