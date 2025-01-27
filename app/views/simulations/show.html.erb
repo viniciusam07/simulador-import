@@ -468,31 +468,58 @@
       </div>
     </div>
   </div>
-
-  <!-- Cronograma-->
-  <div class="card mb-4">
-    <div class="card-header bg-secondary text-white">
-      <i class="fas fa-calendar-alt"></i> Cronograma
-    </div>
-    <div class="card-body">
-      <% if @simulation.simulation_schedule.present? %>
-        <h5><%= @simulation.simulation_schedule.schedule_name %></h5>
-        <ul class="list-group">
-          <% @simulation.simulation_schedule.steps.each do |step| %>
-            <li class="list-group-item">
-              <strong>Etapa:</strong> <%= step["name"] %><br>
-              <strong>Data de Início:</strong> <%= step["start_date"] %><br>
-              <strong>Data de Fim:</strong> <%= step["end_date"] %><br>
-              <strong>SLA (dias):</strong> <%= step["sla"] %>
-            </li>
+    <!-- Cronograma -->
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">
+        <i class="fas fa-calendar-alt"></i> Cronograma
+      </div>
+      <div class="card-body">
+        <% if @simulation.simulation_schedule.present? %>
+          <h5><%= @simulation.simulation_schedule.schedule_name %></h5>
+          <%= form_with model: @simulation.simulation_schedule, url: simulation_simulation_schedule_path(@simulation), method: :patch, data: { controller: "simulation-schedule" } do |f| %>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Etapa</th>
+                    <th>Data de Início</th>
+                    <th>SLA (dias)</th>
+                    <th>Data de Fim</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @simulation.simulation_schedule.steps.each_with_index do |step, index| %>
+                    <tr data-simulation-schedule-target="step" data-index="<%= index %>">
+                      <td>
+                        <%= hidden_field_tag "simulation_schedule[steps][#{index}][name]", step["name"] %>
+                        <%= step["name"] %>
+                      </td>
+                      <td>
+                        <%= date_field_tag "simulation_schedule[steps][#{index}][start_date]", step["start_date"], class: "form-control step-start-date", data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
+                      </td>
+                      <td>
+                        <%= number_field_tag "simulation_schedule[steps][#{index}][sla]", step["sla"], class: "form-control step-sla", min: 1, data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
+                      </td>
+                      <td>
+                        <%= date_field_tag "simulation_schedule[steps][#{index}][end_date]", step["end_date"], class: "form-control step-end-date", readonly: true %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <%= f.submit "Salvar Cronograma", class: "btn btn-primary mt-3" %>
           <% end %>
-        </ul>
-      <% else %>
-        <p class="text-muted">Nenhum cronograma vinculado a esta simulação.</p>
-        <%= link_to 'Criar Cronograma', new_simulation_simulation_schedule_path(@simulation), class: 'btn btn-warning mt-3' %>
-      <% end %>
+        <% else %>
+          <p class="text-muted">Nenhum cronograma vinculado a esta simulação.</p>
+          <%= link_to 'Criar Cronograma', new_simulation_simulation_schedule_path(@simulation), class: 'btn btn-warning mt-3' %>
+        <% end %>
+      </div>
     </div>
-  </div>
+
+
+
+
 
 
   <!-- Observações -->

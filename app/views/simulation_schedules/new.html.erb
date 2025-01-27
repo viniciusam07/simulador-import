@@ -1,31 +1,31 @@
 <h1>Vincular Cronograma</h1>
 
-<%= simple_form_for @simulation_schedule, url: simulation_simulation_schedule_path(@simulation), method: :post do |f| %>
+<%= simple_form_for @simulation_schedule, url: simulation_simulation_schedule_path(@simulation), method: :post, data: { controller: "simulation-schedule" } do |f| %>
   <div class="mb-3">
     <%= f.input :schedule_name, label: "Nome do Cronograma" %>
   </div>
 
   <div class="mb-3">
-    <%= f.input :start_date, as: :date, label: "Data de Início" %>
+    <%= f.input :start_date, as: :date, label: "Data de Início", input_html: { data: { action: "input->simulation-schedule#updateEndDate", index: -1 } } %>
   </div>
 
   <h5>Etapas</h5>
   <ul>
     <% @simulation_schedule.steps_with_defaults.each_with_index do |step, index| %>
-      <li>
+      <li data-simulation-schedule-target="step" data-index="<%= index %>">
         <%= hidden_field_tag "simulation_schedule[steps][#{index}][name]", step[:name] %>
         <strong><%= step[:name] %></strong>
         <div>
           <%= label_tag "simulation_schedule[steps][#{index}][start_date]", "Data de Início" %>
-          <%= date_field_tag "simulation_schedule[steps][#{index}][start_date]", step[:start_date], class: "form-control" %>
+          <%= date_field_tag "simulation_schedule[steps][#{index}][start_date]", step[:start_date], class: "form-control step-start-date", data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
         </div>
         <div>
           <%= label_tag "simulation_schedule[steps][#{index}][end_date]", "Data de Fim" %>
-          <%= date_field_tag "simulation_schedule[steps][#{index}][end_date]", step[:end_date], class: "form-control", readonly: true %>
+          <%= date_field_tag "simulation_schedule[steps][#{index}][end_date]", step[:end_date], class: "form-control step-end-date", readonly: true %>
         </div>
         <div>
           <%= label_tag "simulation_schedule[steps][#{index}][sla]", "SLA (dias corridos)" %>
-          <%= number_field_tag "simulation_schedule[steps][#{index}][sla]", step[:sla], class: "form-control", min: 1 %>
+          <%= number_field_tag "simulation_schedule[steps][#{index}][sla]", step[:sla], class: "form-control step-sla", min: 1, data: { action: "input->simulation-schedule#updateEndDate", index: index } %>
         </div>
       </li>
     <% end %>

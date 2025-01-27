@@ -20,3 +20,7 @@ application.register("modal", ModalController);
 // CNPJ
 import CnpjController from "./cnpj_controller";
 application.register("cnpj", CnpjController);
+
+// Simulation Schedule
+import SimulationScheduleController from "./simulation_schedule_controller";
+application.register("simulation-schedule", SimulationScheduleController);
