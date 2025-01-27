@@ -86,6 +86,21 @@ class SchedulesController < ApplicationController
       end
     end
   end
+  def details
+    schedule = Schedule.find(params[:id])
+
+    steps = schedule.schedule_steps.map do |schedule_step|
+      {
+        name: schedule_step.step.name,
+        sla: schedule_step.step.default_sla,
+
+      }
+    end
+
+    render json: { id: schedule.id, name: schedule.name, steps: steps }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Cronograma não encontrado" }, status: :not_found
+  end
 
   private
 

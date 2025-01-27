@@ -2,6 +2,14 @@
 
 <%= simple_form_for @simulation_schedule, url: simulation_simulation_schedule_path(@simulation), method: :post, data: { controller: "simulation-schedule" } do |f| %>
   <div class="mb-3">
+    <div class="mb-3">
+      <%= label_tag :schedule_id, "Buscar Cronograma" %>
+      <%= select_tag :schedule_id,
+                    options_for_select(Schedule.all.map { |s| ["#{s.name} (#{s.schedule_steps.count} etapas)", s.id] }, selected: nil),
+                    include_blank: "Selecione um cronograma",
+                    class: "form-select",
+                    data: { action: "change->simulation-schedule#loadSchedule" } %>
+    </div>
     <%= f.input :schedule_name, label: "Nome do Cronograma" %>
   </div>
 
@@ -19,7 +27,7 @@
         <th>Data de Fim</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody data-simulation-schedule-target="stepsList">
       <% @simulation_schedule.steps_with_defaults.each_with_index do |step, index| %>
         <tr data-simulation-schedule-target="step" data-index="<%= index %>">
           <td>
