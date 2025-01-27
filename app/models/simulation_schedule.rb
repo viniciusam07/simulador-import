@@ -1,5 +1,6 @@
 class SimulationSchedule < ApplicationRecord
   belongs_to :simulation
+  belongs_to :schedule, optional: true # Permite associar um cronograma existente
 
   validates :schedule_name, :start_date, presence: true
   validate :validate_steps_dates

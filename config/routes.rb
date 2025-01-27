@@ -57,6 +57,7 @@ Rails.application.routes.draw do
 
   # Rotas para Schedules
   resources :schedules, only: [:index, :new, :create, :edit, :update, :destroy] do
+    get :details, on: :member
     member do
       post :add_step
       delete :remove_step
