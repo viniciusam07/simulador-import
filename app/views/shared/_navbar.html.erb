@@ -17,10 +17,19 @@
           <li class="nav-item">
             <%= link_to "Messages", "#", class: "nav-link" %>
           </li>
+          <% if current_user.super_admin? || current_user.employee&.owner? || current_user.employee&.admin? %>
+            <li class="nav-item">
+              <% if current_user.employee && current_user.employee.enterprise %>
+                <%= link_to "Minha Empresa", enterprise_path(current_user.employee.enterprise), class: "nav-link" %>
+              <% else %>
+                <%= link_to "Criar Empresa", new_enterprise_path, class: "nav-link" %>
+              <% end %>
+            </li>
+          <% end %>
           <li class="nav-item dropdown">
-          <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "avatar", alt: "dropdown menu" %>
-          </a>
+            <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "avatar", alt: "dropdown menu" %>
+            </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
               <%= link_to "Action", "#", class: "dropdown-item" %>
               <%= link_to "Another action", "#", class: "dropdown-item" %>

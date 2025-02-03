@@ -8,4 +8,13 @@ class Employee < ApplicationRecord
 
   # Validações
   validates :role, presence: true
+
+  # Campo virtual para manipular email no formulário
+  def user_email
+    user&.email
+  end
+
+  def user_email=(email)
+    self.user = User.find_by(email: email)
+  end
 end

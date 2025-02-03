@@ -47,7 +47,8 @@ class EnterprisesController < ApplicationController
   private
 
   def set_enterprise
-    @enterprise = Enterprise.find(params[:id])
+    @enterprise = Enterprise.find_by(id: params[:id])
+    redirect_to enterprises_path, alert: "Empresa não encontrada." if @enterprise.nil?
   end
 
   def authorize_admin!

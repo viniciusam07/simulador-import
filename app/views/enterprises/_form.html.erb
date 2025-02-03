@@ -1,0 +1,24 @@
+<%= simple_form_for @enterprise, html: { class: "form-horizontal" } do |f| %>
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :name, label: "Nome da Empresa", input_html: { class: "form-control" } %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :cnpj, label: "CNPJ", input_html: { class: "form-control" } %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :phone, label: "Telefone", input_html: { class: "form-control" } %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :contact, label: "Nome do Contato", input_html: { class: "form-control" } %>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Salvar", class: "btn btn-primary" %>
+    <%= link_to 'Cancelar', enterprises_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

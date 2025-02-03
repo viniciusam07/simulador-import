@@ -7,6 +7,16 @@
         <%= f.error_notification %>
 
         <div class="mb-4">
+          <%= f.label :first_name, "First Name", class: "form-label" %>
+          <%= f.input :first_name, required: true, input_html: { class: "form-control", placeholder: "Your first name", autocomplete: "given-name" }, label: false %>
+        </div>
+
+        <div class="mb-4">
+          <%= f.label :last_name, "Last Name", class: "form-label" %>
+          <%= f.input :last_name, required: true, input_html: { class: "form-control", placeholder: "Your last name", autocomplete: "family-name" }, label: false %>
+        </div>
+
+        <div class="mb-4">
           <%= f.label :email, "Email address", class: "form-label" %>
           <%= f.input :email, required: true, autofocus: true, input_html: { class: "form-control", placeholder: "Your email address", autocomplete: "email" }, label: false %>
         </div>

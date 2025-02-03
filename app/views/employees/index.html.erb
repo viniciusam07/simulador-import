@@ -1,9 +1,5 @@
-<h1><%= @enterprise.name %></h1>
-<p><strong>CNPJ:</strong> <%= @enterprise.cnpj %></p>
-<p><strong>Telefone:</strong> <%= @enterprise.phone %></p>
-<p><strong>Contato:</strong> <%= @enterprise.contact %></p>
+<h1>Funcionários da Empresa: <%= @enterprise.name %></h1>
 
-<h2>Funcionários</h2>
 <table>
   <thead>
     <tr>
@@ -14,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @enterprise.employees.each do |employee| %>
+    <% @employees.each do |employee| %>
       <tr>
         <td><%= employee.user.full_name %></td>
         <td><%= employee.user.email %></td>
@@ -31,6 +27,4 @@
 </table>
 
 <%= link_to 'Adicionar Funcionário', new_enterprise_employee_path(@enterprise), class: "btn btn-secondary" %>
-
-<%= link_to 'Editar Empresa', edit_enterprise_path(@enterprise), class: "btn btn-primary" %>
-<%= link_to 'Voltar', enterprises_path, class: "btn btn-secondary" %>
+<%= link_to 'Voltar', enterprise_path(@enterprise), class: "btn btn-secondary" %>

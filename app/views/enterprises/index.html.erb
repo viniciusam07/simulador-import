@@ -1,0 +1,29 @@
+<h1>Minhas Empresas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>CNPJ</th>
+      <th>Telefone</th>
+      <th>Contato</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @enterprises.each do |enterprise| %>
+      <tr>
+        <td><%= link_to enterprise.name, enterprise_path(enterprise) %></td>
+        <td><%= enterprise.cnpj %></td>
+        <td><%= enterprise.phone %></td>
+        <td><%= enterprise.contact %></td>
+        <td>
+          <%= link_to 'Editar', edit_enterprise_path(enterprise) %> |
+          <%= link_to 'Excluir', enterprise, method: :delete, data: { confirm: 'Tem certeza?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Nova Empresa', new_enterprise_path, class: "btn btn-primary" %>

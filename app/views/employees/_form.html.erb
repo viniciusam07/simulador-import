@@ -1,0 +1,24 @@
+<%= simple_form_for [@enterprise, @employee], html: { class: "form-horizontal" } do |f| %>
+  <div class="row">
+    <div class="col-md-4">
+      <%= f.simple_fields_for :user, @employee.user do |u| %>
+        <%= u.input :first_name, label: "Nome", input_html: { class: "form-control" } %>
+        <%= u.input :last_name, label: "Sobrenome", input_html: { class: "form-control" } %>
+        <% if current_user.super_admin? || current_user.employee&.owner? || current_user.employee&.admin? %>
+          <%= u.input :email, label: "Email do Usuário", input_html: { class: "form-control" } %>
+        <% else %>
+          <%= u.input :email, label: "Email do Usuário", input_html: { class: "form-control", readonly: true } %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="col-md-4">
+      <%= f.input :role, label: "Papel", collection: Employee.roles.keys.map { |r| [r.humanize, r] }, input_html: { class: "form-control" } %>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Salvar", class: "btn btn-primary" %>
+    <%= link_to 'Cancelar', enterprise_path(@enterprise), class: "btn btn-secondary" %>
+  </div>
+<% end %>

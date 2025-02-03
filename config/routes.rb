@@ -63,4 +63,9 @@ Rails.application.routes.draw do
       delete :remove_step
     end
   end
+
+  # Rotas para Empresas (`Enterprises`) e Funcionários (`Employees`)
+  resources :enterprises do
+    resources :employees, only: [:index, :new, :create, :edit, :update, :destroy]
+  end
 end
