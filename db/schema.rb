@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_27_145353) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_03_133355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,29 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_145353) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cnpj"], name: "index_companies_on_cnpj", unique: true
+  end
+
+  create_table "employees", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "enterprise_id", null: false
+    t.integer "role", default: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enterprise_id"], name: "index_employees_on_enterprise_id"
+    t.index ["user_id", "enterprise_id"], name: "index_employees_on_user_id_and_enterprise_id", unique: true
+    t.index ["user_id"], name: "index_employees_on_user_id"
+  end
+
+  create_table "enterprises", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "cnpj", null: false
+    t.string "phone"
+    t.string "contact"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cnpj"], name: "index_enterprises_on_cnpj", unique: true
+    t.index ["user_id"], name: "index_enterprises_on_user_id"
   end
 
   create_table "equipments", force: :cascade do |t|
@@ -270,7 +293,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_145353) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "first_name", default: "", null: false
+    t.string "last_name", default: "", null: false
+    t.string "status", default: "active", null: false
+    t.boolean "super_admin", default: false, null: false
+    t.bigint "last_enterprise_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["last_enterprise_id"], name: "index_users_on_last_enterprise_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -289,6 +318,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_145353) do
     t.index ["user_id"], name: "index_versions_on_user_id"
   end
 
+  add_foreign_key "employees", "enterprises"
+  add_foreign_key "employees", "users"
+  add_foreign_key "enterprises", "users"
   add_foreign_key "quotations", "products"
   add_foreign_key "quotations", "suppliers"
   add_foreign_key "schedule_steps", "schedules"
@@ -303,4 +335,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_145353) do
   add_foreign_key "simulations", "companies"
   add_foreign_key "simulations", "equipments"
   add_foreign_key "tax_rates", "taxes"
+  add_foreign_key "users", "enterprises", column: "last_enterprise_id"
 end
