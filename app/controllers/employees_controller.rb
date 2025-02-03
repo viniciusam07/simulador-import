@@ -1,15 +1,21 @@
 class EmployeesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_enterprise
-  before_action :authorize_admin!
   before_action :set_employee, only: %i[edit update destroy]
+  before_action :authorize_admin!
+
 
 
   def index
     @employees = @enterprise.employees.includes(:user)
   end
 
+  def show
+    @enterprise = @employee.enterprise # 🚨 Garante que a empresa correta seja carregada
+  end
+
   def edit
+    @enterprise = @employee.enterprise # 🚨 Garante que a empresa correta está sendo carregada
     @employee.build_user unless @employee.user
   end
   def update
