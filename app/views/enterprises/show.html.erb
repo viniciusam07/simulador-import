@@ -10,7 +10,9 @@
       <th>Nome</th>
       <th>Email</th>
       <th>Papel</th>
-      <th>Ações</th>
+      <% if current_user.super_admin? || current_user.employee&.owner? || current_user.employee&.admin? %>
+        <th>Ações</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -19,18 +21,20 @@
         <td><%= employee.user.full_name %></td>
         <td><%= employee.user.email %></td>
         <td><%= employee.role %></td>
-        <td>
-          <% if current_user.super_admin? || current_user.employee&.owner? || current_user.employee&.admin? %>
+        <% if current_user.super_admin? || current_user.employee&.owner? || current_user.employee&.admin? %>
+          <td>
             <%= link_to 'Editar', edit_enterprise_employee_path(@enterprise, employee) %> |
             <%= link_to 'Remover', enterprise_employee_path(@enterprise, employee), method: :delete, data: { confirm: 'Tem certeza?' } %>
-          <% end %>
-        </td>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= link_to 'Adicionar Funcionário', new_enterprise_employee_path(@enterprise), class: "btn btn-secondary" %>
+<% if current_user.super_admin? || current_user.employee&.owner? || current_user.employee&.admin? %>
+  <%= link_to 'Adicionar Funcionário', new_enterprise_employee_path(@enterprise), class: "btn btn-secondary" %>
+  <%= link_to 'Editar Empresa', edit_enterprise_path(@enterprise), class: "btn btn-primary" %>
+<% end %>
 
-<%= link_to 'Editar Empresa', edit_enterprise_path(@enterprise), class: "btn btn-primary" %>
-<%= link_to 'Voltar', enterprises_path, class: "btn btn-secondary" %>
+<%= link_to 'Voltar', root_path, class: "btn btn-secondary" %>
