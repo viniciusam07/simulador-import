@@ -1,29 +1,45 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["list", "item"];
+  static targets = ["list", "item", "template"];
+
+  connect() {
+    this.toggleRemoveButtons();
+  }
 
   // Adiciona um novo item à lista de cotações
   add(event) {
     event.preventDefault();
 
-    const template = this.itemTarget.cloneNode(true);
-    template.querySelectorAll("input, select").forEach((field) => {
-      field.value = "";
-    });
+    // Clona o template oculto
+    const template = this.templateTarget.content.cloneNode(true);
 
-    // Garante que o novo item tenha o atributo necessário
-    template.setAttribute("data-quotations-target", "item");
-
+    // Adiciona o novo item à lista
     this.listTarget.appendChild(template);
+
+    // Atualiza os botões de remoção
+    this.toggleRemoveButtons();
   }
 
   // Remove um item da lista de cotações
   remove(event) {
     event.preventDefault();
     const item = event.target.closest("[data-quotations-target='item']");
+
     if (item) {
       item.remove();
+      this.toggleRemoveButtons();
+    }
+  }
+
+  // Verifica e desabilita o botão "Remover" se houver apenas uma cotação
+  toggleRemoveButtons() {
+    const removeButtons = this.listTarget.querySelectorAll("[data-action='click->quotations#remove']");
+
+    if (removeButtons.length === 1) {
+      removeButtons[0].disabled = true;
+    } else {
+      removeButtons.forEach(button => button.disabled = false);
     }
   }
 
@@ -53,8 +69,8 @@ export default class extends Controller {
         })
         .then((data) => {
           if (data.price !== undefined) {
-            unitPriceInput.value = data.price; // Preenche o campo com o preço retornado
-            this.updateTotal({ target: unitPriceInput }); // Atualiza o valor total
+            unitPriceInput.value = data.price;
+            this.updateTotal({ target: unitPriceInput });
           } else {
             console.error("Preço não encontrado na resposta:", data);
           }
@@ -84,7 +100,6 @@ export default class extends Controller {
     const quantity = parseFloat(quantityInput.value) || 0;
     const unitPrice = parseFloat(unitPriceInput.value) || 0;
 
-    // Atualiza o campo de valor total
     totalValueInput.value = (quantity * unitPrice).toFixed(2);
   }
 }

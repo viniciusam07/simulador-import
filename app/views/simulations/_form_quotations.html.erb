@@ -1,6 +1,6 @@
-<p>Gerencie as cotações relacionadas à simulação.</p>
-
+<!-- Gerenciamento das cotações na simulação -->
 <div data-controller="quotations">
+  <!-- Lista de cotações associadas -->
   <div data-quotations-target="list">
     <% @simulation.simulation_quotations.each do |sq| %>
       <div data-quotations-target="item" class="mb-3 p-3 border rounded">
@@ -52,7 +52,7 @@
             <!-- Botão Remover -->
             <div class="col-md-2 text-end">
               <%= sq_form.hidden_field :_destroy, value: false %>
-              <button type="button" class="btn btn-outline-danger btn-sm" data-action="click->quotations#remove">
+              <button type="button" class="btn btn-outline-danger btn-sm remove-quotation" data-action="click->quotations#remove">
                 <i class="fas fa-trash"></i> Remover
               </button>
             </div>
@@ -61,6 +61,55 @@
       </div>
     <% end %>
   </div>
+
+  <!-- Template para novas cotações (oculto) -->
+  <template data-quotations-target="template">
+    <div data-quotations-target="item" class="mb-3 p-3 border rounded">
+      <%= fields_for "simulation[simulation_quotations_attributes][]", SimulationQuotation.new do |sq_form| %>
+        <div class="row gy-3">
+          <div class="col-md-4">
+            <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name,
+                  { prompt: "Selecione uma cotação" },
+                  { class: "form-select", data: { action: "change->quotations#loadUnitPrice" } } %>
+          </div>
+          <div class="col-md-2">
+            <%= sq_form.number_field :quantity, placeholder: "Quantidade", class: "form-control",
+                  data: { action: "input->quotations#updateTotal" } %>
+          </div>
+          <div class="col-md-2">
+            <%= sq_form.number_field :custom_price, placeholder: "Preço Unitário", class: "form-control",
+                  data: { action: "input->quotations#updateTotal" } %>
+          </div>
+          <div class="col-md-2">
+            <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control", readonly: true %>
+          </div>
+        </div>
+        <div class="row gy-3 mt-2">
+          <div class="col-md-2">
+            <%= sq_form.number_field :aliquota_ii, step: 0.01, placeholder: "II (%)", class: "form-control" %>
+          </div>
+          <div class="col-md-2">
+            <%= sq_form.number_field :aliquota_ipi, step: 0.01, placeholder: "IPI (%)", class: "form-control" %>
+          </div>
+          <div class="col-md-2">
+            <%= sq_form.number_field :aliquota_pis, step: 0.01, placeholder: "PIS (%)", class: "form-control" %>
+          </div>
+          <div class="col-md-2">
+            <%= sq_form.number_field :aliquota_cofins, step: 0.01, placeholder: "COFINS (%)", class: "form-control" %>
+          </div>
+          <div class="col-md-2">
+            <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
+          </div>
+          <div class="col-md-2 text-end">
+            <%= sq_form.hidden_field :_destroy, value: false %>
+            <button type="button" class="btn btn-outline-danger btn-sm remove-quotation" data-action="click->quotations#remove">
+              <i class="fas fa-trash"></i> Remover
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </template>
 
   <!-- Botão para Adicionar Novas Cotações -->
   <div class="text-end mt-3">
