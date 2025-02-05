@@ -20,6 +20,8 @@ class SimulationQuotation < ApplicationRecord
   before_save :calculate_tax_values
   before_save :calculate_allocations
   before_save :calculate_customs_values
+  before_save :set_default_tax_rates
+
 
   # Métodos públicos
 
@@ -151,7 +153,18 @@ class SimulationQuotation < ApplicationRecord
   # Fórmula: (Base ICMS) * Alíquota ICMS
   # Base ICMS: Valor Aduaneiro (CIF) + II + IPI + PIS + Cofins
   def calculate_icms(customs_value, ii_value, ipi_value, pis_value, cofins_value)
+    aliquota_icms_value = (aliquota_icms.presence || 0).to_f # Garante que seja um número válido
+    return 0 if aliquota_icms_value <= 0 || aliquota_icms_value >= 100 # Evita erros matemáticos
+
     base_icms = (customs_value + ii_value.to_f + ipi_value.to_f + pis_value.to_f + cofins_value.to_f)/(100-aliquota_icms)
     base_icms * (aliquota_icms || 0)
+  end
+
+  def set_default_tax_rates
+    self.aliquota_ii ||= 0
+    self.aliquota_ipi ||= 0
+    self.aliquota_pis ||= 0
+    self.aliquota_cofins ||= 0
+    self.aliquota_icms ||= 0
   end
 end
