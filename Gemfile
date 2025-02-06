@@ -62,6 +62,8 @@ gem 'prawn' # Para gerar PDFs
 gem 'prawn-table' # Para gerar tabelas em PDFs
 gem 'paper_trail' # Para versionamento de registros
 gem 'gruff' # Para gerar gráficos no PDF
+gem 'chartkick' # Para gerar gráficos no front-end
+gem 'groupdate' # Para agrupar registros por data
 
 
 

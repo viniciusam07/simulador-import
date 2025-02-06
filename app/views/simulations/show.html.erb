@@ -414,60 +414,41 @@
   </div>
 </div>
 
-  <!-- Resumo da Importação -->
-  <div class="card mb-4">
-    <div class="card-header bg-secondary text-white">
-      <i class="fas fa-chart-bar"></i> Resumo da Importação
-    </div>
-    <div class="card-body">
-      <!-- Listagem de Valores -->
-      <ul class="list-group mb-3">
-        <li class="list-group-item">
-          <strong>Valor Total Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.total_customs_value_brl, unit: 'BRL') %>
-        </li>
-        <li class="list-group-item">
-          <strong>Valor Total de Impostos:</strong> <%= number_to_currency(@simulation.total_taxes, unit: 'BRL') %>
-        </li>
-        <li class="list-group-item">
-          <strong>Valor Total de Despesas Operacionais:</strong> <%= number_to_currency(@simulation.total_operational_expenses, unit: 'BRL') %>
-        </li>
-        <li class="list-group-item">
-          <strong>Valor Total da Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %>
-        </li>
-        <li class="list-group-item">
-            <strong>Fator de Importação:</strong> <%= number_with_precision(@simulation.import_factor, precision: 2) %>
-        </li>
-      </ul>
-
-      <!-- Progress Bar para Composição -->
-      <% total_import_cost = @simulation.total_importation_cost %>
-      <div class="progress">
-        <!-- Valor Total Aduaneiro -->
-        <div class="progress-bar bg-primary" role="progressbar"
-            style="width: <%= ((@simulation.total_customs_value_brl / total_import_cost) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.total_customs_value_brl / total_import_cost) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          Aduaneiro (<%= number_to_percentage((@simulation.total_customs_value_brl / total_import_cost) * 100, precision: 2) %>)
+  <div class="row">
+    <!-- Coluna 1 - Resumo da Importação -->
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-chart-bar"></i> Resumo da Importação
         </div>
-
-        <!-- Impostos -->
-        <div class="progress-bar bg-warning" role="progressbar"
-            style="width: <%= ((@simulation.total_taxes / total_import_cost) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.total_taxes / total_import_cost) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          Impostos (<%= number_to_percentage((@simulation.total_taxes / total_import_cost) * 100, precision: 2) %>)
-        </div>
-
-        <!-- Despesas Operacionais -->
-        <div class="progress-bar bg-success" role="progressbar"
-            style="width: <%= ((@simulation.total_operational_expenses / total_import_cost) * 100).round %>%;"
-            aria-valuenow="<%= ((@simulation.total_operational_expenses / total_import_cost) * 100).round %>"
-            aria-valuemin="0" aria-valuemax="100">
-          Despesas (<%= number_to_percentage((@simulation.total_operational_expenses / total_import_cost) * 100, precision: 2) %>)
+        <div class="card-body">
+          <ul class="list-group mb-3">
+            <li class="list-group-item">
+              <strong>Valor Total Aduaneiro (BRL):</strong> <%= number_to_currency(@simulation.total_customs_value_brl, unit: 'BRL') %>
+            </li>
+            <li class="list-group-item">
+              <strong>Valor Total de Impostos:</strong> <%= number_to_currency(@simulation.total_taxes, unit: 'BRL') %>
+            </li>
+            <li class="list-group-item">
+              <strong>Valor Total de Despesas Operacionais:</strong> <%= number_to_currency(@simulation.total_operational_expenses, unit: 'BRL') %>
+            </li>
+            <li class="list-group-item">
+              <strong>Valor Total da Importação:</strong> <%= number_to_currency(@simulation.total_importation_cost, unit: 'BRL') %>
+            </li>
+            <li class="list-group-item">
+              <strong>Fator de Importação:</strong> <%= number_with_precision(@simulation.import_factor, precision: 2) %>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
+
+    <!-- Coluna 2 - Gráfico Pie Chart -->
+    <div class="col-md-6">
+      <%= render 'pie_chart_import_sum' %>
+    </div>
   </div>
+
     <!-- Cronograma -->
     <div class="card mb-4">
       <div class="card-header bg-secondary text-white">

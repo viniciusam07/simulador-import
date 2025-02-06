@@ -1,0 +1,12 @@
+<div class="card mb-4">
+  <div class="card-header bg-primary text-white">
+    <i class="fas fa-chart-pie"></i> Composição Percentual da Importação
+  </div>
+  <div class="card-body">
+    <%= pie_chart @import_sum_pie_chart,
+      height: "350px",
+      donut: true,
+      suffix: "%" # Adiciona o símbolo de porcentagem nos rótulos
+    %>
+  </div>
+</div>

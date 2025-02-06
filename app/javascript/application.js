@@ -4,3 +4,5 @@ import "controllers"
 import "@popperjs/core"
 import "bootstrap"
 import "./controllers/ncm_autocomplete";
+import "chartkick";
+import "Chart.bundle";

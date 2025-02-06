@@ -73,7 +73,30 @@ class SimulationsController < ApplicationController
 
   def show
     @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
-    @unit_cost_summary = @simulation.unit_cost_summary # Certifique-se de que este método retorna dados válidos
+    @unit_cost_summary = @simulation.unit_cost_summary
+
+    # Obtendo os valores brutos
+    total_aduaneiro = @simulation.total_customs_value_brl || 0
+    total_impostos = @simulation.total_taxes || 0
+    total_despesas = @simulation.total_operational_expenses || 0
+
+    # Calculando o total geral
+    total_importacao = total_aduaneiro + total_impostos + total_despesas
+
+    # Evita divisão por zero e calcula as porcentagens
+    if total_importacao > 0
+      @import_sum_pie_chart = {
+        "Valor Total Aduaneiro" => ((total_aduaneiro / total_importacao) * 100).round(2),
+        "Valor Total de Impostos" => ((total_impostos / total_importacao) * 100).round(2),
+        "Despesas Operacionais" => ((total_despesas / total_importacao) * 100).round(2)
+      }
+    else
+      @import_sum_pie_chart = {
+        "Valor Total Aduaneiro" => 0,
+        "Valor Total de Impostos" => 0,
+        "Despesas Operacionais" => 0
+      }
+    end
   end
 
   def exchange_rate
