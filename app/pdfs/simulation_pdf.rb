@@ -6,7 +6,7 @@ class SimulationPdf < Prawn::Document
       info: {
         Title: "Simulação de Importação ##{simulation.id}",
         Author: simulation.user.email,
-        Creator: "Mazzu Import",
+        Creator: "Heyship Import",
         CreationDate: Time.current
       }
     )
@@ -39,7 +39,7 @@ class SimulationPdf < Prawn::Document
   end
 
   def header
-    image "#{Rails.root}/app/assets/images/mazzu_logo_alta.png", width: 120, position: :left
+    image "#{Rails.root}/app/assets/images/heyship_logo_alta.png", width: 120, position: :left
     move_down 5
     text "Simulação de Importação ##{@simulation.id}", size: 12, style: :bold, align: :center
     text "Data: #{@simulation.created_at.strftime('%d/%m/%Y')}", size: 9, align: :center
