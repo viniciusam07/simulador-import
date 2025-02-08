@@ -27,6 +27,16 @@
 
   .bg-image {
     height: 100%;
+
+  .col-md-9 {
+      background-color: #f8f9fa; // Cor de fallback
+    }
+
+  .col-md-9 .h-100 {
+    background-image: url("login_image_heyship.png"); // Nome da imagem
+    background-size: cover;
+    background-position: center;
+    }
   }
 
   // Responsividade
