@@ -28,8 +28,7 @@
           <% end %>
           <li class="nav-item dropdown">
             <a href="#" class="avatar text-uppercase d-flex align-items-center justify-content-center rounded-circle bg-warning text-dark fw-bold" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 40px; height: 40px; text-decoration: none;">
-              <%= current_user.first_name[0] + current_user.last_name[0] if current_user.first_name && current_user.last_name %>
-            </a>
+              <%= (current_user.first_name.presence || "").first + (current_user.last_name.presence || "").first %>            </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
               <%= link_to "Profile", edit_user_registration_path, class: "dropdown-item" %>
               <%= link_to "Log out", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item" %>
