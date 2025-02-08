@@ -1,0 +1,43 @@
+.container-fluid {
+  .logo {
+    max-width: 120px; // Tamanho da logo ajustado
+    display: block;
+    margin: 0 auto 20px;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .gradient-button {
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px 20px;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+  }
+
+  .gradient-button:hover {
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+  }
+
+  .bg-image {
+    height: 100%;
+  }
+
+  // Responsividade
+  @media (max-width: 768px) {
+    .col-md-3 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+
+    .col-md-9 {
+      display: none;
+    }
+  }
+}
