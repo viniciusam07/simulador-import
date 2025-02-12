@@ -1,9 +1,21 @@
 Rails.application.routes.draw do
-  # Configuração de autenticação
+  # Configuração do Devise
   devise_for :users
 
-  # Página inicial
-  root to: "pages#home"
+  # Página inicial para usuários NÃO autenticados (Login)
+  devise_scope :user do
+    unauthenticated do
+      root to: "devise/sessions#new", as: :unauthenticated_root
+    end
+
+    # Página inicial para usuários AUTENTICADOS (Home)
+    authenticated :user do
+      root to: "pages#home", as: :authenticated_root
+    end
+  end
+
+  # Página Home
+  get 'home', to: 'pages#home', as: 'home'
 
   # Página de Cronogramas
   get 'cronogramas', to: 'pages#cronogramas', as: 'cronogramas'
@@ -31,13 +43,13 @@ Rails.application.routes.draw do
   resources :products do
     resources :quotations, only: [:new, :create, :edit, :update, :destroy] do
       member do
-        get :unit_price # Adicionado para carregar preço unitário
+        get :unit_price
       end
     end
   end
 
   # Rotas para Cotações
-  resources :quotations, only: [:show] # Adicionado para carregar cotação via JSON
+  resources :quotations, only: [:show]
 
   # Rotas para NCMs
   resources :ncm_codes, only: [] do
@@ -46,7 +58,7 @@ Rails.application.routes.draw do
     end
   end
 
-  # Rotas para Companies
+  # Rotas para Empresas
   resources :companies
 
   # Rotas para Equipamentos
