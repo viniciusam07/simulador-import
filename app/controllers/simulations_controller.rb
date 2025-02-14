@@ -1,5 +1,7 @@
 class SimulationsController < ApplicationController
   before_action :set_simulation, only: %i[show edit update update_status destroy]
+  before_action :set_default_status, on: :create
+
   def new
     @simulation = Simulation.new
     @simulation.simulation_quotations.build # Permite criar associações diretamente
@@ -171,6 +173,10 @@ class SimulationsController < ApplicationController
 
   def set_simulation
     @simulation = Simulation.find(params[:id])
+  end
+
+  def set_default_status
+    self.status ||= "draft"
   end
 
   def attach_selected_expenses
