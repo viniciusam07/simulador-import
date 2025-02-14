@@ -36,6 +36,9 @@
 # Ignore .env file containing credentials.
 .env*
 
+# IGNORAR CERTIFICADO DIGITAL
+app/assets/config/certificates/cert_digital_guelcos.pfx
+
 # Ignore Mac and Linux file system files
 *.swp
 .DS_Store
