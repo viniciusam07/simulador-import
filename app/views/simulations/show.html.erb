@@ -2,6 +2,29 @@
   <!-- Título Principal -->
   <h1 class="mb-4">Detalhes da Simulação - Versão Atual: V<%= @simulation.versions.size %></h1>
 
+  <!-- Status da Simulação -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+      <span><i class="fas fa-tasks me-2"></i> Status da Simulação</span>
+      <span class="badge rounded-pill <%= badge_class(@simulation.status) %> fs-6" id="status-badge">
+        <%= @simulation.human_status %>
+      </span>
+    </div>
+
+    <div class="card-body">
+      <!-- Formulário para Atualizar Status -->
+      <%= form_with url: update_status_simulation_path(@simulation), method: :patch, local: true, class: "d-flex align-items-end gap-3" do %>
+        <div class="flex-grow-1">
+          <%= label_tag :status, "Alterar Status", class: "form-label fw-bold" %>
+          <%= select_tag :status, options_for_select(Simulation::STATUSES.keys.map { |s| [Simulation::STATUSES[s.to_sym], s] }, @simulation.status), class: "form-control" %>
+        </div>
+        <div>
+          <%= submit_tag "Atualizar", class: "btn btn-primary mt-3" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <!-- Detalhes Gerais -->
   <div class="row">
     <!-- Coluna 1 -->

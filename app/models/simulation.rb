@@ -5,6 +5,23 @@ class Simulation < ApplicationRecord
     ignore: [:updated_at],                        # Ignorar atributos que não criam versões
     meta: { user_id: :user_id, simulation_id: :id }                   # Salvar informações extras
   )
+  # Status da Simulação
+  STATUSES = {
+    draft: "Rascunho",
+    open: "Em Aberto",
+    under_analysis: "Em Análise",
+    approved: "Aprovada",
+    rejected: "Reprovada"
+  }.freeze
+
+  validates :status, presence: true, inclusion: { in: STATUSES.keys.map(&:to_s) }
+
+  scope :by_status, ->(status) { where(status: status) }
+
+  def human_status
+    STATUSES[status.to_sym] || "Desconhecido"
+  end
+
   # Carrega os estados brasileiros do arquivo YAML
   BRAZILIAN_STATES = [
     ['Acre', 'AC'], ['Alagoas', 'AL'], ['Amapá', 'AP'], ['Amazonas', 'AM'],

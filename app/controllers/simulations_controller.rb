@@ -1,4 +1,5 @@
 class SimulationsController < ApplicationController
+  before_action :set_simulation, only: %i[show edit update update_status destroy]
   def new
     @simulation = Simulation.new
     @simulation.simulation_quotations.build # Permite criar associações diretamente
@@ -36,12 +37,9 @@ class SimulationsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
-
   def edit
     @simulation = Simulation.find(params[:id])
   end
-
   def update
     @simulation = Simulation.find(params[:id])
 
@@ -64,13 +62,15 @@ class SimulationsController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
   end
-
-
   def index
     @simulations = Simulation.where(user_id: current_user.id)
     @pagy, @simulations = pagy(Simulation.where(user_id: current_user.id), items: 10)
   end
 
+  def destroy
+    @simulation.destroy
+    redirect_to simulations_path, notice: "Simulação excluída com sucesso."
+  end
   def show
     @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
     @unit_cost_summary = @simulation.unit_cost_summary
@@ -98,7 +98,6 @@ class SimulationsController < ApplicationController
       }
     end
   end
-
   def exchange_rate
     currency = params[:currency]
     bank = EuCentralBank.new
@@ -106,7 +105,6 @@ class SimulationsController < ApplicationController
     rate = bank.exchange(100, currency, 'BRL').to_f
     render json: { rate: rate }
   end
-
   def generate_pdf
     @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
 
@@ -135,6 +133,20 @@ class SimulationsController < ApplicationController
     end
   end
 
+  # Atualiza o status da simulação manualmente
+  def update_status
+    Rails.logger.debug "Params recebidos: #{params.inspect}" # Log para depuração
+
+    if params[:status].present?
+      if @simulation.update_column(:status, params[:status])
+        redirect_to simulation_path(@simulation), notice: "Status atualizado para #{@simulation.human_status}."
+      else
+        redirect_to simulation_path(@simulation), alert: "Erro ao atualizar o status."
+      end
+    else
+      redirect_to simulation_path(@simulation), alert: "Status não pode ser vazio."
+    end
+  end
 
   private
 
@@ -155,6 +167,10 @@ class SimulationsController < ApplicationController
       expense_ids: [],
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
     )
+  end
+
+  def set_simulation
+    @simulation = Simulation.find(params[:id])
   end
 
   def attach_selected_expenses
@@ -273,5 +289,4 @@ class SimulationsController < ApplicationController
       end
     end
   end
-
 end

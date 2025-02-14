@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :simulations, only: [:index, :new, :create, :show, :edit, :update] do
     member do
       get :generate_pdf
+      patch :update_status # Rota para atualizar o status da simulação
     end
     resources :simulation_quotations, only: [:create, :destroy], shallow: true
     resource :simulation_schedule, only: [:new, :create, :edit, :update]

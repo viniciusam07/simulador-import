@@ -7,16 +7,14 @@
         <thead class="thead-dark">
           <tr>
             <th>País de Origem</th>
+            <th>Status</th>
             <th>Valor Total</th>
             <th>Incoterm</th>
             <th>Modal</th>
             <th>Moeda</th>
             <th>Valor Aduaneiro</th>
-            <th>Valor Aduaneiro (R$)</th>
-            <th>Taxa de Câmbio</th>
-            <th>Custo do Frete</th>
-            <th>Custo do Seguro</th>
-            <th>Criada em</th>
+            <th>Última Atualização</th>
+            <th>Criado por</th>
             <th class="text-center">Ações</th>
           </tr>
         </thead>
@@ -25,16 +23,18 @@
           <% @simulations.each do |simulation| %>
             <tr>
               <td><%= simulation.origin_country %></td>
+              <td>
+                <span class="badge rounded-pill <%= badge_class(simulation.status) %>">
+                  <%= simulation.human_status %>
+                </span>
+              </td>
               <td><%= number_to_currency(simulation.total_value || 0, unit: simulation.currency || '') %></td>
               <td><%= simulation.incoterm %></td>
               <td><%= simulation.modal %></td>
               <td><%= simulation.currency %></td>
               <td><%= number_to_currency(simulation.customs_value || 0, unit: simulation.currency || '') %></td>
-              <td><%= number_to_currency(simulation.total_customs_value_brl || 0, unit: 'BRL') %></td>
-              <td><%= simulation.exchange_rate %></td>
-              <td><%= simulation.freight_cost %></td>
-              <td><%= simulation.insurance_cost %></td>
-              <td><%= l(simulation.created_at, format: :short) %></td>
+              <td><%= l(simulation.updated_at, format: :short) %></td>
+              <td><%= simulation.user.present? ? simulation.user.full_name : "Usuário desconhecido" %></td>
               <td class="text-center">
                 <div class="btn-group" role="group">
                   <%= link_to edit_simulation_path(simulation), class: 'btn btn-sm btn-outline-primary', title: 'Editar' do %>
@@ -50,7 +50,7 @@
         </tbody>
       </table>
 
-      <!-- Navegação da Paginação -->
+      <!-- Paginação -->
       <div class="d-flex justify-content-center mt-4">
         <%= render 'shared/pagination', pagy: @pagy %>
       </div>
