@@ -3,7 +3,8 @@ class ExpensesController < ApplicationController
 
   # Lista todas as despesas padrão
   def index
-    @expenses = Expense.all
+    order = params[:order] == 'desc' ? 'desc' : 'asc'
+    @expenses = Expense.order(expense_name: order)
   end
 
   # Formulário para criar nova despesa
