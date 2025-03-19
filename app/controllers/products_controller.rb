@@ -4,7 +4,6 @@ class ProductsController < ApplicationController
   # Lista todos os produtos
   def index
     @products = Product.all
-    @pagy, @products = pagy(Product.all.order(:product_name))
   end
 
   # Inicializa um novo produto
