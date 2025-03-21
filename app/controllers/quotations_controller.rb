@@ -16,7 +16,7 @@ class QuotationsController < ApplicationController
       redirect_to @product, notice: 'Cotação criada com sucesso.'
     else
       flash.now[:alert] = 'Erro ao salvar cotação. Verifique os campos.'
-      render 'products/show'
+      render 'products/show', status: :unprocessable_entity
     end
   end
 
