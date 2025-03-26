@@ -26,6 +26,6 @@ class Quotation < ApplicationRecord
 
 
   def display_name
-    "#{product.product_name} - #{supplier.trade_name} - #{price} #{currency}"
+    "#{product.product_name.to_s.truncate(40)} - #{supplier.trade_name} - #{sku_supplier_id.presence || "SKU não informado"} - #{price} #{currency}"
   end
 end
