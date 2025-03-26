@@ -406,6 +406,7 @@ DEPENDENCIES
   simple_form
   sprockets-rails
   stimulus-rails
+  ttfunk
   turbo-rails
   tzinfo-data
   web-console

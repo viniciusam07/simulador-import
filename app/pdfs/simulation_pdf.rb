@@ -10,6 +10,15 @@ class SimulationPdf < Prawn::Document
         CreationDate: Time.current
       }
     )
+    font_families.update(
+      "OpenSans" => {
+        normal: Rails.root.join("app/assets/fonts/OpenSans-Regular.ttf"),
+        bold: Rails.root.join("app/assets/fonts/OpenSans-Bold.ttf"),
+        italic: Rails.root.join("app/assets/fonts/OpenSans-Italic.ttf"),
+        bold_italic: Rails.root.join("app/assets/fonts/OpenSans-BoldItalic.ttf")
+      }
+    )
+    font "OpenSans"
     @simulation = simulation
     @view = view
     @unit_cost_summary = unit_cost_summary
@@ -50,32 +59,29 @@ class SimulationPdf < Prawn::Document
   def general_and_logistics_section
     move_down 5
 
-    column_width = (bounds.width - 20) / 2
+    # Primeira Tabela: Dados Gerais
+    text "Dados Gerais", size: 10, style: :bold
+    move_down 3
 
-    bounding_box([0, cursor], width: bounds.width) do
-      # Coluna Esquerda - Dados Gerais
-      bounding_box([0, cursor], width: column_width, height: 150) do
-        text "Dados Gerais", size: 10, style: :bold
-        move_down 3
-        table(general_data, width: column_width) do |t|
-          t.cells.borders = []
-          t.cells.padding = [3, 3]
-          t.row_colors = ["F9F9F9", "FFFFFF"]
-          t.cells.size = 9
-        end
-      end
+    table(general_data, width: bounds.width, cell_style: { overflow: :truncate }) do |t|
+      t.cells.borders = []
+      t.cells.padding = [3, 3]
+      t.row_colors = ["F9F9F9", "FFFFFF"]
+      t.cells.size = 9
+      t.columns(1).style(overflow: :truncate)
+    end
 
-      # Coluna Direita - Dados Logísticos
-      bounding_box([column_width + 10, cursor + 150], width: column_width, height: 150) do
-        text "Dados Logísticos", size: 10, style: :bold
-        move_down 3
-        table(logistics_data, width: column_width) do |t|
-          t.cells.borders = []
-          t.cells.padding = [3, 3]
-          t.row_colors = ["F9F9F9", "FFFFFF"]
-          t.cells.size = 9
-        end
-      end
+    move_down 10
+
+    # Segunda Tabela: Dados Logísticos
+    text "Dados Logísticos", size: 10, style: :bold
+    move_down 3
+
+    table(logistics_data, width: bounds.width, cell_style: { overflow: :truncate }) do |t|
+      t.cells.borders = []
+      t.cells.padding = [3, 3]
+      t.row_colors = ["F9F9F9", "FFFFFF"]
+      t.cells.size = 9
     end
   end
 
