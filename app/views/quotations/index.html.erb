@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th>Fornecedor</th>
+      <th>SKU</th>
       <th>Preço</th>
       <th>Moeda</th>
       <th>Validade</th>
@@ -15,6 +16,7 @@
     <% quotations.each do |quotation| %>
       <tr>
         <td><%= quotation.supplier&.trade_name || "Fornecedor não especificado" %></td>
+        <td><%= quotation.sku_supplier_id %></td>
         <td><%= number_to_currency(quotation.price, unit: quotation.currency) %></td>
         <td><%= quotation.currency %></td>
         <td><%= quotation.lead_time.present? ? "#{quotation.lead_time} dias" : "Não especificado" %></td>
