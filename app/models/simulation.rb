@@ -145,6 +145,22 @@ class Simulation < ApplicationRecord
     end
   end
 
+  def total_icms_related_expenses
+    simulation_expenses
+      .select { |se| %i[icms all_taxes].include?(se.tax_calculation_impact.to_sym) }
+      .sum(&:expense_custom_value)
+  end
+
+  def icms_expense_allocation_per_quotation
+    total_base = simulation_quotations.sum(&:total_value_brl).to_f
+    return {} if total_base.zero?
+
+    simulation_quotations.index_with do |sq|
+      proportion = sq.total_value_brl / total_base
+      (total_icms_related_expenses * proportion).round(2)
+    end
+  end
+
   # Total de despesas operacionais
   def total_operational_expenses
     simulation_expenses.sum(:expense_custom_value)

@@ -6,6 +6,13 @@ class Expense < ApplicationRecord
   validates :expense_currency, presence: true, inclusion: { in: %w[BRL USD EUR], message: "deve ser uma moeda válida (BRL, USD, EUR)" }, if: :fixed_value?
   validates :calculation_base, inclusion: { in: %w[freight_cost insurance_cost total_value customs_value], message: "deve ser uma base de cálculo válida" }, if: -> { percentage.present? }
 
+  enum tax_calculation_impact: {
+    no_impact: 0,
+    icms: 1,
+    customs_value: 2,
+    all_taxes: 3
+  }
+
   private
 
   def fixed_value?

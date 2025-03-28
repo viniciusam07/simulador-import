@@ -31,6 +31,7 @@
           <th>Base de Cálculo</th>
           <th>Moeda</th>
           <th>Local</th>
+          <th>Tipo de Impacto</th>
         </tr>
       </thead>
       <tbody>
@@ -60,6 +61,7 @@
             <td><%= expense.calculation_base.present? ? expense.calculation_base.humanize : '-' %></td>
             <td><%= expense.expense_currency %></td>
             <td><%= expense.expense_location %></td>
+            <td><%= human_tax_impact(expense.tax_calculation_impact) %></td>
           </tr>
         <% end %>
       </tbody>

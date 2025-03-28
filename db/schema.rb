@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_28_130724) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_28_184636) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,6 +74,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_28_130724) do
     t.decimal "percentage"
     t.string "type_of_expense"
     t.string "calculation_base"
+    t.integer "tax_calculation_impact", default: 0, null: false
   end
 
   create_table "ncm_codes", force: :cascade do |t|
@@ -156,6 +157,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_28_130724) do
     t.string "expense_location", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "tax_calculation_impact", default: 0, null: false
     t.index ["expense_id"], name: "index_simulation_expenses_on_expense_id"
     t.index ["simulation_id"], name: "index_simulation_expenses_on_simulation_id"
   end

@@ -193,9 +193,10 @@ class SimulationsController < ApplicationController
       sim_expense.assign_attributes(
         expense_custom_name: expense.expense_name,
         expense_currency: expense.expense_currency,
-        expense_location: expense.expense_location
+        expense_location: expense.expense_location,
+        tax_calculation_impact: expense.tax_calculation_impact
       )
-      sim_expense.save! # Chama o callback `before_save` para recalcular o valor customizado
+      sim_expense.save!
     end
   end
 

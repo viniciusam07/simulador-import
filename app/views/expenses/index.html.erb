@@ -23,6 +23,7 @@
             <th>Base de Cálculo</th>
             <th>Moeda</th>
             <th>Local de Cobrança</th>
+            <th>Impacto Tributário</th>
             <th class="text-center">Ações</th>
           </tr>
         </thead>
@@ -54,6 +55,15 @@
               </td>
               <td><%= expense.expense_currency.presence || '-' %></td>
               <td><%= expense.expense_location %></td>
+              <td>
+                <%= case expense.tax_calculation_impact.to_sym
+                    when :no_impact then "Nenhum"
+                    when :icms then "Apenas ICMS"
+                    when :customs_value then "Apenas Valor Aduaneiro"
+                    when :all_taxes then "Todos os Impostos"
+                    else "-"
+                end %>
+              </td>
               <td class="text-center">
                 <div class="btn-group" role="group">
                   <%= link_to edit_expense_path(expense), class: 'btn btn-sm btn-outline-primary', title: 'Editar' do %>

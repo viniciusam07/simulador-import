@@ -62,7 +62,8 @@ class ExpensesController < ApplicationController
       :expense_location,
       :percentage,
       :calculation_base,
-      :type_of_expense
+      :type_of_expense,
+      :tax_calculation_impact
     )
   end
 end

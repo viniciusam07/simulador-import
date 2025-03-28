@@ -104,6 +104,28 @@
       </div>
     </div>
 
+    <!-- Impacto Tributário -->
+    <div class="card mb-4">
+      <div class="card-header bg-danger text-white">
+        <i class="fas fa-balance-scale"></i> Impacto na Base de Cálculo de Impostos
+      </div>
+      <div class="card-body">
+        <%= form.input :tax_calculation_impact,
+            collection: [
+              ['Nenhum', :no_impact],
+              ['Apenas ICMS', :icms],
+              ['Apenas Valor Aduaneiro', :customs_value],
+              ['Todos os Impostos', :all_taxes]
+            ],
+            label: "Impacto na Base de Cálculo de Impostos",
+            prompt: "Selecione o impacto",
+            input_html: { class: 'form-control' } %>
+        <small class="form-text text-muted mt-2">
+          Essa despesa influencia em qual base de imposto? Ex: AFRMM e SISCOMEX afetam ICMS.
+        </small>
+      </div>
+    </div>
+
     <!-- Botões -->
     <div class="text-center mt-4">
       <%= form.button :submit, "Atualizar", class: 'btn btn-primary me-3' %>

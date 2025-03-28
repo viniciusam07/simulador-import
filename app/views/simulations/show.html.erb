@@ -265,19 +265,19 @@
                 <!-- Valor Total -->
                 <td class="text-end">
                   <%= number_to_currency(sq.total_value_brl, unit: 'BRL') %><br>
-                  <small class="text-muted"><%= number_to_currency(sq.total_value, unit: sq.quotation.currency) %></small>
+                  <small class="text-muted"><%= number_to_currency(sq.total_value, unit: sq.quotation.currency || 'BRL') %></small>
                 </td>
 
                 <!-- Frete Alocado -->
                 <td class="text-end">
                   <%= number_to_currency(sq.freight_allocated_brl, unit: 'BRL') %><br>
-                  <small class="text-muted"><%= number_to_currency(sq.freight_allocated, unit: @simulation.currency_freight) %></small>
+                  <small class="text-muted"><%= number_to_currency(sq.freight_allocated, unit: @simulation.currency_freight.presence || 'BRL') %></small>
                 </td>
 
                 <!-- Seguro Alocado -->
                 <td class="text-end">
                   <%= number_to_currency(sq.insurance_allocated_brl, unit: 'BRL') %><br>
-                  <small class="text-muted"><%= number_to_currency(sq.insurance_allocated, unit: @simulation.currency_insurance) %></small>
+                  <small class="text-muted"><%= number_to_currency(sq.insurance_allocated, unit: @simulation.currency_insurance.presence || 'BRL') %></small>
                 </td>
 
                 <!-- Valor Aduaneiro Unitário -->
@@ -456,6 +456,7 @@
               <th>Valor Moeda Estrangeira (<%= @simulation.currency %>)</th>
               <th>Valor Convertido (BRL)</th>
               <th>Localização</th>
+              <th>Tipo de Impacto</th>
             </tr>
           </thead>
           <tbody>
@@ -468,7 +469,12 @@
                 <td>
                   <%= number_to_currency(expense.expense_custom_value, unit: 'BRL') %>
                 </td>
-                <td><%= expense.expense_location %></td>
+                <td>
+                  <%= expense.expense_location %>
+                </td>
+                <td>
+                  <%= human_tax_impact(expense.tax_calculation_impact) %>
+                </td>
               </tr>
             <% end %>
           </tbody>

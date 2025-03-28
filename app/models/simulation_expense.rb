@@ -2,8 +2,16 @@ class SimulationExpense < ApplicationRecord
   belongs_to :simulation
   belongs_to :expense, optional: true
 
+  enum tax_calculation_impact: {
+    no_impact: 0,
+    icms: 1,
+    customs_value: 2,
+    all_taxes: 3
+  }
+
   before_validation :set_defaults_from_expense, if: -> { expense.present? }
   before_save :recalculate_custom_value, if: -> { expense.present? }
+
 
   def recalculate_custom_value
     self.expense_custom_value = calculate_custom_value
@@ -47,5 +55,6 @@ class SimulationExpense < ApplicationRecord
     self.expense_custom_value = calculate_custom_value
     self.expense_currency ||= expense.expense_currency
     self.expense_location ||= expense.expense_location
+    self.tax_calculation_impact ||= expense.tax_calculation_impact
   end
 end

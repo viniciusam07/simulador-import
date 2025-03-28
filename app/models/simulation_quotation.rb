@@ -136,12 +136,28 @@ class SimulationQuotation < ApplicationRecord
     customs_value * ((aliquota_cofins || 0) / 100.0)
   end
 
+#  def calculate_icms(customs_value, ii_value, ipi_value, pis_value, cofins_value)
+#    aliquota_icms_value = (aliquota_icms.presence || 0).to_f
+#    return 0 if aliquota_icms_value <= 0 || aliquota_icms_value >= 100
+#
+#    base_icms = (customs_value + ii_value.to_f + ipi_value.to_f + pis_value.to_f + cofins_value.to_f) / (100 - aliquota_icms)
+#    base_icms * (aliquota_icms || 0)
+#  end
+
   def calculate_icms(customs_value, ii_value, ipi_value, pis_value, cofins_value)
     aliquota_icms_value = (aliquota_icms.presence || 0).to_f
     return 0 if aliquota_icms_value <= 0 || aliquota_icms_value >= 100
 
-    base_icms = (customs_value + ii_value.to_f + ipi_value.to_f + pis_value.to_f + cofins_value.to_f) / (100 - aliquota_icms)
-    base_icms * (aliquota_icms || 0)
+    icms_allocation = simulation.icms_expense_allocation_per_quotation[self] || 0
+
+    base_icms = customs_value +
+                ii_value.to_f +
+                ipi_value.to_f +
+                pis_value.to_f +
+                cofins_value.to_f +
+                icms_allocation
+
+    base_icms / (1 - aliquota_icms_value / 100.0) * (aliquota_icms_value / 100.0)
   end
 
   def set_default_tax_rates
