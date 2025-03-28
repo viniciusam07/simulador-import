@@ -59,7 +59,6 @@ class SimulationPdf < Prawn::Document
   def general_and_logistics_section
     move_down 5
 
-    # Primeira Tabela: Dados Gerais
     text "Dados Gerais", size: 10, style: :bold
     move_down 3
 
@@ -73,7 +72,6 @@ class SimulationPdf < Prawn::Document
 
     move_down 10
 
-    # Segunda Tabela: Dados Logísticos
     text "Dados Logísticos", size: 10, style: :bold
     move_down 3
 
@@ -92,8 +90,12 @@ class SimulationPdf < Prawn::Document
       ["Regime Tributário", @simulation.company.tax_regime.to_s],
       ["Incoterm", @simulation.incoterm.to_s],
       ["CFOP", "#{@simulation.cfop_code} - #{@simulation.cfop_description}"],
-      ["Moeda", @simulation.currency.to_s],
-      ["Taxa de Câmbio", @simulation.exchange_rate.to_s]
+      ["Moeda da Mercadoria", @simulation.currency.to_s],
+      ["Câmbio Mercadoria", @simulation.exchange_rate_goods.to_s],
+      ["Moeda do Frete", @simulation.currency_freight.to_s],
+      ["Câmbio Frete", @simulation.exchange_rate_freight.to_s],
+      ["Moeda do Seguro", @simulation.currency_insurance.to_s],
+      ["Câmbio Seguro", @simulation.exchange_rate_insurance.to_s]
     ]
   end
 
@@ -122,16 +124,16 @@ class SimulationPdf < Prawn::Document
 
   def value_composition
     data = [
-      [{ content: "Composição de Valores", colspan: 3, font_style: :bold, size: 12, align: :center }],
-      ["Descrição", "Valor (#{@simulation.currency})", "Valor (BRL)"],
-      ["Valor Total Produtos", format_currency(@simulation.total_value, @simulation.currency), format_currency(@simulation.total_value_brl)],
-      ["Frete", format_currency(@simulation.freight_cost, @simulation.currency), format_currency(@simulation.freight_cost_brl)],
-      ["Seguro", format_currency(@simulation.insurance_cost, @simulation.currency), format_currency(@simulation.insurance_cost_brl)],
-      ["Valor Aduaneiro", format_currency(@simulation.customs_value, @simulation.currency), format_currency(@simulation.total_customs_value_brl)]
+      [{ content: "Composição de Valores", colspan: 4, font_style: :bold, size: 12, align: :center }],
+      ["Descrição", "Valor (Original)", "Moeda", "Valor (BRL)"]
     ]
 
-    # Verificar espaço disponível dinamicamente
-    check_table_space("Composição de Valores",data)
+    data << ["Valor Total Produtos", format_currency(@simulation.total_value, @simulation.currency), @simulation.currency, format_currency(@simulation.total_value_brl)]
+    data << ["Frete", format_currency(@simulation.freight_cost, @simulation.currency_freight), @simulation.currency_freight, format_currency(@simulation.freight_cost_brl)]
+    data << ["Seguro", format_currency(@simulation.insurance_cost, @simulation.currency_insurance), @simulation.currency_insurance, format_currency(@simulation.insurance_cost_brl)]
+    data << ["Valor Aduaneiro Total", format_currency(@simulation.customs_value, @simulation.currency), @simulation.currency, format_currency(@simulation.total_customs_value_brl)]
+
+    check_table_space("Composição de Valores", data)
 
     table(data, width: bounds.width) do |t|
       t.row(0).font_style = :bold
