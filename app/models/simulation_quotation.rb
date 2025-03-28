@@ -106,9 +106,21 @@ class SimulationQuotation < ApplicationRecord
   end
 
   def calculate_customs_values
-    self.customs_unit_value = (total_value.to_f + freight_allocated.to_f + insurance_allocated.to_f) / (quantity.to_f.nonzero? || 1)
-    self.customs_total_value = customs_unit_value * quantity.to_f
-    simulation.convert_to_brl(customs_total_value, simulation.currency)
+    # Converte cada componente para BRL de forma individual
+    valor_produto_brl = total_value_brl
+    valor_frete_brl   = freight_allocated_brl
+    valor_seguro_brl  = insurance_allocated_brl
+
+    # Calcula os valores aduaneiros em BRL
+    customs_total_brl = valor_produto_brl + valor_frete_brl + valor_seguro_brl
+    customs_unit_brl = quantity.to_f.zero? ? 0 : customs_total_brl / quantity.to_f
+
+    # Salva os valores em BRL nos campos do model
+    self.customs_unit_value = customs_unit_brl
+    self.customs_total_value = customs_total_brl
+
+    # Retorna o total para uso no cálculo de impostos
+    customs_total_brl
   end
 
   def calculate_tax_values
