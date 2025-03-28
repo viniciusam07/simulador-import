@@ -43,28 +43,44 @@
                   <th class="text-center">Valor (<%= @simulation.currency %>)</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>Valor Total Produtos</td>
-                  <td class="text-end"><%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></td>
-                  <td class="text-end"><%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %></td>
-                </tr>
-                <tr>
-                  <td>Custo do Frete</td>
-                  <td class="text-end"><%= number_to_currency(@simulation.freight_cost_brl || 0, unit: 'BRL') %></td>
-                  <td class="text-end"><%= number_to_currency(@simulation.freight_cost || 0, unit: @simulation.currency || '') %></td>
-                </tr>
-                <tr>
-                  <td>Custo do Seguro</td>
-                  <td class="text-end"><%= number_to_currency(@simulation.insurance_cost_brl || 0, unit: 'BRL') %></td>
-                  <td class="text-end"><%= number_to_currency(@simulation.insurance_cost || 0, unit: @simulation.currency || '') %></td>
-                </tr>
-                <tr>
-                  <td>Valor Aduaneiro</td>
-                  <td class="text-end"><%= number_to_currency(@simulation.total_customs_value_brl || 0, unit: 'BRL') %></td>
-                  <td class="text-end"><%= number_to_currency(@simulation.customs_value || 0, unit: @simulation.currency || '') %></td>
-                </tr>
-              </tbody>
+                <tbody>
+                  <tr>
+                    <td>Valor Total Produtos</td>
+                    <td class="text-end"><%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></td>
+                    <td class="text-end">
+                      <%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %>
+                      <% if @simulation.exchange_rate_goods.present? %>
+                        <br><small class="text-muted">Câmbio: <%= number_with_precision(@simulation.exchange_rate_goods, precision: 4) %></small>
+                      <% end %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Custo do Frete</td>
+                    <td class="text-end"><%= number_to_currency(@simulation.freight_cost_brl || 0, unit: 'BRL') %></td>
+                    <td class="text-end">
+                      <%= number_to_currency(@simulation.freight_cost || 0, unit: @simulation.currency_freight || @simulation.currency || '') %>
+                      <% if @simulation.exchange_rate_freight.present? %>
+                        <br><small class="text-muted">Câmbio: <%= number_with_precision(@simulation.exchange_rate_freight, precision: 4) %></small>
+                      <% end %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Custo do Seguro</td>
+                    <td class="text-end"><%= number_to_currency(@simulation.insurance_cost_brl || 0, unit: 'BRL') %></td>
+                    <td class="text-end">
+                      <%= number_to_currency(@simulation.insurance_cost || 0, unit: @simulation.currency_insurance || @simulation.currency || '') %>
+                      <% if @simulation.exchange_rate_insurance.present? %>
+                        <br><small class="text-muted">Câmbio: <%= number_with_precision(@simulation.exchange_rate_insurance, precision: 4) %></small>
+                      <% end %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Valor Aduaneiro</td>
+                    <td class="text-end" colspan="2">
+                      <%= number_to_currency(@simulation.calculate_customs_value_brl || 0, unit: 'BRL') %>
+                    </td>
+                  </tr>
+                </tbody>
             </table>
           </div>
         </div>
@@ -108,12 +124,6 @@
             </li>
             <li class="list-group-item">
               <strong>Modal:</strong> <%= @simulation.modal %>
-            </li>
-            <li class="list-group-item">
-              <strong>Moeda:</strong> <%= @simulation.currency %>
-            </li>
-            <li class="list-group-item">
-              <strong>Taxa de Câmbio:</strong> <%= @simulation.exchange_rate %>
             </li>
             <li class="list-group-item">
               <strong>Criada em:</strong> <%= @simulation.created_at.strftime("%d/%m/%Y") %>
@@ -205,7 +215,6 @@
     </div>
   </div>
 
-
   <!-- Cotações -->
   <div class="card mb-4">
     <div class="card-header bg-secondary text-white">
@@ -243,22 +252,60 @@
               <tr>
                 <td><%= sq.quotation.product.product_name %></td>
                 <td><%= sq.quotation.product.ncm %></td>
-                <td><%= number_to_currency(sq.custom_price || sq.quotation.price, unit: sq.quotation.currency) %></td>
+
+                <!-- Preço Unitário -->
+                <td class="text-end">
+                  <%= number_to_currency(sq.unit_price_brl, unit: 'BRL') %><br>
+                  <small class="text-muted"><%= number_to_currency(sq.custom_price || sq.quotation.price, unit: sq.quotation.currency) %></small>
+                </td>
+
+                <!-- Quantidade -->
                 <td><%= sq.quantity %></td>
-                <td><%= number_to_currency(sq.total_value, unit: sq.quotation.currency) %></td>
-                <td><%= number_to_currency(sq.freight_allocated || 0, unit: @simulation.currency) %></td>
-                <td><%= number_to_currency(sq.insurance_allocated || 0, unit: @simulation.currency) %></td>
-                <td><%= number_to_currency(sq.customs_unit_value || 0, unit: @simulation.currency) %></td>
-                <td><%= number_to_currency(sq.customs_total_value || 0, unit: @simulation.currency) %></td>
+
+                <!-- Valor Total -->
+                <td class="text-end">
+                  <%= number_to_currency(sq.total_value_brl, unit: 'BRL') %><br>
+                  <small class="text-muted"><%= number_to_currency(sq.total_value, unit: sq.quotation.currency) %></small>
+                </td>
+
+                <!-- Frete Alocado -->
+                <td class="text-end">
+                  <%= number_to_currency(sq.freight_allocated_brl, unit: 'BRL') %><br>
+                  <small class="text-muted"><%= number_to_currency(sq.freight_allocated, unit: @simulation.currency_freight) %></small>
+                </td>
+
+                <!-- Seguro Alocado -->
+                <td class="text-end">
+                  <%= number_to_currency(sq.insurance_allocated_brl, unit: 'BRL') %><br>
+                  <small class="text-muted"><%= number_to_currency(sq.insurance_allocated, unit: @simulation.currency_insurance) %></small>
+                </td>
+
+                <!-- Valor Aduaneiro Unitário -->
+                <td class="text-end">
+                  <%= number_to_currency(sq.customs_unit_value_brl, unit: 'BRL') %>
+                </td>
+
+                <!-- Valor Aduaneiro Total -->
+                <td class="text-end">
+                  <%= number_to_currency(sq.customs_total_value_brl, unit: 'BRL') %>
+                </td>
+
+                <!-- Fornecedor -->
                 <td><%= sq.quotation.supplier.trade_name %></td>
+
+                <!-- Impostos -->
                 <td><%= number_to_percentage(sq.aliquota_ii || 0, precision: 2) %></td>
                 <td><%= number_to_currency(sq.tributo_ii || 0, unit: 'BRL') %></td>
+
                 <td><%= number_to_percentage(sq.aliquota_ipi || 0, precision: 2) %></td>
                 <td><%= number_to_currency(sq.tributo_ipi || 0, unit: 'BRL') %></td>
+
                 <td><%= number_to_percentage(sq.aliquota_pis || 0, precision: 2) %></td>
                 <td><%= number_to_currency(sq.tributo_pis || 0, unit: 'BRL') %></td>
+
                 <td><%= number_to_percentage(sq.aliquota_cofins || 0, precision: 2) %></td>
                 <td><%= number_to_currency(sq.tributo_cofins || 0, unit: 'BRL') %></td>
+
                 <td><%= number_to_percentage(sq.aliquota_icms || 0, precision: 2) %></td>
                 <td><%= number_to_currency(sq.tributo_icms || 0, unit: 'BRL') %></td>
               </tr>
@@ -268,6 +315,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Custos Unitarios -->
   <div class="card mb-4">

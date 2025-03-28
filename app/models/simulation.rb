@@ -96,8 +96,7 @@ class Simulation < ApplicationRecord
   # Valor aduaneiro em BRL
   # Converte o valor total aduaneiro e despesas para BRL
   def calculate_customs_value_brl
-    customs_value_total = calculate_customs_value
-    convert_to_brl(customs_value_total, currency)
+    (total_value_brl.to_f + freight_cost_brl.to_f + insurance_cost_brl.to_f).round(2)
   end
 
   # Consolida os valores de impostos calculados por cotação
@@ -157,11 +156,11 @@ class Simulation < ApplicationRecord
   end
 
   # Conversão para BRL com base na taxa de câmbio
-  def convert_to_brl(amount, currency)
+  def convert_to_brl(amount, currency, custom_rate = nil)
     return 0 if amount.blank? || currency.blank?
     return amount if currency == 'BRL'
 
-    exchange_rate_value = exchange_rate.presence || fetch_exchange_rate(currency)
+    exchange_rate_value = custom_rate.presence || fetch_exchange_rate(currency)
     amount.to_f * exchange_rate_value.to_f
   end
 
@@ -207,9 +206,9 @@ class Simulation < ApplicationRecord
 
   # Calcula e seta valores convertidos para BRL
   def set_converted_values
-    self.freight_cost_brl = convert_to_brl(freight_cost, currency)
-    self.insurance_cost_brl = convert_to_brl(insurance_cost, currency)
-    self.total_value_brl = convert_to_brl(total_value, currency)
+    self.freight_cost_brl   = convert_to_brl(freight_cost, currency_freight, exchange_rate_freight)
+    self.insurance_cost_brl = convert_to_brl(insurance_cost, currency_insurance, exchange_rate_insurance)
+    self.total_value_brl    = convert_to_brl(total_value, currency, exchange_rate_goods)
   end
 
   # Busca a taxa de câmbio atual para conversão

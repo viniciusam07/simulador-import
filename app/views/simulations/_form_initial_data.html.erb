@@ -1,92 +1,176 @@
 <%= simple_form_for @simulation do |form| %>
-
+  <!-- Empresa -->
   <div class="card mb-4">
     <div class="card-header bg-primary text-white">
       <i class="fas fa-building"></i> Empresa
     </div>
     <div class="card-body">
-      <%= form.association :company,
-                        label: 'Empresa',
-                        prompt: "Selecione uma empresa (opcional)",
+      <div class="row">
+        <div class="col-md-6">
+          <%= form.association :company,
+                              label: 'Empresa',
+                              prompt: "Selecione uma empresa (opcional)",
+                              input_html: { class: 'form-select' } %>
+        </div>
+        <div class="col-md-6">
+          <%= form.input :incoterm,
+                        collection: ['EXW', 'FCA', 'FOB', 'CFR', 'CIF'],
+                        prompt: 'Selecione o Incoterm',
+                        label: 'Incoterm',
                         input_html: { class: 'form-select' } %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :cfop_code, "CFOP (Código e Descrição)", class: "form-label" %>
-    <%= form.select :cfop_code,
-                    Simulation::CFOPS.map { |code, description| ["#{code} - #{description}", code] },
-                    { prompt: "Selecione o CFOP" },
-                    { class: "form-control", required: true } %>
-  </div>
-
-  <div class="form-group">
-    <%= form.input :incoterm, collection: ['EXW', 'FCA', 'FOB', 'CFR', 'CIF'], prompt: 'Selecione o Incoterm' %>
-  </div>
-
-  <!-- Currency e Taxa de Câmbio -->
-  <div class="row">
-    <div class="col-md-6">
-      <%= form.input :currency,
-                     collection: ['USD', 'EUR', 'BRL'],
-                     prompt: 'Selecione a moeda',
-                     input_html: { id: 'simulation_currency', class: 'form-select' },
-                     label: 'Moeda' %>
-    </div>
-    <div class="col-md-6 d-flex align-items-center">
-      <div class="flex-grow-1 me-2">
-        <%= form.input :exchange_rate,
-                       as: :decimal,
-                       label: 'Taxa de Câmbio',
-                       placeholder: 'Digite a taxa de câmbio',
-                       input_html: { id: 'simulation_exchange_rate' } %>
+        </div>
       </div>
-      <button type="button" class="btn btn-outline-primary d-flex align-items-center" onclick="fetchExchangeRate()">
-        <i class="fas fa-sync-alt me-2"></i> Atualizar
-      </button>
     </div>
   </div>
 
-  <!-- Custo do Frete Internacional e Seguro -->
-  <div class="row mt-3">
-    <div class="col-md-6">
-      <%= form.input :freight_cost,
-                     as: :decimal,
-                     label: 'Custo do Frete Internacional',
-                     placeholder: 'Digite o custo do frete' %>
+  <!-- CFOP -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <i class="fas fa-barcode"></i> CFOP
     </div>
-    <div class="col-md-6">
-      <%= form.input :insurance_cost,
-                     as: :decimal,
-                     label: 'Custo do Seguro Internacional',
-                     placeholder: 'Digite o custo do seguro' %>
+    <div class="card-body">
+      <%= form.input :cfop_code,
+                    collection: Simulation::CFOPS.map { |code, description| ["#{code} - #{description}", code] },
+                    prompt: "Selecione o CFOP",
+                    label: 'CFOP (Código e Descrição)',
+                    input_html: { class: 'form-select' } %>
     </div>
   </div>
+
+  <!-- Moedas e Câmbios -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <i class="fas fa-coins"></i> Moedas e Câmbios
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <!-- Mercadoria -->
+        <div class="col-md-12 mb-4">
+          <label class="form-label fw-bold">Mercadoria</label>
+          <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+              <%= form.input :currency,
+                            label: 'Moeda da Mercadoria *',
+                            collection: ['USD', 'EUR', 'BRL'],
+                            prompt: 'Selecione',
+                            input_html: { id: 'currency_goods', class: 'form-select' } %>
+            </div>
+            <div class="col-md-4">
+              <%= form.input :exchange_rate_goods,
+                            label: 'Câmbio da Mercadoria',
+                            as: :decimal,
+                            input_html: { id: 'exchange_rate_goods', step: '0.0001', class: 'form-control' } %>
+            </div>
+            <div class="col-md-2">
+              <button type="button"
+                      class="btn btn-outline-primary w-100"
+                      onclick="fetchExchangeRate('goods')">
+                <i class="fas fa-sync-alt me-1"></i> Atualizar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Frete -->
+        <div class="col-md-12 mb-4">
+          <label class="form-label fw-bold">Frete Internacional</label>
+          <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+              <%= form.input :freight_cost, as: :decimal, label: 'Valor do Frete', input_html: { step: '0.01' } %>
+            </div>
+            <div class="col-md-3">
+              <%= form.input :currency_freight,
+                            collection: ['USD', 'EUR', 'BRL'],
+                            label: 'Moeda do Frete',
+                            prompt: 'Selecione',
+                            input_html: { id: 'currency_freight', class: 'form-select' } %>
+            </div>
+            <div class="col-md-3">
+              <%= form.input :exchange_rate_freight,
+                            as: :decimal,
+                            label: 'Câmbio do Frete',
+                            input_html: { id: 'exchange_rate_freight', step: '0.0001' } %>
+            </div>
+            <div class="col-md-2">
+              <button type="button"
+                      class="btn btn-outline-primary w-100"
+                      onclick="fetchExchangeRate('freight')">
+                <i class="fas fa-sync-alt me-1"></i> Atualizar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seguro -->
+        <div class="col-md-12 mb-2">
+          <label class="form-label fw-bold">Seguro Internacional</label>
+          <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+              <%= form.input :insurance_cost, as: :decimal, label: 'Valor do Seguro', input_html: { step: '0.01' } %>
+            </div>
+            <div class="col-md-3">
+              <%= form.input :currency_insurance,
+                            collection: ['USD', 'EUR', 'BRL'],
+                            label: 'Moeda do Seguro',
+                            prompt: 'Selecione',
+                            input_html: { id: 'currency_insurance', class: 'form-select' } %>
+            </div>
+            <div class="col-md-3">
+              <%= form.input :exchange_rate_insurance,
+                            as: :decimal,
+                            label: 'Câmbio do Seguro',
+                            input_html: { id: 'exchange_rate_insurance', step: '0.0001' } %>
+            </div>
+            <div class="col-md-2">
+              <button type="button"
+                      class="btn btn-outline-primary w-100"
+                      onclick="fetchExchangeRate('insurance')">
+                <i class="fas fa-sync-alt me-1"></i> Atualizar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%= form.submit "Salvar Simulação", class: "btn btn-success" %>
 <% end %>
 
 <script>
-  async function fetchExchangeRate() {
-    // Seleciona o campo de moeda
-    const currencyField = document.querySelector('#simulation_currency');
-    const exchangeRateField = document.querySelector('#simulation_exchange_rate');
+  async function fetchExchangeRate(type) {
+    let currencyField, exchangeField;
 
-    if (currencyField && exchangeRateField) {
-      const currency = currencyField.value;
+    switch (type) {
+      case 'goods':
+        currencyField = document.querySelector('#currency_goods');
+        exchangeField = document.querySelector('#exchange_rate_goods');
+        break;
+      case 'freight':
+        currencyField = document.querySelector('#currency_freight');
+        exchangeField = document.querySelector('#exchange_rate_freight');
+        break;
+      case 'insurance':
+        currencyField = document.querySelector('#currency_insurance');
+        exchangeField = document.querySelector('#exchange_rate_insurance');
+        break;
+      default:
+        return;
+    }
 
-      if (currency) {
-        try {
-          const response = await fetch(`/exchange_rate?currency=${currency}`);
-          if (!response.ok) throw new Error('Erro ao buscar cotação');
-          const data = await response.json();
-          exchangeRateField.value = data.rate.toFixed(2);
-        } catch (error) {
-          alert('Erro ao carregar a cotação. Por favor, tente novamente.');
-        }
-      } else {
-        alert('Por favor, selecione uma moeda primeiro.');
-      }
-    } else {
-      console.error('Os campos de moeda ou taxa de câmbio não foram encontrados.');
+    const currency = currencyField?.value;
+    if (!currency) {
+      alert('Por favor, selecione a moeda antes de buscar a cotação.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/exchange_rate?currency=${currency}`);
+      if (!response.ok) throw new Error('Erro ao buscar cotação');
+      const data = await response.json();
+      exchangeField.value = data.rate.toFixed(4);
+    } catch (error) {
+      alert('Erro ao carregar a cotação. Tente novamente.');
     }
   }
 </script>
