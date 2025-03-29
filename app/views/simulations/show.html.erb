@@ -467,7 +467,11 @@
                   <% if expense.expense_currency.present? && expense.expense_currency != 'BRL' %>
                     <br>
                     <small class="text-muted">
-                      <%= number_to_currency(expense.expense_custom_value, unit: '') %> <%= expense.expense_currency || 'BRL' %>
+                      <%= number_to_currency(expense.value_in_original_currency, unit: case expense.expense_currency
+                        when 'USD' then '$'
+                        when 'EUR' then '€'
+                        else expense.expense_currency
+                      end) %>
                     </small>
                   <% end %>
                 </td>
