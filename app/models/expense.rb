@@ -4,7 +4,10 @@ class Expense < ApplicationRecord
   validates :expense_name, :expense_location, presence: true
   validate :validate_fixed_or_percentage
   validates :expense_currency, presence: true, inclusion: { in: %w[BRL USD EUR], message: "deve ser uma moeda válida (BRL, USD, EUR)" }, if: :fixed_value?
-  validates :calculation_base, inclusion: { in: %w[freight_cost insurance_cost total_value customs_value], message: "deve ser uma base de cálculo válida" }, if: -> { percentage.present? }
+  validates :calculation_base, inclusion: {
+    in: %w[freight_cost insurance_cost total_value customs_value freight_plus_insurance],
+    message: "deve ser uma base de cálculo válida"
+  }, if: -> { percentage.present? }
 
   enum tax_calculation_impact: {
     no_impact: 0,

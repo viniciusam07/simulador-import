@@ -70,6 +70,10 @@ class SimulationExpense < ApplicationRecord
       simulation.freight_cost_brl.presence || simulation.convert_to_brl(simulation.freight_cost, simulation.currency_freight, simulation.exchange_rate_freight)
     when 'insurance_cost'
       simulation.insurance_cost_brl.presence || simulation.convert_to_brl(simulation.insurance_cost, simulation.currency_insurance, simulation.exchange_rate_insurance)
+    when 'freight_plus_insurance'
+      freight = simulation.freight_cost_brl.presence || simulation.convert_to_brl(simulation.freight_cost, simulation.currency_freight, simulation.exchange_rate_freight)
+      insurance = simulation.insurance_cost_brl.presence || simulation.convert_to_brl(simulation.insurance_cost, simulation.currency_insurance, simulation.exchange_rate_insurance)
+      freight + insurance
     when 'total_value'
       simulation.total_value_brl.presence || simulation.convert_to_brl(simulation.total_value, simulation.currency, simulation.exchange_rate_goods)
     when 'customs_value'

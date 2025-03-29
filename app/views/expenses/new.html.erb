@@ -81,10 +81,16 @@
           </div>
           <div class="col-md-6">
             <%= form.input :calculation_base,
-                collection: [['Frete', 'freight_cost'], ['Valor Aduaneiro', 'customs_value'], ['Valor Total em Mercadoria', 'total_value']],
-                label: "Base de Cálculo",
-                prompt: 'Selecione a base',
-                input_html: { class: 'form-control' } %>
+              collection: [
+                ['Frete', 'freight_cost'],
+                ['Seguro', 'insurance_cost'],
+                ['Valor Aduaneiro', 'customs_value'],
+                ['Valor Total em Mercadoria', 'total_value'],
+                ['Frete + Seguro', 'freight_plus_insurance']
+              ],
+              label: "Base de Cálculo",
+              prompt: 'Selecione a base',
+              input_html: { class: 'form-control' } %>
           </div>
         </div>
       </div>
