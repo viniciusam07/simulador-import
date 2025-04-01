@@ -4,7 +4,7 @@
   <div data-quotations-target="list">
     <% @simulation.simulation_quotations.each do |sq| %>
       <div data-quotations-target="item" class="mb-3 p-3 border rounded">
-        <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
+        <%= form.simple_fields_for :simulation_quotations, sq do |sq_form| %>
           <div class="row gy-3">
             <!-- Seleção de Cotação -->
             <div class="col-md-4">
@@ -65,10 +65,10 @@
   <!-- Template para novas cotações (oculto) -->
   <template data-quotations-target="template">
     <div data-quotations-target="item" class="mb-3 p-3 border rounded">
-      <%= fields_for "simulation[simulation_quotations_attributes][]", SimulationQuotation.new do |sq_form| %>
+      <%= form.simple_fields_for :simulation_quotations, SimulationQuotation.new do |sq_form| %>
         <div class="row gy-3">
           <div class="col-md-4">
-            <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name,
+            <%= sq_form.collection_select :quotation_id, @available_quotations, :id, :display_name,
                   { prompt: "Selecione uma cotação" },
                   { class: "form-select", data: { action: "change->quotations#loadUnitPrice" } } %>
           </div>

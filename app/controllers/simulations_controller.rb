@@ -5,6 +5,7 @@ class SimulationsController < ApplicationController
   def new
     @simulation = Simulation.new
     @simulation.simulation_quotations.build # Permite criar associações diretamente
+    @available_quotations = Quotation.all # <- Adiciona essa linha
   end
 
   def create
@@ -41,6 +42,8 @@ class SimulationsController < ApplicationController
   end
   def edit
     @simulation = Simulation.find(params[:id])
+    used_quotation_ids = @simulation.simulation_quotations.pluck(:quotation_id)
+    @available_quotations = Quotation.where.not(id: used_quotation_ids)
   end
   def update
     @simulation = Simulation.find(params[:id])
