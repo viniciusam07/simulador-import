@@ -4,7 +4,7 @@
   <div data-quotations-target="list">
     <% @simulation.simulation_quotations.each do |sq| %>
       <div data-quotations-target="item" class="mb-3 p-3 border rounded">
-        <%= form.simple_fields_for :simulation_quotations, sq do |sq_form| %>
+        <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
           <div class="row gy-3">
             <!-- Seleção de Cotação -->
             <div class="col-md-4">
@@ -12,25 +12,21 @@
                     { prompt: "Selecione uma cotação" },
                     { class: "form-select", data: { action: "change->quotations#loadUnitPrice" } } %>
             </div>
-
             <!-- Quantidade -->
             <div class="col-md-2">
               <%= sq_form.number_field :quantity, placeholder: "Quantidade", class: "form-control",
                     data: { action: "input->quotations#updateTotal" } %>
             </div>
-
             <!-- Preço Unitário -->
             <div class="col-md-2">
               <%= sq_form.number_field :custom_price, placeholder: "Preço Unitário", class: "form-control",
                     data: { action: "input->quotations#updateTotal" } %>
             </div>
-
             <!-- Valor Total -->
             <div class="col-md-2">
               <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control", readonly: true %>
             </div>
           </div>
-
           <!-- Impostos -->
           <div class="row gy-3 mt-2">
             <div class="col-md-2">
@@ -48,7 +44,6 @@
             <div class="col-md-2">
               <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
             </div>
-
             <!-- Botão Remover -->
             <div class="col-md-2 text-end">
               <%= sq_form.hidden_field :_destroy, value: false %>
@@ -61,14 +56,13 @@
       </div>
     <% end %>
   </div>
-
   <!-- Template para novas cotações (oculto) -->
   <template data-quotations-target="template">
     <div data-quotations-target="item" class="mb-3 p-3 border rounded">
-      <%= form.simple_fields_for :simulation_quotations, SimulationQuotation.new do |sq_form| %>
+      <%= fields_for "simulation[simulation_quotations_attributes][]", SimulationQuotation.new do |sq_form| %>
         <div class="row gy-3">
           <div class="col-md-4">
-            <%= sq_form.collection_select :quotation_id, @available_quotations, :id, :display_name,
+            <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name,
                   { prompt: "Selecione uma cotação" },
                   { class: "form-select", data: { action: "change->quotations#loadUnitPrice" } } %>
           </div>
@@ -110,7 +104,6 @@
       <% end %>
     </div>
   </template>
-
   <!-- Botão para Adicionar Novas Cotações -->
   <div class="text-end mt-3">
     <button type="button" class="btn btn-outline-primary btn-sm" data-action="click->quotations#add">

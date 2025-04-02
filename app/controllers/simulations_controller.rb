@@ -1,37 +1,30 @@
 class SimulationsController < ApplicationController
   before_action :set_simulation, only: %i[show edit update update_status destroy]
   before_action :set_default_status, on: :create
-
   def new
     @simulation = Simulation.new
     @simulation.simulation_quotations.build # Permite criar associações diretamente
-    @available_quotations = Quotation.all # <- Adiciona essa linha
   end
 
   def create
     @simulation = Simulation.new(simulation_params)
     @simulation.user_id = current_user.id
-
     # Preenche automaticamente a descrição do CFOP com base no código selecionado
     if @simulation.cfop_code.present?
       @simulation.cfop_description = Simulation::CFOPS[@simulation.cfop_code]
     end
-
     if @simulation.save
       PaperTrail.request(enabled: false) do
         # Recalcula o total_value
         @simulation.calculate_total_value
         @simulation.save!
-
         attach_selected_expenses
         attach_selected_quotations
         attach_afrmm_if_needed
-
         # Garante que as despesas sejam recalculadas
         @simulation.simulation_expenses.each(&:recalculate_custom_value)
         @simulation.save!
       end
-
       # Redireciona para a página de sucesso
       redirect_to simulation_path(@simulation), notice: 'Simulação criada com sucesso.'
     else
@@ -42,20 +35,15 @@ class SimulationsController < ApplicationController
   end
   def edit
     @simulation = Simulation.find(params[:id])
-    used_quotation_ids = @simulation.simulation_quotations.pluck(:quotation_id)
-    @available_quotations = Quotation.where.not(id: used_quotation_ids)
   end
   def update
     @simulation = Simulation.find(params[:id])
-
     ActiveRecord::Base.transaction do
       if @simulation.update(simulation_params.except(:simulation_quotations_attributes))
         attach_selected_expenses
         update_or_create_simulation_quotations # Novo método para manipular as quotations
-
         @simulation.simulation_expenses.each(&:recalculate_custom_value)
         @simulation.save!
-
         redirect_to simulation_path(@simulation), notice: 'Simulação atualizada com sucesso.'
       else
         flash.now[:alert] = 'Erro ao atualizar a simulação. Verifique os campos e tente novamente.'
@@ -71,7 +59,6 @@ class SimulationsController < ApplicationController
     @simulations = Simulation.where(user_id: current_user.id)
     @pagy, @simulations = pagy(Simulation.where(user_id: current_user.id), items: 10)
   end
-
   def destroy
     @simulation.destroy
     redirect_to simulations_path, notice: "Simulação excluída com sucesso."
@@ -79,15 +66,12 @@ class SimulationsController < ApplicationController
   def show
     @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
     @unit_cost_summary = @simulation.unit_cost_summary
-
     # Obtendo os valores brutos
     total_aduaneiro = @simulation.total_customs_value_brl || 0
     total_impostos = @simulation.total_taxes || 0
     total_despesas = @simulation.total_operational_expenses || 0
-
     # Calculando o total geral
     total_importacao = total_aduaneiro + total_impostos + total_despesas
-
     # Evita divisão por zero e calcula as porcentagens
     if total_importacao > 0
       @import_sum_pie_chart = {
@@ -112,7 +96,6 @@ class SimulationsController < ApplicationController
   end
   def generate_pdf
     @simulation = Simulation.includes(simulation_quotations: { quotation: [:product, :supplier] }).find(params[:id])
-
     # Calcula @unit_cost_summary antes de gerar o PDF
     @unit_cost_summary = @simulation.simulation_quotations.map do |sq|
       {
@@ -126,7 +109,6 @@ class SimulationsController < ApplicationController
         unit_import_factor: sq.unit_import_factor
       }
     end
-
     respond_to do |format|
       format.pdf do
         pdf = SimulationPdf.new(@simulation, view_context, @unit_cost_summary)
@@ -137,11 +119,9 @@ class SimulationsController < ApplicationController
       end
     end
   end
-
   # Atualiza o status da simulação manualmente
   def update_status
     Rails.logger.debug "Params recebidos: #{params.inspect}" # Log para depuração
-
     if params[:status].present?
       if @simulation.update_column(:status, params[:status])
         redirect_to simulation_path(@simulation), notice: "Status atualizado para #{@simulation.human_status}."
@@ -152,9 +132,7 @@ class SimulationsController < ApplicationController
       redirect_to simulation_path(@simulation), alert: "Status não pode ser vazio."
     end
   end
-
   private
-
   def simulation_params
     params.require(:simulation).permit(
       :origin_country, :incoterm, :modal, :currency, :exchange_rate,
@@ -179,18 +157,14 @@ class SimulationsController < ApplicationController
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value, :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
     )
   end
-
   def set_simulation
     @simulation = Simulation.find(params[:id])
   end
-
   def set_default_status
     self.status ||= "draft"
   end
-
   def attach_selected_expenses
     selected_expenses = Expense.where(id: params[:simulation][:expense_ids])
-
     selected_expenses.each do |expense|
       sim_expense = @simulation.simulation_expenses.find_or_initialize_by(expense: expense)
       sim_expense.assign_attributes(
@@ -202,26 +176,19 @@ class SimulationsController < ApplicationController
       sim_expense.save!
     end
   end
-
   def attach_selected_quotations
     selected_quotations = params.dig(:simulation, :simulation_quotations_attributes)
-
     return if selected_quotations.blank? # Retorna se não houver cotações
-
     existing_quotation_ids = @simulation.simulation_quotations.pluck(:quotation_id)
-
     selected_quotations.each do |quotation_params|
       next if quotation_params[:_destroy] == "true"
-
       begin
         quotation_id = quotation_params[:quotation_id].to_i
-
         # Verifica duplicidade antes de adicionar a cotação
         if existing_quotation_ids.include?(quotation_id)
           Rails.logger.warn "A cotação #{quotation_id} já está associada a esta simulação."
           next
         end
-
         # Cria ou atualiza a cotação
         quotation = Quotation.find(quotation_id)
         @simulation.simulation_quotations.create!(
@@ -237,13 +204,10 @@ class SimulationsController < ApplicationController
       end
     end
   end
-
   def attach_afrmm_if_needed
     return unless @simulation.modal == 'Marítimo'
-
     afrmm = Expense.find_by(expense_name: 'AFRMM')
     return unless afrmm
-
     @simulation.simulation_expenses.find_or_create_by!(expense: afrmm) do |sim_expense|
       sim_expense.expense_custom_name = afrmm.expense_name
       sim_expense.expense_custom_value = calculate_expense_value(afrmm)
@@ -251,7 +215,6 @@ class SimulationsController < ApplicationController
       sim_expense.expense_location = afrmm.expense_location
     end
   end
-
   def calculate_expense_value(expense)
     if expense.percentage.present?
       case expense.calculation_base
@@ -270,13 +233,10 @@ class SimulationsController < ApplicationController
   end
   def update_or_create_simulation_quotations
     return unless params[:simulation][:simulation_quotations_attributes]
-
     params[:simulation][:simulation_quotations_attributes].each do |_, attributes|
       next if attributes[:_destroy] == "true" # Ignora registros marcados para exclusão
-
       quotation_id = attributes[:quotation_id].to_i
       existing_record = @simulation.simulation_quotations.find_by(quotation_id: quotation_id)
-
       if existing_record
         # Atualiza o registro existente
         existing_record.update!(
