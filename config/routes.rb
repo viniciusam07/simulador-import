@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   end
 
   # Rotas para Cotações
-  resources :quotations, only: [:show]
+  resources :quotations, only: [:index, :show]
 
   # Rotas para NCMs
   resources :ncm_codes, only: [] do

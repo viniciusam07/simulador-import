@@ -1,9 +1,11 @@
 class QuotationsController < ApplicationController
-  before_action :set_product, only: [:index]
+  before_action :set_product, except: [:index, :show]
   before_action :set_quotation, only: [:edit, :update, :destroy]
-  def index
-    @quotations = @product.quotations
-  end
+def index
+  @pagy, @quotations = pagy(
+    Quotation.includes(:product, :supplier).order(updated_at: :desc)
+  )
+end
   def new
     @quotation = @product.quotations.build
   end

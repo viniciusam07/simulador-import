@@ -1,30 +1,54 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th>Fornecedor</th>
-      <th>SKU</th>
-      <th>Preço</th>
-      <th>Moeda</th>
-      <th>Validade</th>
-      <th>MOQ</th>
-      <th>Condições de Pagamento</th>
-      <th>Lead Time</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% quotations.each do |quotation| %>
-      <tr>
-        <td><%= quotation.supplier&.trade_name || "Fornecedor não especificado" %></td>
-        <td><%= quotation.sku_supplier_id %></td>
-        <td><%= number_to_currency(quotation.price, unit: quotation.currency) %></td>
-        <td><%= quotation.currency %></td>
-        <td><%= quotation.lead_time.present? ? "#{quotation.lead_time} dias" : "Não especificado" %></td>
-        <td>
-          <%= link_to 'Editar', edit_product_quotation_path(quotation.product, quotation), class: 'btn btn-sm btn-primary' %>
-          <%= link_to 'Excluir', product_quotation_path(quotation.product, quotation), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-sm btn-danger' %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">Cotações Disponíveis</h1>
+
+  <div class="card">
+    <div class="card-body">
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Fornecedor</th>
+            <th>Produto</th>
+            <th>SKU</th>
+            <th>NCM</th>
+            <th>Preço</th>
+            <th>Moeda</th>
+            <th>Validade</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @quotations.each do |quotation| %>
+            <tr>
+              <td><%= quotation.supplier&.trade_name || "Fornecedor não especificado" %></td>
+              <td><%= quotation.product&.product_name || "Produto não informado" %></td>
+              <td><%= quotation.sku_supplier_id.presence || "N/A" %></td>
+              <td><%= quotation.product&.ncm || "N/A" %></td>
+              <td><%= number_to_currency(quotation.price, unit: quotation.currency) %></td>
+              <td><%= quotation.currency %></td>
+              <td><%= quotation.validity.strftime("%d/%m/%Y") %></td>
+              <td class="text-center">
+                <div class="btn-group" role="group">
+                  <%= link_to edit_product_quotation_path(quotation.product, quotation), class: 'btn btn-sm btn-outline-primary', title: 'Editar' do %>
+                    <i class="fas fa-edit"></i>
+                  <% end %>
+                  <%= link_to product_quotation_path(quotation.product, quotation), method: :delete, data: { confirm: 'Tem certeza que deseja excluir?' }, class: 'btn btn-sm btn-outline-danger', title: 'Excluir' do %>
+                    <i class="fas fa-trash"></i>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <!-- Paginação -->
+      <div class="d-flex justify-content-center mt-4">
+        <%= render 'shared/pagination', pagy: @pagy %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 text-center">
+    <%= link_to 'Voltar', authenticated_root_path, class: 'btn btn-secondary' %>
+  </div>
+</div>
