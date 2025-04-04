@@ -24,3 +24,7 @@ application.register("cnpj", CnpjController);
 // Simulation Schedule
 import SimulationScheduleController from "controllers/simulation_schedule_controller";
 application.register("simulation-schedule", SimulationScheduleController);
+
+// Quotations
+import QuotationsController from "controllers/quotations_controller"
+application.register("quotations", QuotationsController)
