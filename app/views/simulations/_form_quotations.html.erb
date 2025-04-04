@@ -2,9 +2,10 @@
 <div data-controller="quotations">
   <!-- Lista de cotações associadas -->
   <div data-quotations-target="list">
-    <% @simulation.simulation_quotations.each do |sq| %>
+    <% @simulation.simulation_quotations.each_with_index do |sq, index| %>
       <div data-quotations-target="item" class="mb-3 p-3 border rounded">
-        <%= fields_for "simulation[simulation_quotations_attributes][]", sq do |sq_form| %>
+        <%= fields_for "simulation[simulation_quotations_attributes][#{index}]", sq do |sq_form| %>
+            <%= sq_form.hidden_field :id %>
           <div class="row gy-3">
             <!-- Seleção de Cotação -->
             <div class="col-md-4">
@@ -59,8 +60,7 @@
   <!-- Template para novas cotações (oculto) -->
   <template data-quotations-target="template">
     <div data-quotations-target="item" class="mb-3 p-3 border rounded">
-      <%= fields_for "simulation[simulation_quotations_attributes][]", SimulationQuotation.new do |sq_form| %>
-        <div class="row gy-3">
+        <%= fields_for "simulation[simulation_quotations_attributes][NEW_RECORD]", SimulationQuotation.new, child_index: "NEW_RECORD" do |sq_form| %>        <div class="row gy-3">
           <div class="col-md-4">
             <%= sq_form.collection_select :quotation_id, Quotation.all, :id, :display_name,
                   { prompt: "Selecione uma cotação" },

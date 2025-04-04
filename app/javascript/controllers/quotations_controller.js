@@ -11,13 +11,11 @@ export default class extends Controller {
   add(event) {
     event.preventDefault();
 
-    // Clona o template oculto
-    const template = this.templateTarget.content.cloneNode(true);
+    const content = this.templateTarget.innerHTML;
+    const uniqueId = new Date().getTime();
+    const newItem = content.replace(/NEW_RECORD/g, uniqueId);
 
-    // Adiciona o novo item à lista
-    this.listTarget.appendChild(template);
-
-    // Atualiza os botões de remoção
+    this.listTarget.insertAdjacentHTML("beforeend", newItem);
     this.toggleRemoveButtons();
   }
 
@@ -27,7 +25,12 @@ export default class extends Controller {
     const item = event.target.closest("[data-quotations-target='item']");
 
     if (item) {
-      item.remove();
+      const destroyInput = item.querySelector("input[name*='_destroy']");
+      if (destroyInput) {
+        destroyInput.value = "1";
+      }
+
+      item.style.display = "none"; // apenas esconde
       this.toggleRemoveButtons();
     }
   }
