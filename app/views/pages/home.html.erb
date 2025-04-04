@@ -4,115 +4,75 @@
 
   <div class="row g-4">
     <!-- Simulação -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-calculator fa-3x text-primary mb-3"></i>
-          <h5 class="card-title mb-3">Simulação</h5>
-          <p class="text-muted mb-4">Crie novas simulações ou visualize as existentes.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <%= link_to new_simulation_path, class: "btn btn-sm btn-outline-primary", title: "Nova Simulação" do %>
-              <i class="fas fa-plus"></i>
-            <% end %>
-            <%= link_to simulations_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Simulações" do %>
-              <i class="fas fa-list"></i>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%= render partial: "shared/dashboard_card", locals: {
+      icon: "fas fa-calculator",
+      icon_color: "text-primary",
+      title: "Simulações",
+      description: "Crie novas simulações ou visualize as existentes.",
+      actions: [
+        { path: new_simulation_path, icon: "fas fa-plus", tooltip: "Nova Simulação", style: "btn-outline-primary" },
+        { path: simulations_path, icon: "fas fa-list", tooltip: "Listar Simulações", style: "btn-outline-secondary" }
+      ]
+    } %>
 
     <!-- Produtos & Cotações -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-box-open fa-3x text-success mb-3"></i>
-          <h5 class="card-title mb-3">Produtos & Cotações</h5>
-          <p class="text-muted mb-4">Gerencie produtos e visualize cotações vinculadas.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <%= link_to new_product_path, class: "btn btn-sm btn-outline-success", title: "Novo Produto" do %>
-              <i class="fas fa-plus"></i>
-            <% end %>
-            <%= link_to products_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Produtos" do %>
-              <i class="fas fa-list"></i>
-            <% end %>
-            <%= link_to quotations_path, class: "btn btn-sm btn-outline-secondary", title: "Ver Cotações" do %>
-              <i class="fas fa-tags"></i>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%= render partial: "shared/dashboard_card", locals: {
+      icon: "fas fa-box-open",
+      icon_color: "text-success",
+      title: "Produtos & Cotações",
+      description: "Gerencie produtos e visualize cotações vinculadas.",
+      actions: [
+        { path: new_product_path, icon: "fas fa-plus", tooltip: "Novo Produto", style: "btn-outline-success" },
+        { path: products_path, icon: "fas fa-list", tooltip: "Listar Produtos", style: "btn-outline-secondary" },
+        { path: quotations_path, icon: "fas fa-tags", tooltip: "Ver Cotações", style: "btn-outline-secondary" }
+      ]
+    } %>
 
     <!-- Despesas -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-dollar-sign fa-3x text-warning mb-3"></i>
-          <h5 class="card-title mb-3">Despesas Operacionais</h5>
-          <p class="text-muted mb-4">Adicione ou edite custos fixos e variáveis.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <%= link_to new_expense_path, class: "btn btn-sm btn-outline-warning", title: "Nova Despesa" do %>
-              <i class="fas fa-plus"></i>
-            <% end %>
-            <%= link_to expenses_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Despesas" do %>
-              <i class="fas fa-list"></i>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%= render partial: "shared/dashboard_card", locals: {
+      icon: "fas fa-dollar-sign",
+      icon_color: "text-warning",
+      title: "Despesas Operacionais",
+      description: "Adicione ou edite custos fixos e variáveis.",
+      actions: [
+        { path: new_expense_path, icon: "fas fa-plus", tooltip: "Nova Despesa", style: "btn-outline-warning" },
+        { path: expenses_path, icon: "fas fa-list", tooltip: "Listar Despesas", style: "btn-outline-secondary" }
+      ]
+    } %>
 
     <!-- Empresas -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-building fa-3x text-dark mb-3"></i>
-          <h5 class="card-title mb-3">Empresas</h5>
-          <p class="text-muted mb-4">Gerencie os dados das empresas importadoras.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <%= link_to new_company_path, class: "btn btn-sm btn-outline-dark", title: "Nova Empresa" do %>
-              <i class="fas fa-plus"></i>
-            <% end %>
-            <%= link_to companies_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Empresas" do %>
-              <i class="fas fa-list"></i>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%= render partial: "shared/dashboard_card", locals: {
+      icon: "fas fa-building",
+      icon_color: "text-dark",
+      title: "Empresas",
+      description: "Gerencie os dados das empresas importadoras.",
+      actions: [
+        { path: new_company_path, icon: "fas fa-plus", tooltip: "Nova Empresa", style: "btn-outline-dark" },
+        { path: companies_path, icon: "fas fa-list", tooltip: "Listar Empresas", style: "btn-outline-secondary" }
+      ]
+    } %>
 
     <!-- Fornecedores -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-truck fa-3x text-info mb-3"></i>
-          <h5 class="card-title mb-3">Fornecedores</h5>
-          <p class="text-muted mb-4">Gerencie sua base de fornecedores internacionais.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <%= link_to new_supplier_path, class: "btn btn-sm btn-outline-info", title: "Novo Fornecedor" do %>
-              <i class="fas fa-plus"></i>
-            <% end %>
-            <%= link_to suppliers_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Fornecedores" do %>
-              <i class="fas fa-list"></i>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%= render partial: "shared/dashboard_card", locals: {
+      icon: "fas fa-truck",
+      icon_color: "text-info",
+      title: "Fornecedores",
+      description: "Gerencie sua base de fornecedores internacionais.",
+      actions: [
+        { path: new_supplier_path, icon: "fas fa-plus", tooltip: "Novo Fornecedor", style: "btn-outline-info" },
+        { path: suppliers_path, icon: "fas fa-list", tooltip: "Listar Fornecedores", style: "btn-outline-secondary" }
+      ]
+    } %>
 
     <!-- Cronogramas -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-calendar-alt fa-3x text-secondary mb-3"></i>
-          <h5 class="card-title mb-3">Cronogramas</h5>
-          <p class="text-muted mb-4">Organize as etapas das importações.</p>
-          <%= link_to cronogramas_path, class: "btn btn-sm btn-outline-secondary" do %>
-            <i class="fas fa-list"></i> Acessar
-          <% end %>
-        </div>
-      </div>
-    </div>
+    <%= render partial: "shared/dashboard_card", locals: {
+      icon: "fas fa-calendar-alt",
+      icon_color: "text-secondary",
+      title: "Cronogramas",
+      description: "Organize as etapas das importações.",
+      actions: [
+        { path: cronogramas_path, icon: "fas fa-list", tooltip: "Ver Cronogramas", style: "btn-outline-secondary" }
+      ]
+    } %>
   </div>
 </div>

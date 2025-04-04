@@ -1,0 +1,16 @@
+<div class="col-md-6 col-xl-4">
+  <div class="card shadow-sm border-0 h-100">
+    <div class="card-body text-center">
+      <i class="<%= icon %> fa-3x mb-3 <%= icon_color %>"></i>
+      <h5 class="card-title fw-bold"><%= title %></h5>
+      <p class="card-text text-muted"><%= description %></p>
+      <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
+        <% actions.each do |action| %>
+          <%= link_to action[:path], class: "btn btn-sm #{action[:style]}", title: action[:tooltip] do %>
+            <i class="<%= action[:icon] %>"></i>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
