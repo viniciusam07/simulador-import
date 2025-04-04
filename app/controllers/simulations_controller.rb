@@ -38,7 +38,7 @@ class SimulationsController < ApplicationController
     ActiveRecord::Base.transaction do
       if @simulation.update(simulation_params.except(:simulation_quotations_attributes))
         attach_selected_expenses
-        attach_selected_quotations
+        update_or_create_simulation_quotations
         @simulation.simulation_expenses.each(&:recalculate_custom_value)
         @simulation.save!
         redirect_to simulation_path(@simulation), notice: 'Simulação atualizada com sucesso.'
@@ -225,10 +225,17 @@ class SimulationsController < ApplicationController
   end
 
   def update_or_create_simulation_quotations
+    Rails.logger.debug "PARAMS QUOTATIONS: #{params[:simulation][:simulation_quotations_attributes]}"
     return unless params[:simulation][:simulation_quotations_attributes]
 
     params[:simulation][:simulation_quotations_attributes].each do |_, attributes|
       quotation_id = attributes[:quotation_id].to_i
+
+      # Remoção
+      if attributes[:_destroy] == "1" && attributes[:id].present?
+        @simulation.simulation_quotations.find(attributes[:id]).destroy
+        next
+      end
 
       if attributes[:id].present?
         existing = @simulation.simulation_quotations.find(attributes[:id])

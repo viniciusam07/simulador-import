@@ -95,7 +95,7 @@
             <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
           </div>
           <div class="col-md-2 text-end">
-            <%= sq_form.hidden_field :_destroy, value: false %>
+            <%= sq_form.hidden_field :_destroy, value: 0, data: { destroy_field: true } %>
             <button type="button" class="btn btn-outline-danger btn-sm remove-quotation" data-action="click->quotations#remove">
               <i class="fas fa-trash"></i> Remover
             </button>
