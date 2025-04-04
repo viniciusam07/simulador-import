@@ -1,94 +1,116 @@
 <div class="container mt-5">
-  <div class="text-center">
-    <h1 class="display-4">Bem-vindo ao Simulador de Importação</h1>
-    <p class="lead">Gerencie suas simulações de importação de forma fácil e eficiente.</p>
-  </div>
+  <h1 class="mb-4 text-center display-5 fw-bold">Painel do Simulador de Importação</h1>
+  <p class="text-center text-muted mb-5">Organize simulações, cotações, produtos e dados operacionais com facilidade.</p>
 
-  <div class="row mt-5">
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <i class="fas fa-plus-circle fa-3x mb-3"></i>
-          <h5 class="card-title">Nova Simulação</h5>
-          <p class="card-text">Crie uma nova simulação de importação.</p>
-          <%= link_to 'Nova Simulação', new_simulation_path, class: 'btn btn-primary' %>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <i class="fas fa-list fa-3x mb-3"></i>
-          <h5 class="card-title">Simulações Criadas</h5>
-          <p class="card-text">Veja todas as simulações que você já criou.</p>
-          <%= link_to 'Listar Simulações', simulations_path, class: 'btn btn-primary' %>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <i class="fas fa-dollar-sign fa-3x mb-3"></i>
-          <h5 class="card-title">Despesas Operacionais</h5>
-          <p class="card-text">Gerencie suas despesas operacionais.</p>
-          <%= link_to 'Despesas Operacionais', expenses_path, class: 'btn btn-primary' %>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row mt-4">
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <i class="fas fa-truck fa-3x mb-3"></i>
-          <h5 class="card-title">Fornecedores</h5>
-          <p class="card-text">Gerencie seus fornecedores.</p>
-          <%= link_to 'Fornecedores', suppliers_path, class: 'btn btn-primary' %>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <i class="fas fa-box fa-3x mb-3"></i>
-          <h5 class="card-title">Produtos</h5>
-          <p class="card-text">Gerencie seus produtos.</p>
-          <%= link_to 'Produtos', products_path, class: 'btn btn-primary' %>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <i class="fas fa-building fa-3x mb-3"></i>
-          <h5 class="card-title">Empresas</h5>
-          <p class="card-text">Gerencie suas empresas cadastradas.</p>
-          <%= link_to 'Empresas', companies_path, class: 'btn btn-primary' %>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row mt-4">
-    <div class="col-md-6">
-      <div class="card text-center">
-        <div class="card-body">
-          <i class="fas fa-calendar-alt fa-3x mb-3"></i>
-          <h5 class="card-title">Cronogramas</h5>
-          <p class="card-text">Gerencie cronogramas e etapas personalizadas.</p>
-          <%= link_to 'Cronogramas', cronogramas_path, class: 'btn btn-primary' %>
+  <div class="row g-4">
+    <!-- Simulação -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-calculator fa-3x text-primary mb-3"></i>
+          <h5 class="card-title mb-3">Simulação</h5>
+          <p class="text-muted mb-4">Crie novas simulações ou visualize as existentes.</p>
+          <div class="d-flex justify-content-center gap-2">
+            <%= link_to new_simulation_path, class: "btn btn-sm btn-outline-primary", title: "Nova Simulação" do %>
+              <i class="fas fa-plus"></i>
+            <% end %>
+            <%= link_to simulations_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Simulações" do %>
+              <i class="fas fa-list"></i>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card text-center">
-        <div class="card-body">
-          <i class="fas fa-tags fa-3x mb-3"></i>
-          <h5 class="card-title">Cotações</h5>
-          <p class="card-text">Consulte e gerencie todas as cotações cadastradas.</p>
-          <%= link_to 'Ver Cotações', quotations_path, class: 'btn btn-primary' %>
+    <!-- Produtos & Cotações -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-box-open fa-3x text-success mb-3"></i>
+          <h5 class="card-title mb-3">Produtos & Cotações</h5>
+          <p class="text-muted mb-4">Gerencie produtos e visualize cotações vinculadas.</p>
+          <div class="d-flex justify-content-center gap-2">
+            <%= link_to new_product_path, class: "btn btn-sm btn-outline-success", title: "Novo Produto" do %>
+              <i class="fas fa-plus"></i>
+            <% end %>
+            <%= link_to products_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Produtos" do %>
+              <i class="fas fa-list"></i>
+            <% end %>
+            <%= link_to quotations_path, class: "btn btn-sm btn-outline-secondary", title: "Ver Cotações" do %>
+              <i class="fas fa-tags"></i>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Despesas -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-dollar-sign fa-3x text-warning mb-3"></i>
+          <h5 class="card-title mb-3">Despesas Operacionais</h5>
+          <p class="text-muted mb-4">Adicione ou edite custos fixos e variáveis.</p>
+          <div class="d-flex justify-content-center gap-2">
+            <%= link_to new_expense_path, class: "btn btn-sm btn-outline-warning", title: "Nova Despesa" do %>
+              <i class="fas fa-plus"></i>
+            <% end %>
+            <%= link_to expenses_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Despesas" do %>
+              <i class="fas fa-list"></i>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empresas -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-building fa-3x text-dark mb-3"></i>
+          <h5 class="card-title mb-3">Empresas</h5>
+          <p class="text-muted mb-4">Gerencie os dados das empresas importadoras.</p>
+          <div class="d-flex justify-content-center gap-2">
+            <%= link_to new_company_path, class: "btn btn-sm btn-outline-dark", title: "Nova Empresa" do %>
+              <i class="fas fa-plus"></i>
+            <% end %>
+            <%= link_to companies_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Empresas" do %>
+              <i class="fas fa-list"></i>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fornecedores -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-truck fa-3x text-info mb-3"></i>
+          <h5 class="card-title mb-3">Fornecedores</h5>
+          <p class="text-muted mb-4">Gerencie sua base de fornecedores internacionais.</p>
+          <div class="d-flex justify-content-center gap-2">
+            <%= link_to new_supplier_path, class: "btn btn-sm btn-outline-info", title: "Novo Fornecedor" do %>
+              <i class="fas fa-plus"></i>
+            <% end %>
+            <%= link_to suppliers_path, class: "btn btn-sm btn-outline-secondary", title: "Listar Fornecedores" do %>
+              <i class="fas fa-list"></i>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cronogramas -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-calendar-alt fa-3x text-secondary mb-3"></i>
+          <h5 class="card-title mb-3">Cronogramas</h5>
+          <p class="text-muted mb-4">Organize as etapas das importações.</p>
+          <%= link_to cronogramas_path, class: "btn btn-sm btn-outline-secondary" do %>
+            <i class="fas fa-list"></i> Acessar
+          <% end %>
         </div>
       </div>
     </div>
