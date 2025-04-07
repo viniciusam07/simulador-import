@@ -16,6 +16,7 @@ class SimulationQuotation < ApplicationRecord
   validates :total_value, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   # Callbacks
+  before_validation :normalizar_aliquotas
   before_save :set_default_custom_price
   before_save :calculate_tax_values
   before_save :calculate_allocations
@@ -85,6 +86,28 @@ class SimulationQuotation < ApplicationRecord
   end
 
   private
+
+  def normalizar_aliquotas
+    %i[
+      aliquota_ii
+      aliquota_ipi
+      aliquota_pis
+      aliquota_cofins
+      aliquota_icms
+    ].each do |atributo|
+      valor = self[atributo]
+
+      next if valor.blank?
+
+      # Permite entrada com vírgula (ex: "1,3") e ponto (ex: "1.3")
+      valor = valor.to_s.tr(',', '.').to_f
+
+      # Converte para decimal se valor for acima de 1 (ex: 1.3% => 0.013)
+      valor = valor / 100.0 if valor > 1
+
+      self[atributo] = valor
+    end
+  end
 
   def set_default_custom_price
     self.custom_price ||= quotation&.price if quotation.present?
