@@ -17,7 +17,6 @@ class SimulationQuotation < ApplicationRecord
 
   # Callbacks
   before_validation :normalizar_aliquotas
-  before_save :normalizar_aliquotas
   before_save :set_default_custom_price
   before_save :calculate_tax_values
   before_save :calculate_allocations
@@ -100,9 +99,13 @@ class SimulationQuotation < ApplicationRecord
 
       next if valor.blank?
 
-      # Apenas troca vírgula por ponto e converte para float
+      # Se já é float, não mexe mais
+      next if valor.is_a?(Float)
+
+      # Permite entrada com vírgula e converte corretamente
       valor = valor.to_s.tr(',', '.').to_f
 
+      # NÃO divide por 100. A divisão já ocorre nos cálculos dos tributos
       self[atributo] = valor
     end
   end
