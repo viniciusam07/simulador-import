@@ -17,6 +17,7 @@ class SimulationQuotation < ApplicationRecord
 
   # Callbacks
   before_validation :normalizar_aliquotas
+  before_save :normalizar_aliquotas
   before_save :set_default_custom_price
   before_save :calculate_tax_values
   before_save :calculate_allocations
@@ -99,11 +100,8 @@ class SimulationQuotation < ApplicationRecord
 
       next if valor.blank?
 
-      # Permite entrada com vírgula (ex: "1,3") e ponto (ex: "1.3")
+      # Apenas troca vírgula por ponto e converte para float
       valor = valor.to_s.tr(',', '.').to_f
-
-      # Converte para decimal se valor for acima de 1 (ex: 1.3% => 0.013)
-      valor = valor / 100.0 if valor > 1
 
       self[atributo] = valor
     end
