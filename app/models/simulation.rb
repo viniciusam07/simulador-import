@@ -152,7 +152,7 @@ class Simulation < ApplicationRecord
   end
 
   def icms_expense_allocation_per_quotation
-    total_base = simulation_quotations.sum(&:total_value_brl).to_f
+    total_base = simulation_quotations.sum(&:customs_total_value_brl).to_f
     return {} if total_base.zero?
 
     simulation_quotations.index_with do |sq|
