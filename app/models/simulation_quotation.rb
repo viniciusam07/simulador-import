@@ -16,7 +16,6 @@ class SimulationQuotation < ApplicationRecord
   validates :total_value, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   # Callbacks
-  before_validation :normalizar_aliquotas
   before_save :set_default_custom_price
   before_save :calculate_tax_values
   before_save :calculate_allocations
@@ -87,28 +86,6 @@ class SimulationQuotation < ApplicationRecord
 
   private
 
-  def normalizar_aliquotas
-    %i[
-      aliquota_ii
-      aliquota_ipi
-      aliquota_pis
-      aliquota_cofins
-      aliquota_icms
-    ].each do |atributo|
-      valor = self[atributo]
-
-      next if valor.blank?
-
-      # Se já é float, não mexe mais
-      next if valor.is_a?(Float)
-
-      # Permite entrada com vírgula e converte corretamente
-      valor = valor.to_s.tr(',', '.').to_f
-
-      # NÃO divide por 100. A divisão já ocorre nos cálculos dos tributos
-      self[atributo] = valor
-    end
-  end
 
   def set_default_custom_price
     self.custom_price ||= quotation&.price if quotation.present?
