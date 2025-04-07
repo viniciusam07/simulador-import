@@ -156,7 +156,7 @@ class Simulation < ApplicationRecord
     return {} if total_base.zero?
 
     simulation_quotations.index_with do |sq|
-      proportion = sq.total_value_brl / total_base
+      proportion = sq.customs_total_value_brl / total_base
       (total_icms_related_expenses * proportion).round(2)
     end
   end
