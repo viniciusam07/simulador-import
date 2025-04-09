@@ -145,7 +145,7 @@ class SimulationsController < ApplicationController
       :observations,
       expense_ids: [],
       simulation_quotations_attributes: [:id, :quotation_id, :quantity, :custom_price, :total_value,
-                                         :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :_destroy]
+                                         :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms, :aliquota_icms_importacao, :_destroy]
     )
   end
 
@@ -248,7 +248,8 @@ class SimulationsController < ApplicationController
           aliquota_ipi: attributes[:aliquota_ipi],
           aliquota_pis: attributes[:aliquota_pis],
           aliquota_cofins: attributes[:aliquota_cofins],
-          aliquota_icms: attributes[:aliquota_icms]
+          aliquota_icms: attributes[:aliquota_icms],
+          aliquota_icms_importacao: attributes[:aliquota_icms_importacao]
         )
       else
         if @simulation.simulation_quotations.exists?(quotation_id: quotation_id)
@@ -266,7 +267,8 @@ class SimulationsController < ApplicationController
             aliquota_ipi: attributes[:aliquota_ipi],
             aliquota_pis: attributes[:aliquota_pis],
             aliquota_cofins: attributes[:aliquota_cofins],
-            aliquota_icms: attributes[:aliquota_icms]
+            aliquota_icms: attributes[:aliquota_icms],
+            aliquota_icms_importacao: attributes[:aliquota_icms_importacao]
           )
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "Erro ao criar SimulationQuotation: #{e.record.errors.full_messages.join(', ')}"

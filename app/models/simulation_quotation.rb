@@ -199,5 +199,10 @@ class SimulationQuotation < ApplicationRecord
     self.aliquota_pis ||= 0
     self.aliquota_cofins ||= 0
     self.aliquota_icms ||= 0
+
+    # Só define se o campo estiver realmente nulo (não zero) e for um novo registro
+    if aliquota_icms_importacao.nil? && new_record?
+      self.aliquota_icms_importacao = aliquota_icms
+    end
   end
 end
