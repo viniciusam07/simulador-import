@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_09_144510) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_09_165127) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -196,6 +196,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_09_144510) do
     t.decimal "freight_allocated", precision: 10, scale: 2
     t.decimal "insurance_allocated", precision: 10, scale: 2
     t.decimal "aliquota_icms_importacao", precision: 5, scale: 2
+    t.decimal "tributo_icms_importacao", precision: 10, scale: 2
     t.index ["quotation_id"], name: "index_simulation_quotations_on_quotation_id"
     t.index ["simulation_id"], name: "index_simulation_quotations_on_simulation_id"
   end

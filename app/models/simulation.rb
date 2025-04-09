@@ -105,7 +105,7 @@ class Simulation < ApplicationRecord
     self.tributo_ipi = simulation_quotations.sum(:tributo_ipi)
     self.tributo_pis = simulation_quotations.sum(:tributo_pis)
     self.tributo_cofins = simulation_quotations.sum(:tributo_cofins)
-    self.tributo_icms = simulation_quotations.sum(:tributo_icms)
+    self.tributo_icms = simulation_quotations.sum(:tributo_icms_importacao)
   end
 
   # Total de despesas operacionais

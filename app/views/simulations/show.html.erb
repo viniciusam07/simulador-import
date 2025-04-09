@@ -246,7 +246,7 @@
               <th>COFINS (%)</th>
               <th>COFINS (R$)</th>
               <th>ICMS (%)</th>
-              <th>ICMS (R$)</th>
+              <th>Base ICMS (R$)</th>
               <th>ICMS Import. (%)</th>
               <th>ICMS Import. (R$)</th>
             </tr>
@@ -291,8 +291,7 @@
                 <td><%= number_to_percentage(sq.aliquota_cofins || 0, precision: 2) %></td>
                 <td><%= number_to_currency(sq.tributo_cofins || 0, unit: 'BRL') %></td>
                 <td><%= number_to_percentage(sq.aliquota_icms || 0, precision: 2) %></td>
-                <td><%= number_to_currency(sq.tributo_icms || 0, unit: 'BRL') %></td>
-                <td><%= number_to_percentage((sq.aliquota_icms_importacao.presence || sq.aliquota_icms || 0), precision: 2) %></td>
+                <td><%= number_to_currency(sq.base_calculo_icms_brl || 0, unit: 'BRL') %></td>                <td><%= number_to_percentage((sq.aliquota_icms_importacao.presence || sq.aliquota_icms || 0), precision: 2) %></td>
                 <td><%= number_to_currency(sq.tributo_icms_importacao, unit: 'BRL') %></td>              </tr>
             <% end %>
           </tbody>

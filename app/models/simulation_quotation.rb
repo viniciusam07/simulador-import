@@ -100,6 +100,15 @@ class SimulationQuotation < ApplicationRecord
     (base_icms / fator) * (aliquota_utilizada.to_f / 100.0)
   end
 
+  def base_calculo_icms_brl
+    customs_total_value_brl +
+      tributo_ii.to_f +
+      tributo_ipi.to_f +
+      tributo_pis.to_f +
+      tributo_cofins.to_f +
+      (simulation.icms_expense_allocation_per_quotation[self] || 0)
+  end
+
   private
 
 
@@ -147,6 +156,7 @@ class SimulationQuotation < ApplicationRecord
     self.tributo_pis = calculate_pis(customs_value)
     self.tributo_cofins = calculate_cofins(customs_value)
     self.tributo_icms = calculate_icms(customs_value, tributo_ii, tributo_ipi, tributo_pis, tributo_cofins)
+    self.tributo_icms_importacao = tributo_icms_importacao
   end
 
   def calculate_ii(customs_value)
