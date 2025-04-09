@@ -14,6 +14,7 @@ class SimulationQuotation < ApplicationRecord
   validates :aliquota_ii, :aliquota_ipi, :aliquota_pis, :aliquota_cofins, :aliquota_icms,
             numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }, allow_nil: true
   validates :total_value, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :aliquota_icms_importacao, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }, allow_nil: true
 
   # Callbacks
   before_save :set_default_custom_price
@@ -82,6 +83,21 @@ class SimulationQuotation < ApplicationRecord
   def customs_unit_value_brl
     return 0 if quantity.to_f.zero?
     customs_total_value_brl / quantity
+  end
+
+  def tributo_icms_importacao
+    aliquota_utilizada = aliquota_icms_importacao.presence || aliquota_icms
+    return 0 if aliquota_utilizada.to_f <= 0 || aliquota_utilizada.to_f >= 100
+
+    base_icms = customs_total_value_brl +
+                tributo_ii.to_f +
+                tributo_ipi.to_f +
+                tributo_pis.to_f +
+                tributo_cofins.to_f +
+                (simulation.icms_expense_allocation_per_quotation[self] || 0)
+
+    fator = 1 - (aliquota_utilizada.to_f / 100.0)
+    (base_icms / fator) * (aliquota_utilizada.to_f / 100.0)
   end
 
   private
@@ -158,8 +174,12 @@ class SimulationQuotation < ApplicationRecord
 #  end
 
   def calculate_icms(customs_value, ii_value, ipi_value, pis_value, cofins_value)
-    aliquota_icms_value = (aliquota_icms.presence || 0).to_f
-    return 0 if aliquota_icms_value <= 0 || aliquota_icms_value >= 100
+    # Alíquota cheia (campo principal usado para cálculo de divisor e fallback)
+    aliquota_cheia = (aliquota_icms.presence || 0).to_f
+
+    # Alíquota efetiva (usada no cálculo final do ICMS, se fornecida)
+    aliquota_efetiva = (aliquota_icms_importacao.presence || aliquota_cheia).to_f
+    return 0 if aliquota_efetiva <= 0 || aliquota_efetiva >= 100
 
     icms_allocation = simulation.icms_expense_allocation_per_quotation[self] || 0
 
@@ -170,7 +190,7 @@ class SimulationQuotation < ApplicationRecord
                 cofins_value.to_f +
                 icms_allocation
 
-    base_icms / (1 - aliquota_icms_value / 100.0) * (aliquota_icms_value / 100.0)
+    base_icms * (aliquota_efetiva / 100.0)
   end
 
   def set_default_tax_rates

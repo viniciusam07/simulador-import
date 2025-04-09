@@ -42,9 +42,15 @@
             <div class="col-md-2">
               <%= sq_form.number_field :aliquota_cofins, step: 0.01, placeholder: "COFINS (%)", class: "form-control" %>
             </div>
+
+            <!-- Agrupamento ICMS -->
             <div class="col-md-2">
-              <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
+              <div class="input-group">
+                <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control", title: "Alíquota cheia do estado", style: "font-size: 0.8rem" %>
+                <%= sq_form.number_field :aliquota_icms_importacao, step: 0.01, placeholder: "ICMS Imp.", class: "form-control", title: "ICMS Importação (%)", style: "font-size: 0.6rem" %>
+              </div>
             </div>
+
             <!-- Botão Remover -->
             <div class="col-md-2 text-end">
               <%= sq_form.hidden_field :_destroy, value: false %>
@@ -78,29 +84,37 @@
             <%= sq_form.number_field :total_value, placeholder: "Valor Total", class: "form-control", readonly: true %>
           </div>
         </div>
-        <div class="row gy-3 mt-2">
-          <div class="col-md-2">
-            <%= sq_form.number_field :aliquota_ii, step: 0.01, placeholder: "II (%)", class: "form-control" %>
+          <!-- Impostos -->
+          <div class="row gy-3 mt-2">
+            <div class="col-md-2">
+              <%= sq_form.number_field :aliquota_ii, step: 0.01, placeholder: "II (%)", class: "form-control" %>
+            </div>
+            <div class="col-md-2">
+              <%= sq_form.number_field :aliquota_ipi, step: 0.01, placeholder: "IPI (%)", class: "form-control" %>
+            </div>
+            <div class="col-md-2">
+              <%= sq_form.number_field :aliquota_pis, step: 0.01, placeholder: "PIS (%)", class: "form-control" %>
+            </div>
+            <div class="col-md-2">
+              <%= sq_form.number_field :aliquota_cofins, step: 0.01, placeholder: "COFINS (%)", class: "form-control" %>
+            </div>
+
+            <!-- Agrupamento ICMS -->
+            <div class="col-md-2">
+              <div class="input-group">
+                <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control", title: "Alíquota cheia do estado", style: "font-size: 0.8rem" %>
+                <%= sq_form.number_field :aliquota_icms_importacao, step: 0.01, placeholder: "ICMS Imp.", class: "form-control", title: "ICMS Importação (%)", style: "font-size: 0.6rem" %>
+              </div>
+            </div>
+
+            <!-- Botão Remover -->
+            <div class="col-md-2 text-end">
+              <%= sq_form.hidden_field :_destroy, value: false %>
+              <button type="button" class="btn btn-outline-danger btn-sm remove-quotation" data-action="click->quotations#remove">
+                <i class="fas fa-trash"></i> Remover
+              </button>
+            </div>
           </div>
-          <div class="col-md-2">
-            <%= sq_form.number_field :aliquota_ipi, step: 0.01, placeholder: "IPI (%)", class: "form-control" %>
-          </div>
-          <div class="col-md-2">
-            <%= sq_form.number_field :aliquota_pis, step: 0.01, placeholder: "PIS (%)", class: "form-control" %>
-          </div>
-          <div class="col-md-2">
-            <%= sq_form.number_field :aliquota_cofins, step: 0.01, placeholder: "COFINS (%)", class: "form-control" %>
-          </div>
-          <div class="col-md-2">
-            <%= sq_form.number_field :aliquota_icms, step: 0.01, placeholder: "ICMS (%)", class: "form-control" %>
-          </div>
-          <div class="col-md-2 text-end">
-            <%= sq_form.hidden_field :_destroy, value: 0, data: { destroy_field: true } %>
-            <button type="button" class="btn btn-outline-danger btn-sm remove-quotation" data-action="click->quotations#remove">
-              <i class="fas fa-trash"></i> Remover
-            </button>
-          </div>
-        </div>
       <% end %>
     </div>
   </template>
