@@ -101,12 +101,18 @@ class SimulationQuotation < ApplicationRecord
   end
 
   def base_calculo_icms_brl
-    customs_total_value_brl +
-      tributo_ii.to_f +
-      tributo_ipi.to_f +
-      tributo_pis.to_f +
-      tributo_cofins.to_f +
-      (simulation.icms_expense_allocation_per_quotation[self] || 0)
+    aliquota = (aliquota_icms_importacao.presence || aliquota_icms).to_f
+    return 0 if aliquota <= 0 || aliquota >= 100
+
+    base_bruta = customs_total_value_brl +
+                tributo_ii.to_f +
+                tributo_ipi.to_f +
+                tributo_pis.to_f +
+                tributo_cofins.to_f +
+                (simulation.icms_expense_allocation_per_quotation[self] || 0)
+
+    divisor = 1 - (aliquota / 100.0)
+    (base_bruta / divisor).round(2)
   end
 
   private
