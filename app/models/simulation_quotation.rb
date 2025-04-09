@@ -85,38 +85,27 @@ class SimulationQuotation < ApplicationRecord
     customs_total_value_brl / quantity
   end
 
-  def tributo_icms_importacao
-    aliquota_utilizada = aliquota_icms_importacao.presence || aliquota_icms
-    return 0 if aliquota_utilizada.to_f <= 0 || aliquota_utilizada.to_f >= 100
+  def base_calculo_icms_brl
+    base = customs_total_value_brl +
+          tributo_ii.to_f +
+          tributo_ipi.to_f +
+          tributo_pis.to_f +
+          tributo_cofins.to_f +
+          (simulation.icms_expense_allocation_per_quotation[self] || 0)
 
-    base_icms = customs_total_value_brl +
-                tributo_ii.to_f +
-                tributo_ipi.to_f +
-                tributo_pis.to_f +
-                tributo_cofins.to_f +
-                (simulation.icms_expense_allocation_per_quotation[self] || 0)
+    divisor = 1 - (aliquota_icms.to_f / 100.0)
+    return base if divisor.zero?
 
-    fator = 1 - (aliquota_utilizada.to_f / 100.0)
-    (base_icms / fator) * (aliquota_utilizada.to_f / 100.0)
+    base / divisor
   end
 
-  def base_calculo_icms_brl
-    aliquota = (aliquota_icms_importacao.presence || aliquota_icms).to_f
-    return 0 if aliquota <= 0 || aliquota >= 100
-
-    base_bruta = customs_total_value_brl +
-                tributo_ii.to_f +
-                tributo_ipi.to_f +
-                tributo_pis.to_f +
-                tributo_cofins.to_f +
-                (simulation.icms_expense_allocation_per_quotation[self] || 0)
-
-    divisor = 1 - (aliquota / 100.0)
-    (base_bruta / divisor).round(2)
+  def tributo_icms_importacao
+    base_icms = base_calculo_icms_brl
+    aliquota_utilizada = aliquota_icms_importacao.to_f
+    base_icms * (aliquota_utilizada / 100.0)
   end
 
   private
-
 
   def set_default_custom_price
     self.custom_price ||= quotation&.price if quotation.present?
