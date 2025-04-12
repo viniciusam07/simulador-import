@@ -50,7 +50,7 @@ class Simulation < ApplicationRecord
   has_many :simulation_quotations, dependent: :destroy
   has_many :quotations, through: :simulation_quotations
   has_one :simulation_schedule, dependent: :destroy
-
+  has_one :public_link, dependent: :destroy
 
   accepts_nested_attributes_for :simulation_quotations, allow_destroy: true
 
@@ -69,7 +69,6 @@ class Simulation < ApplicationRecord
   validates :equipment_id, :equipment_quantity, presence: true, if: -> { modal == 'Marítimo' }
   validates :cbm_total, :weight_net_total, :weight_gross_total, numericality: { greater_than_or_equal_to: 0 }
   validates :cargo_type, inclusion: { in: ['FCL', 'LCL'], message: 'Tipo de carga inválido' }, if: :maritime_modal?
-
 
   # Callbacks
   before_validation :set_default_tax_rates

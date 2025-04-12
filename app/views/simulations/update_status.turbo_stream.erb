@@ -1,0 +1,27 @@
+<%= turbo_stream.replace "status-badge" do %>
+  <span class="badge rounded-pill <%= badge_class(@simulation.status) %> fs-6" id="status-badge">
+    <%= @simulation.human_status %>
+  </span>
+<% end %>
+
+<%= turbo_stream.replace "flash-messages" do %>
+  <%= render "shared/flashes" %>
+<% end %>
+
+<%# Só exibe isso no público externo, que tem approver %>
+<% if request.referer.include?("/simulacao_publica/") || request.referer.include?("/public_simulations/") %>
+  <%= turbo_stream.replace "approver-info" do %>
+    <% if @simulation.approver_name.present? && @simulation.approver_email.present? %>
+      <div class="alert alert-success mt-3">
+        <i class="fas fa-user-check me-2"></i>
+        <strong><%= @simulation.status == "approved" ? "Aprovado" : "Reprovado" %> por</strong>
+        <strong><%= @simulation.approver_name %></strong>
+        (<%= mail_to @simulation.approver_email %>)
+      </div>
+    <% else %>
+      <div></div>
+    <% end %>
+  <% end %>
+
+  <%= turbo_stream.remove "approval-form" %>
+<% end %>

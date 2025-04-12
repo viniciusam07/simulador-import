@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simulação Pública - Heyship</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-light">
+    <div class="container mt-4">
+      <!-- Flash messages via Turbo Stream -->
+      <div id="flash-messages">
+        <%= render "shared/flashes" %>
+      </div>
+
+      <%= yield %>
+    </div>
+  </body>
+</html>

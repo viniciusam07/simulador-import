@@ -34,6 +34,11 @@ Rails.application.routes.draw do
   end
   get 'exchange_rate', to: 'simulations#exchange_rate'
 
+  # Acesso Público à Simulação
+  get '/simulacoes/:token', to: 'public_simulations#show', as: :public_simulation
+  post '/simulacoes/:token/track', to: 'public_simulations#track_access', as: :track_public_simulation
+  resources :public_links, only: [:create, :edit, :update]
+
   # Rotas para Despesas
   resources :expenses, only: [:index, :new, :create, :edit, :update, :destroy, :show]
 

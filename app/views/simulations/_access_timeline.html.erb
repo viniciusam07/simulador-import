@@ -1,0 +1,33 @@
+<!-- app/views/simulations/_access_timeline.html.erb -->
+<% if simulation.public_link.present? %>
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+      <span><i class="fas fa-eye me-2"></i> Últimos Acessos ao Link Público</span>
+      <span class="badge bg-light text-dark"><%= simulation.public_link.public_link_accesses.count %> acesso(s)</span>
+    </div>
+
+    <div class="card-body">
+      <% accesses = simulation.public_link.public_link_accesses.order(created_at: :desc).limit(5) %>
+
+      <% if accesses.any? %>
+        <ul class="list-group">
+          <% accesses.each do |access| %>
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <strong><i class="fas fa-clock me-1 text-primary"></i> <%= l(access.created_at, format: :short) %></strong><br>
+                  <small class="text-muted">
+                    <i class="fas fa-map-marker-alt me-1"></i> <%= access.city.presence || "Cidade não informada" %>, <%= access.country.presence || "País não informado" %><br>
+                    <i class="<%= access.browser_icon %> me-1"></i> <%= access.browser_name %>
+                  </small>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="text-muted mb-0">Nenhum acesso registrado ainda.</p>
+      <% end %>
+    </div>
+  </div>
+<% end %>

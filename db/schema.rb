@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_09_165127) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_11_221728) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -108,6 +108,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_09_165127) do
     t.decimal "unit_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "public_link_accesses", force: :cascade do |t|
+    t.bigint "public_link_id", null: false
+    t.string "ip"
+    t.text "user_agent"
+    t.string "city"
+    t.string "country"
+    t.datetime "accessed_at"
+    t.integer "session_duration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["public_link_id"], name: "index_public_link_accesses_on_public_link_id"
+  end
+
+  create_table "public_links", force: :cascade do |t|
+    t.bigint "simulation_id", null: false
+    t.string "token", null: false
+    t.datetime "accessed_at"
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["simulation_id"], name: "index_public_links_on_simulation_id"
+    t.index ["token"], name: "index_public_links_on_token", unique: true
   end
 
   create_table "quotations", force: :cascade do |t|
@@ -271,6 +295,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_09_165127) do
     t.decimal "exchange_rate_insurance", precision: 10, scale: 4
     t.string "currency_freight"
     t.string "currency_insurance"
+    t.string "approver_name"
+    t.string "approver_email"
     t.index ["company_id"], name: "index_simulations_on_company_id"
   end
 
@@ -359,6 +385,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_09_165127) do
   add_foreign_key "employees", "enterprises"
   add_foreign_key "employees", "users"
   add_foreign_key "enterprises", "users"
+  add_foreign_key "public_link_accesses", "public_links"
+  add_foreign_key "public_links", "simulations"
   add_foreign_key "quotations", "products"
   add_foreign_key "quotations", "suppliers"
   add_foreign_key "schedule_steps", "schedules"

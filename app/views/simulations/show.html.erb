@@ -11,20 +11,99 @@
       </span>
     </div>
 
-    <div class="card-body">
-      <!-- Formulário para Atualizar Status -->
-      <%= form_with url: update_status_simulation_path(@simulation), method: :patch, local: true, class: "d-flex align-items-end gap-3" do %>
-        <div class="flex-grow-1">
-          <%= label_tag :status, "Alterar Status", class: "form-label fw-bold" %>
-          <%= select_tag :status, options_for_select(Simulation::STATUSES.keys.map { |s| [Simulation::STATUSES[s.to_sym], s] }, @simulation.status), class: "form-control" %>
-        </div>
-        <div>
-          <%= submit_tag "Atualizar", class: "btn btn-primary mt-3" %>
-        </div>
-      <% end %>
-    </div>
-  </div>
+  <div class="card-body">
+    <div class="row">
+      <!-- Coluna 1: Atualização de Status -->
+      <div class="col-md-6">
+        <%= form_with url: update_status_simulation_path(@simulation), method: :patch, local: true, class: "d-flex align-items-end gap-3" do |form| %>
+          <% if @simulation.errors.any? %>
+            <div class="alert alert-danger">
+            <%= select_tag :status, options_for_select(status_options, @simulation.status), class: "form-control" %>
+                <% @simulation.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+          <div class="flex-grow-1">
+            <%= label_tag :status, "Alterar Status", class: "form-label fw-bold" %>
+            <%= select_tag :status, options_for_select(Simulation::STATUSES.keys.map { |s| [Simulation::STATUSES[s.to_sym], s] }, @simulation.status), class: "form-control" %>
+          </div>
+          <div>
+            <%= submit_tag "Atualizar", class: "btn btn-primary mt-3" %>
+          </div>
+        <% end %>
+          <% if @simulation.approver_name.present? || @simulation.approver_email.present? %>
+            <p class="text-muted mt-4">
+              <% if @simulation.status == "approved" %>
+                <i class="fas fa-user-check me-2"></i>
+                Aprovado por
+              <% elsif @simulation.status == "rejected" %>
+                <i class="fas fa-user-times me-2"></i>
+                Reprovado por
+              <% else %>
+                <i class="fas fa-user me-2"></i>
+                Avaliado por
+              <% end %>
 
+              <% if @simulation.approver_name.present? %>
+                <strong><%= @simulation.approver_name %></strong>
+              <% end %>
+              <% if @simulation.approver_email.present? %>
+                (<%= mail_to @simulation.approver_email %>)
+              <% end %>
+            </p>
+          <% end %>
+      </div>
+
+      <!-- Coluna 2: Link Público -->
+      <div class="col-md-6">
+        <% if @simulation.public_link.present? %>
+          <div class="d-flex flex-column">
+            <label class="form-label fw-bold">Link Público</label>
+
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" readonly value="<%= public_simulation_url(@simulation.public_link.token) %>">
+              <button class="btn btn-outline-secondary" type="button" onclick="navigator.clipboard.writeText('<%= public_simulation_url(@simulation.public_link.token) %>')">
+                Copiar
+              </button>
+            </div>
+
+            <% if @simulation.public_link.expired? %>
+              <div class="alert alert-warning mt-2">
+                ⚠️ Este link está expirado.
+              </div>
+            <% end %>
+
+            <!-- Exibe data atual de expiração -->
+            <small class="text-muted mb-2">
+              Expira em: <%= l(@simulation.public_link.expires_at.to_date, format: :long) %>
+            </small>
+
+            <!-- Formulário de edição de expiração -->
+            <%= form_with model: @simulation.public_link, url: public_link_path(@simulation.public_link), method: :patch, local: true do |f| %>
+              <div class="mb-2">
+                <%= f.label :expires_at, "Nova data de expiração", class: "form-label fw-bold" %>
+                <%= f.date_field :expires_at, class: "form-control", value: @simulation.public_link.expires_at.to_date %>
+              </div>
+              <%= f.submit "Atualizar Expiração", class: "btn btn-outline-primary btn-sm" %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= form_with model: PublicLink.new, url: public_links_path, method: :post, local: true do |f| %>
+            <%= f.hidden_field :simulation_id, value: @simulation.id %>
+            <div class="mb-2">
+              <%= f.label :expires_at, "Data de expiração", class: "form-label fw-bold" %>
+              <%= f.date_field :expires_at, class: "form-control", required: true %>
+            </div>
+            <%= f.submit "Criar Link Público", class: "btn btn-outline-primary btn-sm" %>
+          <% end %>
+        <% end %>
+      </div>
+    <!-- Timeline de Acesso Publico -->
+    <div class="mt-4">
+      <%= render partial: "simulations/access_timeline", locals: { simulation: @simulation } %>
+    </div>
   <!-- Detalhes Gerais -->
   <div class="row">
     <!-- Coluna 1 -->

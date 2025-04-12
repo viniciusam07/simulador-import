@@ -1,14 +1,21 @@
-<% if notice %>
-  <div class="alert alert-info alert-dismissible fade show m-1" role="alert">
-    <%= notice %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    </button>
+<% if flash[:notice] %>
+  <div class="alert alert-success alert-dismissible fade show m-1" role="alert" data-controller="auto-close">
+    <%= flash[:notice] %>
+    <button type="button" class="btn-close" data-action="auto-close#close" aria-label="Fechar"></button>
   </div>
-<% end %>
-<% if alert %>
-  <div class="alert alert-warning alert-dismissible fade show m-1" role="alert">
+<% elsif flash[:alert] %>
+  <div class="alert alert-danger alert-dismissible fade show m-1" role="alert" data-controller="auto-close">
+    <%= flash[:alert] %>
+    <button type="button" class="btn-close" data-action="auto-close#close" aria-label="Fechar"></button>
+  </div>
+<% elsif notice %>
+  <div class="alert alert-info alert-dismissible fade show m-1" role="alert" data-controller="auto-close">
+    <%= notice %>
+    <button type="button" class="btn-close" data-action="auto-close#close" aria-label="Fechar"></button>
+  </div>
+<% elsif alert %>
+  <div class="alert alert-warning alert-dismissible fade show m-1" role="alert" data-controller="auto-close">
     <%= alert %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    </button>
+    <button type="button" class="btn-close" data-action="auto-close#close" aria-label="Fechar"></button>
   </div>
 <% end %>

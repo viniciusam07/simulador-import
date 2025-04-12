@@ -1,6 +1,8 @@
 class SimulationsController < ApplicationController
   before_action :set_simulation, only: %i[show edit update update_status destroy]
   before_action :set_default_status, on: :create
+  skip_before_action :authenticate_user!, only: [:update_status]
+
 
   def new
     @simulation = Simulation.new
@@ -119,14 +121,62 @@ class SimulationsController < ApplicationController
   end
 
   def update_status
-    if params[:status].present?
-      if @simulation.update_column(:status, params[:status])
-        redirect_to simulation_path(@simulation), notice: "Status atualizado para #{@simulation.human_status}."
+    status_mapping = {
+      "aprovada" => "approved",
+      "recusada" => "rejected"
+    }
+
+    new_status = status_mapping[params[:status]] || params[:status]
+
+    if @simulation.present? && new_status.present?
+      if @simulation.status != "under_analysis" && !user_signed_in?
+        respond_to do |format|
+          format.html { redirect_back fallback_location: root_path, alert: "Esta simulação já foi #{Simulation::STATUSES[@simulation.status.to_sym]} e não pode mais ser alterada." }
+          format.turbo_stream { flash.now[:alert] = "Simulação já foi decidida e não pode mais ser alterada." }
+        end
+        return
+      end
+      status_changed = @simulation.status != new_status
+      @simulation.status = new_status
+
+      if user_signed_in?
+        @simulation.approver_name  = "#{current_user.first_name} #{current_user.last_name}"
+        @simulation.approver_email = current_user.email
       else
-        redirect_to simulation_path(@simulation), alert: "Erro ao atualizar o status."
+        @simulation.approver_name  = params[:approver_name]
+        @simulation.approver_email = params[:approver_email]
+      end
+
+      # Força PaperTrail a gravar mesmo se o status for o mesmo
+      @simulation.updated_at = Time.current if !status_changed
+
+      if @simulation.save
+        respond_to do |format|
+          format.turbo_stream do
+            flash.now[:notice] = "Status atualizado com sucesso."
+          end
+          format.html do
+            path = request.referer.include?("/simulacoes/") ? simulation_path(@simulation) : public_simulation_path(@simulation.public_link.token)
+            redirect_to path, notice: "Status atualizado com sucesso."
+          end
+        end
+      else
+        respond_to do |format|
+          format.turbo_stream { flash.now[:alert] = "Erro ao atualizar status." }
+          format.html do
+            path = request.referer.include?("/simulacoes/") ? simulation_path(@simulation) : public_simulation_path(@simulation.public_link.token)
+            redirect_to path, alert: "Erro ao atualizar status."
+          end
+        end
       end
     else
-      redirect_to simulation_path(@simulation), alert: "Status não pode ser vazio."
+      respond_to do |format|
+        format.turbo_stream { flash.now[:alert] = "Status inválido." }
+        format.html do
+          path = request.referer.include?("/simulacoes/") ? simulation_path(@simulation) : public_simulation_path(@simulation.public_link.token)
+          redirect_to path, alert: "Status inválido."
+        end
+      end
     end
   end
 

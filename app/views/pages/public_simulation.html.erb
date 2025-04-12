@@ -1,0 +1,214 @@
+<div class="container py-4">
+  <!-- Cabeçalho com informações principais -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="fw-bold">Simulação de Importação</h1>
+      <p class="text-muted">Versão atual: V<%= @simulation.versions.size %></p>
+    </div>
+    <div class="col-md-4 text-end">
+      <span class="badge rounded-pill <%= badge_class(@simulation.status) %> fs-6" id="status-badge">
+        <%= @simulation.human_status %>
+      </span>
+      <% if @simulation.approver_name.present? || @simulation.approver_email.present? %>
+        <p class="mt-2 mb-0 text-muted small">
+          <i class="fas fa-user-check me-1"></i>
+          Aprovado por <strong><%= @simulation.approver_name %></strong>
+          (<%= @simulation.approver_email %>)
+        </p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Widgets com resumo -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title text-muted text-uppercase fs-13">Valor Total da Importação</h5>
+          <h3 class="mb-0"><%= number_to_currency(@simulation.total_importation_cost, unit: 'R$') %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title text-muted text-uppercase fs-13">Fator de Importação</h5>
+          <h3 class="mb-0"><%= number_with_precision(@simulation.import_factor, precision: 2) %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title text-muted text-uppercase fs-13">Despesas Operacionais</h5>
+          <h3 class="mb-0"><%= number_to_currency(@simulation.total_operational_expenses, unit: 'R$') %></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget analítico de despesas -->
+  <div class="card mt-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <h5 class="mb-0"><i class="fas fa-coins me-2"></i> Análise das Despesas Operacionais</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Nome</th>
+              <th>Valor BRL</th>
+              <th>Localização</th>
+              <th>Tipo de Impacto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @simulation.simulation_expenses.each do |expense| %>
+              <tr>
+                <td><%= expense.expense_custom_name %></td>
+                <td class="text-end">
+                  <%= number_to_currency(expense.expense_custom_value, unit: 'R$') %>
+                  <% if expense.expense_currency != 'BRL' %>
+                    <br>
+                    <small class="text-muted">Orig: <%= number_to_currency(expense.value_in_original_currency, unit: expense.expense_currency) %></small>
+                  <% end %>
+                </td>
+                <td><%= expense.expense_location %></td>
+                <td><%= human_tax_impact(expense.tax_calculation_impact) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget analítico de impostos -->
+  <div class="card mt-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <h5 class="mb-0"><i class="fas fa-percentage me-2"></i> Composição dos Tributos</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-2">
+          <div class="p-3 border rounded">
+            <p class="mb-1 text-muted">II</p>
+            <h4 class="mb-0"><%= number_to_currency(@simulation.tributo_ii, unit: 'R$') %></h4>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="p-3 border rounded">
+            <p class="mb-1 text-muted">IPI</p>
+            <h4 class="mb-0"><%= number_to_currency(@simulation.tributo_ipi, unit: 'R$') %></h4>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="p-3 border rounded">
+            <p class="mb-1 text-muted">PIS</p>
+            <h4 class="mb-0"><%= number_to_currency(@simulation.tributo_pis, unit: 'R$') %></h4>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="p-3 border rounded">
+            <p class="mb-1 text-muted">COFINS</p>
+            <h4 class="mb-0"><%= number_to_currency(@simulation.tributo_cofins, unit: 'R$') %></h4>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="p-3 border rounded">
+            <p class="mb-1 text-muted">ICMS</p>
+            <h4 class="mb-0"><%= number_to_currency(@simulation.tributo_icms, unit: 'R$') %></h4>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="p-3 border rounded bg-light">
+            <p class="mb-1 text-dark fw-bold">Total</p>
+            <h4 class="mb-0 text-dark fw-bold"><%= number_to_currency(@simulation.total_taxes, unit: 'R$') %></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela de Rateios e Custos Unitários -->
+  <div class="card mt-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0"><i class="fas fa-boxes me-2"></i> Produtos e Custos Unitários</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Produto</th>
+              <th>Qtd</th>
+              <th>Preço Unitário</th>
+              <th>Logística (un)</th>
+              <th>Impostos (un)</th>
+              <th>Operacional (un)</th>
+              <th>Custo Total (un)</th>
+              <th>Fator</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @unit_cost_summary.each do |summary| %>
+              <tr>
+                <td><%= summary[:product_name] %></td>
+                <td><%= summary[:quantity] %></td>
+                <td><%= number_to_currency(summary[:unit_price_brl], unit: 'R$') %></td>
+                <td><%= number_to_currency(summary[:logistic_cost_per_unit], unit: 'R$') %></td>
+                <td><%= number_to_currency(summary[:tax_cost_per_unit], unit: 'R$') %></td>
+                <td><%= number_to_currency(summary[:operational_cost_per_unit], unit: 'R$') %></td>
+                <td><%= number_to_currency(summary[:total_unit_inventory_cost], unit: 'R$') %></td>
+                <td><%= summary[:unit_import_factor] %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <% if @simulation.status == "under_analysis" %>
+    <div class="card mt-5">
+      <div class="card-header bg-secondary text-white">
+        <i class="fas fa-check-circle me-2"></i> Aprovação da Simulação
+      </div>
+      <div class="card-body">
+        <%= form_with url: update_status_simulation_path(@simulation), method: :patch, local: true do %>
+          <div class="mb-3">
+            <%= label_tag :approver_name, "Nome completo", class: "form-label fw-bold" %>
+            <%= text_field_tag :approver_name, nil, class: "form-control", required: true %>
+          </div>
+
+          <div class="mb-3">
+            <%= label_tag :approver_email, "E-mail", class: "form-label fw-bold" %>
+            <%= email_field_tag :approver_email, nil, class: "form-control", required: true %>
+          </div>
+
+          <div class="d-flex gap-3">
+            <%= submit_tag "Aceitar Simulação", name: "status", value: "aprovada", class: "btn btn-success" %>
+            <%= submit_tag "Recusar Simulação", name: "status", value: "recusada", class: "btn btn-danger" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="card mt-5">
+      <div class="card-header bg-secondary text-white">
+        <i class="fas fa-info-circle me-2"></i> Decisão da Simulação
+      </div>
+      <div class="card-body">
+        <% if @simulation.status == "approved" %>
+          <p class="mb-0 text-success fw-bold">
+            Simulação aprovada por <%= @simulation.approver_name %> (<%= @simulation.approver_email %>) em <%= l(@simulation.updated_at, format: :long) %>.
+          </p>
+        <% elsif @simulation.status == "rejected" %>
+          <p class="mb-0 text-danger fw-bold">
+            Simulação reprovada por <%= @simulation.approver_name %> (<%= @simulation.approver_email %>) em <%= l(@simulation.updated_at, format: :long) %>.
+          </p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
