@@ -27,6 +27,16 @@
     </div>
       <div class="card-body">
         <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Empresa:</strong><% if @simulation.company.present? %><%= @simulation.company.name %> (CNPJ: <%= @simulation.company.cnpj %>)
+            <% else %>
+              Não vinculada
+            <% end %>
+          </li>
+          <li class="list-group-item"><strong>Regime Tributário:</strong><% if @simulation.company.present? %><%= @simulation.company.tax_regime %>
+            <% else %>
+              Não vinculada
+            <% end %>
+          </li>
           <li class="list-group-item"><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
           <li class="list-group-item"><strong>Estado de Destino no Brasil:</strong> <%= @simulation.destination_state %></li>
           <li class="list-group-item"><strong>Modal:</strong> <%= @simulation.modal %></li>
@@ -77,8 +87,6 @@
             <tr>
               <th>Nome</th>
               <th>Valor BRL</th>
-              <th>Localização</th>
-              <th>Tipo de Impacto</th>
             </tr>
           </thead>
           <tbody>
@@ -92,8 +100,6 @@
                     <small class="text-muted">Orig: <%= number_to_currency(expense.value_in_original_currency, unit: expense.expense_currency) %></small>
                   <% end %>
                 </td>
-                <td><%= expense.expense_location %></td>
-                <td><%= human_tax_impact(expense.tax_calculation_impact) %></td>
               </tr>
             <% end %>
           </tbody>
