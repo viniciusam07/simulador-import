@@ -1,9 +1,9 @@
 <div class="container py-4">
-  <!-- Cabeçalho com informações principais -->
+  <!-- Título-->
   <div class="row mb-4">
     <div class="col-md-8">
-      <h1 class="fw-bold">Simulação de Importação</h1>
-      <p class="text-muted">Versão atual: V<%= @simulation.versions.size %></p>
+      <h1 class="fw-bold">Simulação de Importação #<%= @simulation.id %></h1>
+      <p class="text-muted">Versão atual: V.<%= @simulation.versions.size %></p>
     </div>
     <div class="col-md-4 text-end">
       <span class="badge rounded-pill <%= badge_class(@simulation.status) %> fs-6" id="status-badge">
@@ -19,8 +19,26 @@
     </div>
   </div>
 
+  <!-- Cabeçalho -->
+
+  <div class="card mt-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-globe me-2"></i> Dados Gerais da Importação</h5>
+    </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
+          <li class="list-group-item"><strong>Estado de Destino no Brasil:</strong> <%= @simulation.destination_state %></li>
+          <li class="list-group-item"><strong>Modal:</strong> <%= @simulation.modal %></li>
+          <li class="list-group-item"><strong>Incoterm:</strong> <%= @simulation.incoterm %></li>
+          <li class="list-group-item"><strong>CFOP:</strong> <%= "#{@simulation.cfop_code} - #{@simulation.cfop_description}" %></li>
+        </ul>
+    </div>
+  </div>
+
+
   <!-- Widgets com resumo -->
-  <div class="row">
+  <div class="row mt-4">
     <div class="col-md-4">
       <div class="card">
         <div class="card-body">
@@ -169,6 +187,22 @@
       </div>
     </div>
   </div>
+
+  <!-- Observações -->
+  <% if @simulation.observations.present? %>
+    <div class="card mt-4">
+      <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-sticky-note me-2"></i> Observações da Simulação</h5>
+      </div>
+      <div class="card-body">
+        <div class="text-muted">
+          <%= simple_format(@simulation.observations) %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Status e Aprovação -->
   <% if @simulation.status == "under_analysis" %>
     <div class="card mt-5">
       <div class="card-header bg-secondary text-white">
