@@ -19,95 +19,183 @@
     </div>
   </div>
 
-  <!-- Cabeçalho -->
-
+  <!-- Cabeçalho: Dados Gerais e Dados Logísticos -->
   <div class="card mt-4">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="fas fa-globe me-2"></i> Dados Gerais da Importação</h5>
-    </div>
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>Empresa:</strong><% if @simulation.company.present? %><%= @simulation.company.name %> (CNPJ: <%= @simulation.company.cnpj %>)
-            <% else %>
-              Não vinculada
-            <% end %>
-          </li>
-          <li class="list-group-item"><strong>Regime Tributário:</strong><% if @simulation.company.present? %><%= @simulation.company.tax_regime %>
-            <% else %>
-              Não vinculada
-            <% end %>
-          </li>
-          <li class="list-group-item"><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
-          <li class="list-group-item"><strong>Estado de Destino no Brasil:</strong> <%= @simulation.destination_state %></li>
-          <li class="list-group-item"><strong>Modal:</strong> <%= @simulation.modal %></li>
-          <li class="list-group-item"><strong>Incoterm:</strong> <%= @simulation.incoterm %></li>
-          <li class="list-group-item"><strong>CFOP:</strong> <%= "#{@simulation.cfop_code} - #{@simulation.cfop_description}" %></li>
-        </ul>
-    </div>
-  </div>
-
-
-  <!-- Widgets com resumo -->
-  <div class="row mt-4">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title text-muted text-uppercase fs-13">Valor Total da Importação</h5>
-          <h3 class="mb-0"><%= number_to_currency(@simulation.total_importation_cost, unit: 'R$') %></h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title text-muted text-uppercase fs-13">Fator de Importação</h5>
-          <h3 class="mb-0"><%= number_with_precision(@simulation.import_factor, precision: 2) %></h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title text-muted text-uppercase fs-13">Despesas Operacionais</h5>
-          <h3 class="mb-0"><%= number_to_currency(@simulation.total_operational_expenses, unit: 'R$') %></h3>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Widget analítico de despesas -->
-  <div class="card mt-4">
-    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-      <h5 class="mb-0"><i class="fas fa-coins me-2"></i> Análise das Despesas Operacionais</h5>
+      <h5 class="mb-0"><i class="fas fa-globe me-2"></i> Dados Gerais e Logísticos da Importação</h5>
     </div>
     <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-sm table-bordered">
-          <thead class="table-light">
-            <tr>
-              <th>Nome</th>
-              <th>Valor BRL</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @simulation.simulation_expenses.each do |expense| %>
+      <div class="row">
+        <!-- Dados Gerais -->
+        <div class="col-md-6">
+          <h6 class="fw-bold">Dados Gerais</h6>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <strong>Empresa:</strong>
+              <% if @simulation.company.present? %>
+                <%= @simulation.company.name %> (CNPJ: <%= @simulation.company.cnpj %>)
+              <% else %>
+                Não vinculada
+              <% end %>
+            </li>
+            <li class="list-group-item">
+              <strong>Regime Tributário:</strong>
+              <% if @simulation.company.present? %>
+                <%= @simulation.company.tax_regime %>
+              <% else %>
+                Não vinculada
+              <% end %>
+            </li>
+            <li class="list-group-item"><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
+            <li class="list-group-item"><strong>Estado de Destino no Brasil:</strong> <%= @simulation.destination_state %></li>
+            <li class="list-group-item"><strong>Modal:</strong> <%= @simulation.modal %></li>
+            <li class="list-group-item"><strong>Incoterm:</strong> <%= @simulation.incoterm %></li>
+            <li class="list-group-item"><strong>CFOP:</strong> <%= "#{@simulation.cfop_code} - #{@simulation.cfop_description}" %></li>
+          </ul>
+        </div>
+        <!-- Dados Logísticos -->
+        <div class="col-md-6">
+          <h6 class="fw-bold">Dados Logísticos</h6>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>País de Origem:</strong> <%= @simulation.origin_country %></li>
+            <li class="list-group-item"><strong>Estado de Destino no Brasil:</strong> <%= @simulation.destination_state %></li>
+            <li class="list-group-item"><strong>Modal:</strong> <%= @simulation.modal %></li>
+            <% if @simulation.modal == 'Marítimo' %>
+              <li class="list-group-item"><strong>Porto de Origem:</strong> <%= @simulation.origin_port %></li>
+              <li class="list-group-item"><strong>Porto de Destino:</strong> <%= @simulation.destination_port %></li>
+              <li class="list-group-item"><strong>Tipo de Carga:</strong> <%= @simulation.cargo_type || "Não especificado" %></li>
+              <li class="list-group-item">
+                <strong>Equipamento:</strong>
+                <%= "#{@simulation.equipment&.name || 'Não especificado'} X #{@simulation.equipment_quantity || 'Não especificado'}" %>
+              </li>
+            <% elsif @simulation.modal == 'Aéreo' %>
+              <li class="list-group-item"><strong>Aeroporto de Origem:</strong> <%= @simulation.origin_airport %></li>
+              <li class="list-group-item"><strong>Aeroporto de Destino:</strong> <%= @simulation.destination_airport %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Detalhes Gerais -->
+<div class="row">
+  <!-- Coluna 1 (2/3) -->
+  <div class="col-md-8">
+    <!-- Widget analítico de despesas -->
+    <div class="card">
+      <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-coins me-2"></i> Análise das Despesas Operacionais</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead class="table-light">
               <tr>
-                <td><%= expense.expense_custom_name %></td>
+                <th>Nome</th>
+                <th>Valor BRL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @simulation.simulation_expenses.each do |expense| %>
+                <tr>
+                  <td><%= expense.expense_custom_name %></td>
+                  <td class="text-end">
+                    <%= number_to_currency(expense.expense_custom_value, unit: 'R$') %>
+                    <% if expense.expense_currency != 'BRL' %>
+                      <br>
+                      <small class="text-muted">Orig: <%= number_to_currency(expense.value_in_original_currency, unit: expense.expense_currency) %></small>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coluna 2 (1/3) -->
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="fas fa-info-circle"></i> Detalhes Gerais - Produtos e Valores
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="thead-light">
+              <tr>
+                <th>Descrição</th>
+                <th class="text-center">Valor (BRL)</th>
+                <th class="text-center">Valor (<%= @simulation.currency %>)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Valor Total Produtos</td>
+                <td class="text-end"><%= number_to_currency(@simulation.total_value_brl, unit: 'BRL') %></td>
                 <td class="text-end">
-                  <%= number_to_currency(expense.expense_custom_value, unit: 'R$') %>
-                  <% if expense.expense_currency != 'BRL' %>
-                    <br>
-                    <small class="text-muted">Orig: <%= number_to_currency(expense.value_in_original_currency, unit: expense.expense_currency) %></small>
+                  <%= number_to_currency(@simulation.total_value || 0, unit: @simulation.currency || '') %>
+                  <% if @simulation.exchange_rate_goods.present? %>
+                    <br><small class="text-muted">Câmbio: <%= number_with_precision(@simulation.exchange_rate_goods, precision: 4) %></small>
                   <% end %>
                 </td>
               </tr>
-            <% end %>
-          </tbody>
-        </table>
+              <tr>
+                <td>Custo do Frete</td>
+                <td class="text-end"><%= number_to_currency(@simulation.freight_cost_brl || 0, unit: 'BRL') %></td>
+                <td class="text-end">
+                  <%= number_to_currency(@simulation.freight_cost || 0, unit: @simulation.currency_freight || @simulation.currency || '') %>
+                  <% if @simulation.exchange_rate_freight.present? %>
+                    <br><small class="text-muted">Câmbio: <%= number_with_precision(@simulation.exchange_rate_freight, precision: 4) %></small>
+                  <% end %>
+                </td>
+              </tr>
+              <tr>
+                <td>Custo do Seguro</td>
+                <td class="text-end"><%= number_to_currency(@simulation.insurance_cost_brl || 0, unit: 'BRL') %></td>
+                <td class="text-end">
+                  <%= number_to_currency(@simulation.insurance_cost || 0, unit: @simulation.currency_insurance || @simulation.currency || '') %>
+                  <% if @simulation.exchange_rate_insurance.present? %>
+                    <br><small class="text-muted">Câmbio: <%= number_with_precision(@simulation.exchange_rate_insurance, precision: 4) %></small>
+                  <% end %>
+                </td>
+              </tr>
+              <tr>
+                <td>Valor Aduaneiro</td>
+                <td class="text-end" colspan="2">
+                  <%= number_to_currency(@simulation.calculate_customs_value_brl || 0, unit: 'BRL') %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widgets com resumo -->
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-muted text-uppercase fs-13">Valor Total da Importação</h5>
+            <h3 class="mb-0"><%= number_to_currency(@simulation.total_importation_cost, unit: 'R$') %></h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 mt-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-muted text-uppercase fs-13">Despesas Operacionais</h5>
+            <h3 class="mb-0"><%= number_to_currency(@simulation.total_operational_expenses, unit: 'R$') %></h3>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
+</div>
   <!-- Widget analítico de impostos -->
   <div class="card mt-4">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
