@@ -216,44 +216,79 @@
           <table class="table table-sm table-bordered">
             <thead class="table-light">
               <tr>
+                <th>#</th>
+                <th>ID</th>
                 <th>Produto</th>
-                <th>Fornecedor</th>
-                <th>Qtd</th>
-                <th>FOB (BRL)</th>
+                <th>NCM</th>
+                <th>Preço Unitário</th>
+                <th>Quantidade</th>
+                <th>Valor Total</th>
                 <th>Frete Alocado</th>
                 <th>Seguro Alocado</th>
-                <th>Valor Aduaneiro</th>
-                <th>II</th>
-                <th>IPI</th>
-                <th>PIS</th>
-                <th>COFINS</th>
-                <th>ICMS</th>
-                <th>Custo Total Unitário</th>
-                <th>Fator</th>
+                <th>Valor Aduaneiro Unitário</th>
+                <th>Valor Aduaneiro Total</th>
+                <th>Fornecedor</th>
+                <th>II (%)</th>
+                <th>II (R$)</th>
+                <th>IPI (%)</th>
+                <th>IPI (R$)</th>
+                <th>PIS (%)</th>
+                <th>PIS (R$)</th>
+                <th>COFINS (%)</th>
+                <th>COFINS (R$)</th>
+                <th>ICMS (%)</th>
+                <th>Base ICMS (R$)</th>
+                <th>ICMS Import. (%)</th>
+                <th>ICMS Import. (R$)</th>
               </tr>
             </thead>
             <tbody>
-              <% @unit_cost_summary.each do |summary| %>
+              <% @simulation.simulation_quotations.each_with_index do |sq, index| %>
                 <tr>
-                  <td><%= summary[:product_name] %></td>
-                  <td><%= summary[:supplier_name] %></td>
-                  <td><%= summary[:quantity] %></td>
-                  <td><%= number_to_currency(summary[:unit_price_brl], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:freight_allocated_per_unit], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:insurance_allocated_per_unit], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:customs_unit_value], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:ii_per_unit], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:ipi_per_unit], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:pis_per_unit], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:cofins_per_unit], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:icms_per_unit], unit: 'R$') %></td>
-                  <td><%= number_to_currency(summary[:total_unit_inventory_cost], unit: 'R$') %></td>
-                  <td><%= number_with_precision(summary[:unit_import_factor], precision: 2) %></td>
+                  <td><%= index + 1 %></td>
+                  <td><%= sq.id %></td>
+                  <td><%= sq.quotation.product.product_name %></td>
+                  <td><%= sq.quotation.product.ncm %></td>
+                  <td class="text-end">
+                    <%= number_to_currency(sq.unit_price_brl, unit: 'BRL') %><br>
+                    <small class="text-muted"><%= number_to_currency(sq.custom_price || sq.quotation.price, unit: sq.quotation.currency) %></small>
+                  </td>
+                  <td><%= sq.quantity %></td>
+                  <td class="text-end">
+                    <%= number_to_currency(sq.total_value_brl, unit: 'BRL') %><br>
+                    <small class="text-muted"><%= number_to_currency(sq.total_value, unit: sq.quotation.currency || 'BRL') %></small>
+                  </td>
+                  <td class="text-end">
+                    <%= number_to_currency(sq.freight_allocated_brl, unit: 'BRL') %><br>
+                    <small class="text-muted"><%= number_to_currency(sq.freight_allocated, unit: @simulation.currency_freight.presence || 'BRL') %></small>
+                  </td>
+                  <td class="text-end">
+                    <%= number_to_currency(sq.insurance_allocated_brl, unit: 'BRL') %><br>
+                    <small class="text-muted"><%= number_to_currency(sq.insurance_allocated, unit: @simulation.currency_insurance.presence || 'BRL') %></small>
+                  </td>
+                  <td class="text-end">
+                    <%= number_to_currency(sq.customs_unit_value_brl, unit: 'BRL') %>
+                  </td>
+                  <td class="text-end">
+                    <%= number_to_currency(sq.customs_total_value_brl, unit: 'BRL') %>
+                  </td>
+                  <td><%= sq.quotation.supplier.trade_name %></td>
+                  <td><%= number_to_percentage(sq.aliquota_ii || 0, precision: 2) %></td>
+                  <td><%= number_to_currency(sq.tributo_ii || 0, unit: 'BRL') %></td>
+                  <td><%= number_to_percentage(sq.aliquota_ipi || 0, precision: 2) %></td>
+                  <td><%= number_to_currency(sq.tributo_ipi || 0, unit: 'BRL') %></td>
+                  <td><%= number_to_percentage(sq.aliquota_pis || 0, precision: 2) %></td>
+                  <td><%= number_to_currency(sq.tributo_pis || 0, unit: 'BRL') %></td>
+                  <td><%= number_to_percentage(sq.aliquota_cofins || 0, precision: 2) %></td>
+                  <td><%= number_to_currency(sq.tributo_cofins || 0, unit: 'BRL') %></td>
+                  <td><%= number_to_percentage(sq.aliquota_icms || 0, precision: 2) %></td>
+                  <td><%= number_to_currency(sq.base_calculo_icms_brl || 0, unit: 'BRL') %></td>
+                  <td><%= number_to_percentage((sq.aliquota_icms_importacao.presence || sq.aliquota_icms || 0), precision: 2) %></td>
+                  <td><%= number_to_currency(sq.tributo_icms_importacao, unit: 'BRL') %></td>
                 </tr>
               <% end %>
             </tbody>
-          </table>
-        </div>
+          </table>        </div>
       </div>
     </div>
 
